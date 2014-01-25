@@ -12,6 +12,11 @@ app.get('/', function (req, res)
   res.sendfile(__dirname + '/index.html');
 });
 
+app.get('/:page', function (req, res)
+{
+    res.send(req.params.page)    
+});
+
 io.sockets.on('connection', function (socket)
 {
     io.sockets.emit('HELLO! :)');
