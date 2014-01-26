@@ -17,6 +17,11 @@ app.get('/:page', function (req, res)
     res.send(req.params.page)    
 });
 
+app.get('/:page/edit', function(req, res)
+{
+    res.send("Hey there this is the edit page for "+req.params.page);
+});
+
 io.sockets.on('connection', function (socket)
 {
     io.sockets.emit('HELLO! :)');
