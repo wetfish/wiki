@@ -1,0 +1,17 @@
+{
+    "name": "wetfish-wiki",
+    "version": "0.0.1",
+    "author": "Rachel <rachel@wetfish.net>",
+    "description": "Edit stuff!",
+    "dependencies" : {
+        "express": "*",
+        "hjs": "*",
+        "redis": "*",
+        "mysql": "*",
+        "async": "*",
+        "express-session": "*",
+        "connect-redis": "*",
+        "socket.io": "*"
+    },
+    "license": "MIT"
+}
