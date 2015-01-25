@@ -1,0 +1,21 @@
+div.border
+{	background-image:url('/super.gif'); 
+	position:absolute;
+	
+	font-family:Tahoma, Verdana, sans-serif;
+	font-size:10pt;
+	
+	border:1px solid #000;
+	
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px; }
+	
+div.border div.window
+{	background-image:url('/background.png'); 
+	padding:8px;
+
+	font-weight:bold;
+	border: 1px solid #98b3cd; 
+	
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px; }

@@ -1,0 +1,18 @@
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} ^.*style\.css$
+RewriteRule ^style\.css$ /style.php [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.+)$ /index.php?SUPERdickPAGE=$1 [L,QSA]
+
+
+
+
+
+
+
+
+
+

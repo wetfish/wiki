@@ -1,0 +1,3 @@
+		// Only set it once!
+		if(! $(this).attr('originalColor') )
+			$(this).attr('originalColor', $(this).css('color'));

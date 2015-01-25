@@ -1,0 +1,1 @@
+<html>	<head>		<script src="/jquery-blink.js" language="javscript" type="text/javascript"></script>	</head>	<body>		<div class='blink'>			<h1>ohhhhhhhh you so silly</h1>			<img src='/Fuuu.jpg' />		</div>				<script>			$('.blink').blink({delay:100});		</script>	</body></html>
