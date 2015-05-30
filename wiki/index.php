@@ -32,15 +32,27 @@ function PageTitler($Page)
 	return $Page;
 }
 
+// Original apache rewrite
 if(isset($_GET['SUPERdickPAGE']))
 {
     list($Path, $Action) = explode("@", $_GET['SUPERdickPAGE']);
 }
+// New nginx rewrite
 else
 {
     $uri = parse_url($_SERVER['REQUEST_URI']);
     $Path = $uri['path'];
-    $_GET[$uri['query']] = true;
+
+    // Save get parameters
+    if($uri['query'])
+    {
+        parse_str($uri['query'], $query);
+
+        foreach($query as $key => $value)
+        {
+            $_GET[$key] = $value;
+        }
+    }
 }
 
 // Temporarilly disabling editing pages while backups are restored
