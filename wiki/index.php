@@ -15,8 +15,8 @@ include('fun/paginate.php');
 function PageTitler($Page)
 {
 	$Titles[] = "Not Titled";
-	$Titles[] = "Useless Page";
-	$Titles[] = "Worthless Trash";
+//	$Titles[] = "Useless Page";
+//	$Titles[] = "Worthless Trash";
 	$Titles[] = "Saucy Marquee";
 	$Titles[] = "This isn't quite right.";
 	$Titles[] = "Where'd you put it?";
@@ -1027,16 +1027,17 @@ JavaScript;
 
 
 $Titles = array('THE BEST INTERENT ON THE INTERNET',
+                'Super internet website',
 				'Bringing People Together~~',
 //				'FREE COOKIES!!!',
 //				'FREE CANDY!!!',
-				'Rainbow vagina cupcakes?',
+//				'Rainbow vagina cupcakes?',
 				'Wild MISSINGNO. appeared!',
 //				"It's like the future",
 				"It IS the future!",
 //				"It's a blast from the past!",
 				"It's a blast from the future!",
-				"We've fucked you by proxy.",
+//				"We've fucked you by proxy.",
 				"Wetfish touches you.");
 
 shuffle($Titles);
