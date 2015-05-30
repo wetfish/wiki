@@ -1,4 +1,9 @@
 User-agent: *
 Disallow: /*?*
 Allow: /
-
+Allow: /?recent
+Allow: /?recent&page=2
+Allow: /?recent&page=3
+Allow: /browse?order=modified&sort=desc
+Allow: /browse?order=modified&sort=desc&page=2
+Allow: /browse?order=modified&sort=desc&page=3

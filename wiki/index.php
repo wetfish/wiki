@@ -56,8 +56,8 @@ else
 }
 
 // Temporarilly disabling editing pages while backups are restored
-//$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
-$actions = array('recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
+$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
+//$actions = array('recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
 $get = array_change_key_case($_GET);
 
 foreach($_GET as $action => $value)
