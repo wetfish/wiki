@@ -262,11 +262,20 @@ function ReplaceKeywords($Matches)
 				if(is_numeric($Size) and $Size < 1600 and $Size > 0 and strpos($Link, 'http://') === false)
 				{
 					$Info = pathinfo($Link);
-				
-					if(!file_exists("upload/{$Size}_{$Info['basename']}"))
-						ResizeImage($Link, "upload/{$Size}_{$Info['basename']}", $Size);
-						
-					$ImageText = "<a href='/$Link' class='exempt'><img src='/upload/{$Size}_{$Info['basename']}' border='0' /></a>";
+
+                    // Make sure the file actually exists
+                    if(!file_exists("upload/{$Info['basename']}"))
+                    {
+                        // Display an icon if the image can't be loaded
+                        $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
+                    }
+                    else
+                    {
+                        if(!file_exists("upload/{$Size}_{$Info['basename']}"))
+                            ResizeImage($Link, "upload/{$Size}_{$Info['basename']}", $Size);
+                            
+                        $ImageText = "<a href='/$Link' class='exempt'><img src='/upload/{$Size}_{$Info['basename']}' border='0' /></a>";
+                    }
 				}
 				else
 				{
@@ -276,19 +285,31 @@ function ReplaceKeywords($Matches)
 					unset($Size);
 				
 					$URL = parse_url($Link);
-				
-					if($URL['host'] == "glitch.wetfish.net")
-						$class = "class='glitchme'";
-					
-					// This is a terrible hack and really should be expanded to parse and reconstruct the url
-					if($rand)
-						$rand = "&rand=".mt_rand();
-					
-					// Lol I should finish this some time
-					if(is_numeric($Size) and $Size < 1600 and $Size > 0)
-						$size = "style=''";
-					
-					$ImageText = "<img src='$Link$rand' $class />";
+
+                    // Make sure wiki images exist
+                    if(preg_match("{^/upload}", $URL['path']))
+                    {
+                        if(!file_exists(".{$URL['path']}"))
+                        {
+                            // Display an icon if the image can't be loaded
+                            $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
+                        }
+                    }
+                    else
+                    {
+                        if($URL['host'] == "glitch.wetfish.net")
+                            $class = "class='glitchme'";
+                        
+                        // This is a terrible hack and really should be expanded to parse and reconstruct the url
+                        if($rand)
+                            $rand = "&rand=".mt_rand();
+                        
+                        // Lol I should finish this some time
+                        if(is_numeric($Size) and $Size < 1600 and $Size > 0)
+                            $size = "style=''";
+                        
+                        $ImageText = "<img src='$Link$rand' $class />";
+                    }
 				}
 				
 				if($Text)
