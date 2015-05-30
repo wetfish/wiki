@@ -287,13 +287,10 @@ function ReplaceKeywords($Matches)
 					$URL = parse_url($Link);
 
                     // Make sure wiki images exist
-                    if(preg_match("{^/upload}", $URL['path']))
+                    if(preg_match("{^/upload}", $URL['path']) && !file_exists(".{$URL['path']}"))
                     {
-                        if(!file_exists(".{$URL['path']}"))
-                        {
-                            // Display an icon if the image can't be loaded
-                            $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
-                        }
+                        // Display an icon if the image can't be loaded
+                        $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
                     }
                     else
                     {
