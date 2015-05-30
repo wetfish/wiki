@@ -32,10 +32,20 @@ function PageTitler($Page)
 	return $Page;
 }
 
+if(isset($_GET['SUPERdickPAGE']))
+{
+    list($Path, $Action) = explode("@", $_GET['SUPERdickPAGE']);
+}
+else
+{
+    $uri = parse_url($_SERVER['REQUEST_URI']);
+    $Path = $uri['path'];
+    $_GET[$uri['query']] = true;
+}
 
-list($Path, $Action) = explode("@", $_GET['SUPERdickPAGE']);
-
-$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
+// Temporarilly disabling editing pages while backups are restored
+//$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
+$actions = array('recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
 $get = array_change_key_case($_GET);
 
 foreach($_GET as $action => $value)
@@ -1056,7 +1066,7 @@ $HTML = <<<HTML
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="google-site-verification" content="lj_UCeIzlK8MDZyzJ-73XUUZHgroWS_1kQ6kkNar0Vg" />
 		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-		<link href="/style.css" rel="stylesheet" type="text/css" />
+		<link href="/style.php" rel="stylesheet" type="text/css" />
 		<link href="/colorbox.css" rel="stylesheet" type="text/css" />
 		<!--[if IE]>
 				<link href="/styleie.css" rel="stylesheet" type="text/css" media="screen" />
