@@ -1034,9 +1034,9 @@ $Titles = array('THE BEST INTERENT ON THE INTERNET',
 //				'Rainbow vagina cupcakes?',
 				'Wild MISSINGNO. appeared!',
 //				"It's like the future",
-				"It IS the future!",
+				"Wow, so future!",
 //				"It's a blast from the past!",
-				"It's a blast from the future!",
+//				"It's a blast from the future!",
 //				"We've fucked you by proxy.",
 				"Wetfish touches you.");
 

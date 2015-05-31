@@ -455,7 +455,7 @@ function ReplaceKeywords($Matches)
 			case "dblrainbow":
 			case "doublerainbow":
 			case "rainbow2":
-				$Words = str_split_unicode(html_entity_decode($GoodStuff, false, 'UTF-8'));
+				$Words = str_split_unicode(html_entity_decode($GoodStuff, ENT_QUOTES, 'UTF-8'));
 				$Splitter = '';
 							
 				foreach($Words as $Word)
@@ -492,7 +492,7 @@ function ReplaceKeywords($Matches)
             break;
                     
 			case "rainbow":
-				$Words = str_split_unicode(html_entity_decode($GoodStuff, false, 'UTF-8'));
+				$Words = str_split_unicode(html_entity_decode($GoodStuff, ENT_QUOTES, 'UTF-8'));
 				$Splitter = '';
 							
 				foreach($Words as $Word)
