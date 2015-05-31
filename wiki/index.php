@@ -69,8 +69,8 @@ foreach($_GET as $action => $value)
 		$Action = $action;
 }
 
-if(strpos($Path, ' ') !== FALSE)
-	die(Redirect(str_replace(' ', '-', $Path), 0));
+if(strpos($Path, ' ') !== FALSE || strpos($Path, '%20') !== FALSE)
+	die(Redirect(str_replace(array(' ', '%20'), '-', $Path), 0));
 
 $Path = trim($Path, "/");
 
