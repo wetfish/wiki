@@ -638,8 +638,20 @@ function ReplaceLinks($Matches)
 				return "soundcloud[$GoodStuff]";
 			else
 			{
-				$html = file_get_html($GoodStuff);
-				$trackID = $html->find("div[data-sc-track]", 0)->getAttribute('data-sc-track');
+                $options = array
+                (
+                    'http'=>array
+                    (
+                        'method'=>"GET",
+                        'header'=>"Accept-language: en\r\n" .
+                                  "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0\r\n" 
+                    )
+                );
+
+                $context = stream_context_create($options);
+				$html = file_get_html($GoodStuff, false, $context);
+				$androidHack = $html->find("meta[property='al:android:url']", 0)->getAttribute('content');
+                $trackID = preg_replace("/[^0-9]/", "", $androidHack);
 			}
 			
 			return "soundcloud[$GoodStuff?id=$trackID]";
