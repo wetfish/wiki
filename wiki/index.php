@@ -1067,12 +1067,6 @@ if($Content['ExtraNav'])
 /*
 */
 
-if($_SESSION['Background'] == "Frozen")
-{
-    $noSwimStart = "/*";
-    $noSwimEnd = "*/";
-}
-
 $HTML = <<<HTML
 <?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -1213,56 +1207,82 @@ $HTML = <<<HTML
 				theme : 'blackglass'
 			};
 		</script>
-		
-		<script>
-			var swimUp = 30;
-			var swimDown = 50;
-						
-			$(document).ready(function()
-			{
-//				$('body').append("<img src='/src/img/coolfish.png' id='kristyfish'>");
-//				$('body').append("<img src='https://glowbug.me/unicornkingdom/coolfish_fuckyah.png' id='kristyfish'>");
-				$('body').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
 
+        <style>
+            .swimming { transition: all 0.5s; }
+        </style>
+        
+        <script>
+            var transform =
+            {
+                x: 0,
+                y: 0,
+                rotate: 0,
+                flip: 1,
+                
+                // Function for managing transforms
+                update: function(selector)
+                {
+                    $(selector).css({'transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
+                }
+            }
 
-                $noSwimStart
-				$('#kristyfish').load(function()
-				{
-					$('#kristyfish').animate({'left': $(window).width(), 'top': Math.random() * $('body').height()}, function() { swim(); });
+            var swim =
+            {
+                up: 30,
+                down: 50,
+                next: 'up',
+                
+                update: function()
+                {
+                    var pos = $('#kristyfish')[0].getBoundingClientRect();
 
-				});
-				
-				function swim()
-				{
-					if(parseInt($('#kristyfish').css('left')) > $(window).width() || parseInt($('#kristyfish').css('left')) < - $('#kristyfish').width())
-					{
-						//$('#kristyfish').transition({rotateY: '+=180deg', 'top': Math.random() * $('body').height()});
-						$('#kristyfish').animate({rotateY: '+=180deg', 'top': Math.random() * $('body').height()});
-						
-						swimUp = swimUp * -1;
-						swimDown = swimDown * -1;
-					}
-					
-					$('#kristyfish').animate({'rotate': '+=10deg', 'left': parseInt($('#kristyfish').css('left')) + swimUp}, function()
-					{
-						$('#kristyfish').animate({'rotate': '-=10deg', 'left': parseInt($('#kristyfish').css('left')) + swimDown}, function()
-						{
-							swim();
-						});
-					});
-			
-					
-				}
-                $noSwimEnd
-				
+                    // If the fish is off the screen
+                    if(pos.x > $(window).width() || pos.x < -(pos.width))
+                    {
+                        transform.y = Math.random() * $('body').height();
+                        transform.flip *= -1;
 
-/*				$('#kristyfish').transition({'rotate': '-=5deg', 'top': Math.random() * $('body').height()}, function()
-				{
-					swim();
-				});
-*/				
-//					$('#kristyfish').animate({'left': $(window).width()}, 8877, 'linear');					
-			});
+                        swim.up *= -1;
+                        swim.down *= -1;
+                    }
+
+                    if(swim.next == 'up')
+                    {
+                        transform.x += swim.up;
+                        transform.rotate = 10;
+                        swim.next = 'down';
+                    }
+                    else
+                    {
+                        transform.x += swim.down;
+                        transform.rotate = 0;
+                        swim.next = 'up';
+                    }
+
+                    transform.update('#kristyfish');
+                    setTimeout(swim.update, 510);
+                }
+            }
+
+            $(document).ready(function()
+            {
+                $('body').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
+
+                $('#kristyfish').load(function()
+                {
+                    transform.x = $(window).width();
+                    transform.y = Math.random() * $('body').height()
+                    transform.update(this);
+
+                    // Start swimming
+                    setTimeout(function()
+                    {
+                        $('#kristyfish').addClass('swimming');
+                        swim.update();
+                    }, 10);
+                });
+            });
 		</script>
 
 		<link rel="icon" type="image/png" href="/favzz.png"/>
