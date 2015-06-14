@@ -1064,8 +1064,6 @@ else
 
 if($Content['ExtraNav'])
 	$Content['ExtraNav'] = '<div class="extranav">'.$Content['ExtraNav']->Export().'</div>';
-/*
-*/
 
 $HTML = <<<HTML
 <?xml version="1.0" encoding="utf-8" ?>
@@ -1207,10 +1205,6 @@ $HTML = <<<HTML
 				theme : 'blackglass'
 			};
 		</script>
-
-        <style>
-            .swimming { transition: all 0.5s; }
-        </style>
         
         <script>
             var transform =
@@ -1224,6 +1218,7 @@ $HTML = <<<HTML
                 update: function(selector)
                 {
                     $(selector).css({'transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
+                    $(selector).css({'-webkit-transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
                 }
             }
 
@@ -1238,8 +1233,19 @@ $HTML = <<<HTML
                     var pos = $('#kristyfish')[0].getBoundingClientRect();
 
                     // If the fish is off the screen
-                    if(pos.x > $(window).width() || pos.x < -(pos.width))
+                    if(pos.left > $(window).width() || pos.left < -(pos.width))
                     {
+                        // Special handlers to make sure the fish never swims off into infinity
+                        if(pos.left > $(window).width())
+                        {
+                            transform.x = $(window).width();
+                        }
+                        
+                        if(pos.left < -(pos.width))
+                        {
+                            transform.x = -(pos.width);
+                        }
+                        
                         transform.y = Math.random() * $('body').height();
                         transform.flip *= -1;
 
@@ -1267,7 +1273,8 @@ $HTML = <<<HTML
 
             $(document).ready(function()
             {
-                $('body').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
+                $('.fishwrap').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
+                $('.fishwrap').height($('body').height());
 
                 $('#kristyfish').load(function()
                 {
@@ -1366,6 +1373,7 @@ $HTML = <<<HTML
 				</div>
 			</div>
 		</div>		
+        <div class="fishwrap"></div>
 	</body>
 </html>
 HTML;

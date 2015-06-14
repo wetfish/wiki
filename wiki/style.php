@@ -8,7 +8,7 @@ else
 	
 header('Content-type: text/css');
 echo <<<CSS
-body { margin:0 4% 64px 4%; background-image:$Background; color: #FFFFFF; font-family: Tahoma,Helvetica,Sans-serif; font-size:10pt; overflow-x: hidden; }
+body { margin:0 4% 64px 4%; background-image:$Background; color: #FFFFFF; font-family: Tahoma,Helvetica,Sans-serif; font-size:10pt; overflow-x: hidden; z-index: 0; }
 hr { height: 0px;  border: solid #98b3cd; border-width: 1px 0px 0px 0px; margin: 4px 0px; }
 
 p { padding:0px; margin:0px }
@@ -59,6 +59,8 @@ div.bodyborder {
     -moz-border-radius-bottomleft:16px;
     -webkit-border-bottom-left-radius:16px;
     border-bottom-left-radius: 16px;
+    position: relative;
+    z-index: 1;
 }
 
 div.body {
@@ -202,10 +204,12 @@ iframe[src="about:blank"]{display:none;}
 
 #kristyfish {
 	position: absolute;
-	top: -1000px;
-	left: -1000px;
-	z-index: -1;
+    -webkit-transform-style: preserve-3d;
+    backface-visibility: visible;
 }
+
+.fishwrap { position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; }
+.swimming { transition: all 0.5s; }
 
 .wiki-box {
 	border:1px solid rgba(0,0,0,0.3);
