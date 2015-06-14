@@ -52,10 +52,27 @@ border-top-right-radius: 8px;
 .transparent { opacity:0.24; }
 .ninja { display: none; }
 
-div.bodyborder { background-image:url('body.png'); border: 1px solid #000000; border-top:none; -moz-border-radius-bottomleft:16px; -webkit-border-bottom-left-radius:16px; }
-div.body { overflow:hidden; background-image:url('supergay.png'); background-repeat:no-repeat; padding: 0px 8px 8px 8px; border: 1px solid #98b3cd; border-top:none; -webkit-border-bottom-left-radius: 16px;
--moz-border-radius-bottomleft: 16px;
-border-bottom-left-radius: 16px; }
+div.bodyborder {
+    background-image:url('body.png');
+    border: 1px solid #000000;
+    border-top:none;
+    -moz-border-radius-bottomleft:16px;
+    -webkit-border-bottom-left-radius:16px;
+    border-bottom-left-radius: 16px;
+}
+
+div.body {
+    overflow:hidden;
+    background-image:url('supergay.png');
+    background-repeat:no-repeat;
+    padding: 0px 8px 8px 8px;
+    border: 1px solid #98b3cd;
+    border-top:none;
+    -webkit-border-bottom-left-radius: 16px;
+    -moz-border-radius-bottomleft: 16px;
+    border-bottom-left-radius: 16px;
+}
+
 div.content { overflow:hidden;}
 div.header { height:80px; padding-top:8px; }
 div.navigation { }
@@ -82,11 +99,47 @@ div.title {
 }
 
 div.footer { position:relative; }
-div.footerborder { position:absolute; top:0px; right:0px; border: 1px solid #000000; border-top-style:none; -moz-border-radius-bottomright:16px; -moz-border-radius-bottomleft:16px;  -webkit-border-bottom-left-radius:16px; -webkit-border-bottom-right-radius:16px; }
-div.footerbox { background-image:url('body.png'); padding:8px; text-align:center; font-size: 8pt; font-style: italic; border: 1px solid #98b3cd; border-top-style:none; -moz-border-radius-bottomright:16px; -moz-border-radius-bottomleft:16px;  -webkit-border-bottom-left-radius:16px; -webkit-border-bottom-right-radius:16px; }
+div.footerborder {
+    position:absolute;
+    top:0px;
+    right:0px;
+    border: 1px solid #000000;
+    border-top-style:none;
+    -moz-border-radius-bottomright:16px;
+    -moz-border-radius-bottomleft:16px;
+    -webkit-border-bottom-left-radius:16px;
+    -webkit-border-bottom-right-radius:16px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
+
+div.footerbox {
+    background-image:url('body.png');
+    padding:8px;
+    text-align:center;
+    font-size: 8pt;
+    font-style: italic;
+    border: 1px solid #98b3cd;
+    border-top-style:none;
+    -moz-border-radius-bottomright:16px;
+    -moz-border-radius-bottomleft:16px;
+    -webkit-border-bottom-left-radius:16px;
+    -webkit-border-bottom-right-radius:16px;
+    border-bottom-right-radius: 16px;
+    border-bottom-left-radius: 16px;
+}
 
 div.GalleryContainer { display:inline-block; height:170px; width:170px; margin:10px; }
-img.GalleryImage { display:block; margin:0 auto; border:1px solid #000000; -moz-border-radius:8px; -webkit-border-radius:8px; padding:10px; }
+img.GalleryImage {
+    display:block;
+    margin:0 auto;
+    border:1px solid #000000;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
+    border-radius: 8px;
+    padding:10px;
+}
+
 img.GalleryImage:hover { background-image:url('hover.png'); }
 
 span.del{background:#B51010}
@@ -107,6 +160,7 @@ span.ins{background:#6348b1}
 	z-index:999;
 	-moz-border-radius:8px;
 	-webkit-border-radius:8px;
+    border-radius: 8px;
 }
 
 #jetpack #title
