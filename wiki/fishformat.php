@@ -34,14 +34,14 @@ function ReplaceKeywords($Matches)
 					$class = 'left';
 			
 				$ID = uuid();
-				return "<div id='$ID' class='$class'><iframe id='scraper-friend' src='http://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>";
+				return "<div id='$ID' class='$class'><iframe id='scraper-friend' src='https://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>";
 			break; 
 			
 			case "ads":
 				$ID = uuid();
 				$ID2 = uuid();
-				return "<div id='$ID' class='left'><iframe id='scraper-friend' src='http://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>"
-						."<div id='$ID2' class='right'><iframe id='scraper-friend' src='http://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>";
+				return "<div id='$ID' class='left'><iframe id='scraper-friend' src='https://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>"
+						."<div id='$ID2' class='right'><iframe id='scraper-friend' src='https://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>";
  
 			break;
 			
@@ -199,7 +199,7 @@ function ReplaceKeywords($Matches)
 						break;
 
 						case "fish":
-							$URL = "http://wiki.wetfish.net/$LinkMatches[2]";
+							$URL = "https://wiki.wetfish.net/$LinkMatches[2]";
 
 							if(empty($Text))
 								$Text = $URL;
@@ -320,7 +320,7 @@ function ReplaceKeywords($Matches)
 				$URL = parse_url($GoodStuff);
 				$Video = trim($URL['path'], '/');
 				
-				return "<object height='344' width='434'> <param name='movie' value='http://embed.redtube.com/player/'> <param name='FlashVars' value='id=$Video&style=redtube&autostart=false'> <embed src='http://embed.redtube.com/player/?id=$Video&style=redtube' flashvars='autostart=false' pluginspage='http://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash' type='application/x-shockwave-flash' height='344' width='434' /> </object>";
+				return "<object height='344' width='434'> <param name='movie' value='https://embed.redtube.com/player/'> <param name='FlashVars' value='id=$Video&style=redtube&autostart=false'> <embed src='https://embed.redtube.com/player/?id=$Video&style=redtube' flashvars='autostart=false' pluginspage='https://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash' type='application/x-shockwave-flash' height='344' width='434' /> </object>";
 			break;
 			
 			case "motherless":
@@ -333,7 +333,7 @@ function ReplaceKeywords($Matches)
 					
 					preg_match("/var __file_url = '(.*?)';/", $Data, $Filename);
 					
-					return "<embed type='application/x-shockwave-flash' src='http://motherless.com/flash/player.swf' style='' id='player' name='player' quality='high' allowfullscreen='true' allowscriptaccess='always' wmode='transparent' flashvars='file=http://members.motherless.com/movies/$Filename[1].flv&amp;image=http://motherless.com/thumbs/$Video.jpg&amp;mute=false&amp;streamer=lighttpd&amp;link=http://motherless.com/$Video' width='680' height='560'>";
+					return "<embed type='application/x-shockwave-flash' src='https://motherless.com/flash/player.swf' style='' id='player' name='player' quality='high' allowfullscreen='true' allowscriptaccess='always' wmode='transparent' flashvars='file=https://members.motherless.com/movies/$Filename[1].flv&amp;image=https://motherless.com/thumbs/$Video.jpg&amp;mute=false&amp;streamer=lighttpd&amp;link=https://motherless.com/$Video' width='680' height='560'>";
 				}
 			break;
 			
@@ -342,29 +342,29 @@ function ReplaceKeywords($Matches)
 				$URL = parse_url($GoodStuff);
 				parse_str($URL['query'], $Query);
 				
-				return "<iframe width='640' height='360' src='http://www.youtube.com/embed/{$Query['v']}' frameborder='0' allowfullscreen></iframe>";
-				return "<object width='640' height='360'><param name='movie' value='http://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='http://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='480' height='295'></embed></object>";
+				return "<iframe width='640' height='360' src='https://www.youtube.com/embed/{$Query['v']}' frameborder='0' allowfullscreen></iframe>";
+				return "<object width='640' height='360'><param name='movie' value='https://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='https://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='480' height='295'></embed></object>";
 			break;
 
 			case "playlist":
 				$url = parse_url($GoodStuff);
 				parse_str($url['query'], $query);
 
-				return "<iframe width='640' height='360' src='http://www.youtube.com/embed/videoseries?list={$query['list']}&index={$query['index']}' frameborder='0' allowfullscreen></iframe>";			
+				return "<iframe width='640' height='360' src='https://www.youtube.com/embed/videoseries?list={$query['list']}&index={$query['index']}' frameborder='0' allowfullscreen></iframe>";			
 			break;
 			
 			case "vimeo":
 				$URL = parse_url($GoodStuff);
 				$videoID = preg_replace("/[^0-9]/", "", $URL['path']);
 				
-				return "<iframe src='http://player.vimeo.com/video/$videoID?byline=0&amp;portrait=0&amp;badge=0&amp;color=ffffff' width='640' height='360' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
+				return "<iframe src='https://player.vimeo.com/video/$videoID?byline=0&amp;portrait=0&amp;badge=0&amp;color=ffffff' width='640' height='360' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
 			break;
 			
 			case "soundcloud":
 				$URL = parse_url($GoodStuff);
 				parse_str($URL['query'], $Query);
 				
-				return "<iframe width='100%' height='166' scrolling='no' frameborder='no' src='http://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F{$Query['id']}&show_artwork=true'></iframe>";
+				return "<iframe width='100%' height='166' scrolling='no' frameborder='no' src='https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F{$Query['id']}&show_artwork=true'></iframe>";
 			break;		
 			
 			case "ytcracker":
@@ -710,10 +710,10 @@ function FishFormat($Input, $Action='markup')
                 $random = "/?random";
 
 			$Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/',
-			                                create_function('$Match', 'return "<a href=\'http://wiki.wetfish.net/".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;"), "", str_replace(" ", "-", $Match[1]))."'.$random.'\'>$Match[2]</a>";'),
+			                                create_function('$Match', 'return "<a href=\'https://wiki.wetfish.net/".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;"), "", str_replace(" ", "-", $Match[1]))."'.$random.'\'>$Match[2]</a>";'),
 			                                 $Output);
 			$Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})/', 
-			                                create_function('$Match', 'return "<a href=\'http://wiki.wetfish.net/".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;"), "", str_replace(" ", "-", $Match[1]))."'.$random.'\'>$Match[1]</a>";'),
+			                                create_function('$Match', 'return "<a href=\'https://wiki.wetfish.net/".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;"), "", str_replace(" ", "-", $Match[1]))."'.$random.'\'>$Match[1]</a>";'),
 			                                $Output);
 			
 			$Output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $Output);

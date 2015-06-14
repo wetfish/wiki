@@ -398,7 +398,7 @@ SuperNav;
 			$Form['tags']['SubText'] = "Optional; used for grouping similar pages. Separate tags by commas.";
 
 			if(!$_SESSION['bypass'])
-				$Form['Captcha']['Form'] = "type:plaintext; value:".recaptcha_get_html(RECAPTCHA_PUBLIC);
+				$Form['Captcha']['Form'] = "type:plaintext; value:".recaptcha_get_html(RECAPTCHA_PUBLIC, null, 1);
 
 			$Form['Submit']['Form'] = "type:plaintext; value:{<input type='submit' value='Submit' /> <input type='button' value='Preview' onClick='SelectAction(\"preview\")' />};";
 			
@@ -864,7 +864,7 @@ JavaScript;
 				if($SQLError)
 					$Content['Body'] .= "Holy SHIT there was a MySQL error.";
 				else
-					$Content['Body'] .= "You did it! You deserve a friendship bracelet. Now go click on that verification link in your email.<br /><br />Are you super lazy? Opening a new tab too much of a hassle? Here's a link to your email provider! (Hopefully) &mdash; <a href='http://$EmailURL'>$EmailURL</a>";
+					$Content['Body'] .= "You did it! You deserve a friendship bracelet. Now go click on that verification link in your email.<br /><br />Are you super lazy? Opening a new tab too much of a hassle? Here's a link to your email provider! (Hopefully) &mdash; <a href='https://$EmailURL'>$EmailURL</a>";
 			}
 		}
 
@@ -886,7 +886,7 @@ JavaScript;
 			$Form['Confirm']['Form'] = "name:Confirm; type:password;";
 			$Form['Confirm']['SubText'] = "Retype password to make sure you did it right!";
 			
-			$Form['Captcha']['Form'] = "type:plaintext; value:".recaptcha_get_html(RECAPTCHA_PUBLIC);
+			$Form['Captcha']['Form'] = "type:plaintext; value:".recaptcha_get_html(RECAPTCHA_PUBLIC, null, 1);
 
 			$Form['Submit']['Form'] = "type:submit; value:Submit;";
 
@@ -1070,15 +1070,15 @@ if($_SESSION['Background'] == "Frozen")
 
 $HTML = <<<HTML
 <?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 	<head>
 		<title>$Title</title>
 
 		$Head
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<meta name="google-site-verification" content="lj_UCeIzlK8MDZyzJ-73XUUZHgroWS_1kQ6kkNar0Vg" />
-		<link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+		<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
 		<link href="/style.php" rel="stylesheet" type="text/css" />
 		<link href="/colorbox.css" rel="stylesheet" type="text/css" />
 		<!--[if IE]>
@@ -1089,7 +1089,7 @@ $HTML = <<<HTML
 		<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="/jquery.colorbox.js"></script>
 		<script type="text/javascript" src="/jquery.json-2.2.min.js"></script>
-		<!-- <script type="text/javascript" src="http://www.cornify.com/js/cornify.js"></script>  -->
+		<!-- <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>  -->
 		
 		<script type="text/javascript" src="/jquery-fieldselection.js"></script>
 		<script type="text/javascript" src="/window.js"></script>
@@ -1177,7 +1177,7 @@ $HTML = <<<HTML
 			function Jump(URL)
 			{
 				if(URL == undefined)
-					URL = 'http://wiki.wetfish.net/';
+					URL = 'https://wiki.wetfish.net/';
 				
 				window.location.href = URL; 
 			}
@@ -1185,7 +1185,7 @@ $HTML = <<<HTML
 			function SuperJump(URL)
 			{
 				if(URL == undefined)
-					URL = 'http://wiki.wetfish.net/';
+					URL = 'https://wiki.wetfish.net/';
 				
 				window.open(URL, '_blank'); 
 			}
@@ -1216,8 +1216,8 @@ $HTML = <<<HTML
 			$(document).ready(function()
 			{
 //				$('body').append("<img src='/src/img/coolfish.png' id='kristyfish'>");
-//				$('body').append("<img src='http://glowbug.me/unicornkingdom/coolfish_fuckyah.png' id='kristyfish'>");
-				$('body').append("<img src='http://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
+//				$('body').append("<img src='https://glowbug.me/unicornkingdom/coolfish_fuckyah.png' id='kristyfish'>");
+				$('body').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
 
 
                 $noSwimStart
@@ -1268,28 +1268,28 @@ $HTML = <<<HTML
 				<div class="header">
 					$Freeze
 		
-					<a class='header' href='http://wiki.wetfish.net/' onclick='cornify_add(); setTimeout("Jump()", 5000); return false;'><img src='/thisiswetfish.png' border='0'></a>
+					<a class='header' href='https://wiki.wetfish.net/' onclick='cornify_add(); setTimeout("Jump()", 5000); return false;'><img src='/thisiswetfish.png' border='0'></a>
 				</div>
 
 				<div class="navigation">
-					<div class="navbox" onClick="Jump('http://wiki.wetfish.net/search')">
-						<a class="nav exempt" href="http://wiki.wetfish.net/search">Search</a>
+					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/search')">
+						<a class="nav exempt" href="https://wiki.wetfish.net/search">Search</a>
 					</div>
 					
-					<div class="navbox" onClick="Jump('http://wiki.wetfish.net/browse')">
-						<a class="nav exempt" href="http://wiki.wetfish.net/browse">Browse</a>
+					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/browse')">
+						<a class="nav exempt" href="https://wiki.wetfish.net/browse">Browse</a>
 					</div>
 					
-					<div class="navbox" onClick="Jump('http://wiki.wetfish.net/?random')">
-						<a class="nav exempt" href="http://wiki.wetfish.net/?random">Random</a>
+					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/?random')">
+						<a class="nav exempt" href="https://wiki.wetfish.net/?random">Random</a>
 					</div>
 
-					<div class="navbox" onClick="SuperJump('http://wiki.wetfish.net/chat/')">
-						<a class="nav exempt" href="http://wiki.wetfish.net/chat/" onClick="return false" target="_blank">Chat</a>
+					<div class="navbox" onClick="SuperJump('https://wiki.wetfish.net/chat/')">
+						<a class="nav exempt" href="https://wiki.wetfish.net/chat/" onClick="return false" target="_blank">Chat</a>
 					</div>
 
-<!--					<div class="navbox" onClick="Jump('http://music.wetfish.net/')">
-						<a class="nav exempt" href="http://music.wetfish.net/">Playlists</a>
+<!--					<div class="navbox" onClick="Jump('https://music.wetfish.net/')">
+						<a class="nav exempt" href="https://music.wetfish.net/">Playlists</a>
 					</div>
 -->
 					<div class='navbox' onClick="Jump('/popular')">
@@ -1300,8 +1300,8 @@ $HTML = <<<HTML
 						<a class='nav exempt' href='/tags'>Tags</a>
 					</div>
 					
-					<div class="navbox" onClick="Jump('http://wiki.wetfish.net/qpalz/')">
-						<a class="nav exempt" href="http://wiki.wetfish.net/qpalz/">Media</a>
+					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/qpalz/')">
+						<a class="nav exempt" href="https://wiki.wetfish.net/qpalz/">Media</a>
 					</div>
 				</div>
 
@@ -1330,7 +1330,7 @@ $HTML = <<<HTML
 				{$Content['Tags']}
 				
 				<hr />
-				<center><iframe id='leader-friend' src='http://ads.wetfish.net/friendship/leader.html' style='width:750px; height:115px; border:0; outline:0; overflow:hidden;' scrolling="no"></iframe></center>
+				<center><iframe id='leader-friend' src='https://ads.wetfish.net/friendship/leader.html' style='width:750px; height:115px; border:0; outline:0; overflow:hidden;' scrolling="no"></iframe></center>
 			</div>
 		</div>
 
