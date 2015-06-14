@@ -229,13 +229,16 @@ switch($Action[0])
 			if(preg_match("/^(fuck? you captcha?|fuck? captchas?|i hate captchas?|captchas?.*sucks?)$/i", $_POST["recaptcha_response_field"]))
 				$_SESSION['bypass'] = true;
 
-			$Resp = recaptcha_check_answer (RECAPTCHA_PRIVATE,
-                                $_SERVER["REMOTE_ADDR"],
-                                $_POST["recaptcha_challenge_field"],
-                                $_POST["recaptcha_response_field"]);
+            if(!isset($_SESSION['bypass']))
+            {
+                $Resp = recaptcha_check_answer (RECAPTCHA_PRIVATE,
+                                    $_SERVER["REMOTE_ADDR"],
+                                    $_POST["recaptcha_challenge_field"],
+                                    $_POST["recaptcha_response_field"]);
 
-			if (!$Resp->is_valid and !$_SESSION['bypass'] and $Action[0] != "preview")
-				$Form['_Errors']['Captcha'] = "You did it wrong! Please try again.";
+                if (!$Resp->is_valid and !$_SESSION['bypass'] and $Action[0] != "preview")
+                    $Form['_Errors']['Captcha'] = "You did it wrong! Please try again.";
+            }
 
 			if($Time < $_SESSION['EditTime'] + 15)
 				$Form['_Erros']['_Global'] = "Please wait 15 seconds between edits.";
@@ -405,7 +408,7 @@ SuperNav;
 			if($Action[0] == "preview")
 			{
 				$Content['Title'] = 'Preview: '.FishFormat($PageTitle);
-				$Content['Body'] .= FishFormat($PageContent)."<hr />";
+				$Content['Body'] .= FishFormat($PageContent)."<div style='clear:both'></div><hr />";
 			}
 			$Content['Body'] .= Format($Form, Form);
 		}
