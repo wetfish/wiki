@@ -1055,10 +1055,12 @@ if(empty($Content['Footer']))
 $Content['UserNav'] = $Content['UserNav']->Export();
 $Content['PageNav'] = $Content['PageNav']->Export();
 
+/*
 if($_SESSION['Background'] == "Frozen")
 	$Freeze = "<span class='small'><a href='".FormatPath("/$Path/?freeze")."'>Refresh Background</a></span>";
 else
 	$Freeze = "<span class='small'><a href='".FormatPath("/$Path/?freeze")."'>Freeze Background</a></span>";
+*/
 
 if($Content['ExtraNav'])
 	$Content['ExtraNav'] = '<div class="extranav">'.$Content['ExtraNav']->Export().'</div>';
