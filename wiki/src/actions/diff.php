@@ -1,5 +1,13 @@
 <?php
 
+// Include the diff class
+require_once dirname(__FILE__).'/../libraries/Diff.php';
+
+// Include two sample files for comparison
+$a = explode("\n", file_get_contents(dirname(__FILE__).'/a.txt'));
+$b = explode("\n", file_get_contents(dirname(__FILE__).'/b.txt'));
+
+
 function diff($path, $action, $content)
 {
     $Head = '<meta name="robots" content="noindex, nofollow" />';
@@ -16,18 +24,15 @@ function diff($path, $action, $content)
         $Title[] = FishFormat($PageTitle, "strip");			
         $content['Title'] .= FishFormat($PageTitle);
         
-        $nl = '#**!)@<>#';
+        $old = explode("\n", $PreviousContent);
+        $new = explode("\n", $PageContent);
 
-        $PreviousContent = str_replace("\n", "<br>", $PreviousContent);
-        $PageContent = str_replace("\n", "<br>", $PageContent);
+        // Initialize the diff class
+        $diff = new Diff($old, $new);
 
-        
-        ob_start();
-        echo $PreviousContent;
-        echo $PageContent;
-//        inline_diff($PreviousContent, $PageContent, $nl);
-        $content['Body'] .= ob_get_contents();
-        ob_end_clean();
+        require_once dirname(__FILE__).'/../libraries/Diff/Renderer/Html/SideBySide.php';
+        $renderer = new Diff_Renderer_Html_SideBySide;
+        $content['Body'] .= $diff->Render($renderer);
         
         date_default_timezone_set('America/New_York');
         $PageEditTime = formatTime($PageEditTime);
