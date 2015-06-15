@@ -1049,6 +1049,7 @@ $HTML = <<<HTML
 		<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
 		<link href="/style.php" rel="stylesheet" type="text/css" />
 		<link href="/colorbox.css" rel="stylesheet" type="text/css" />
+		<link href="/src/css/diff.css" rel="stylesheet" type="text/css" />
 		<!--[if IE]>
 				<link href="/styleie.css" rel="stylesheet" type="text/css" media="screen" />
 		<![endif]-->
