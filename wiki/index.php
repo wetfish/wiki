@@ -1274,12 +1274,12 @@ $HTML = <<<HTML
             $(document).ready(function()
             {
                 $('.fishwrap').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
-                $('.fishwrap').height($('body').height());
+                $('.fishwrap').height($('html').height());
 
                 $('#kristyfish').load(function()
                 {
                     transform.x = $(window).width();
-                    transform.y = Math.random() * $('body').height()
+                    transform.y = Math.random() * $('body').height();
                     transform.update(this);
 
                     // Start swimming

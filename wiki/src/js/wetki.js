@@ -58,7 +58,7 @@ $(document).ready(function()
 			
 			
 			image.attr('src', imageSrc.protocol + "://" + imageSrc.host + imageSrc.path + "?" + $.param(imageSrc.params, true));
-		}, 1234);
+		}, 3000);
 	});
 	
 	
