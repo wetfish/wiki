@@ -605,37 +605,8 @@ JavaScript;
 	break;
 	
 	case "diff":
-		$Head = '<meta name="robots" content="noindex, nofollow" />';
-		$Content['PageNav']->Active("Page History");
-		
-		if(is_numeric($Action[1]))
-		{
-			$PageQuery = mysql_query("SELECT `PageID`,`AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$Action[1]'");
-			list($PageID, $AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent) = mysql_fetch_array($PageQuery);
-		
-			$PreviousQuery = mysql_query("Select `Content` from `Wiki_Edits` where `ID` < '$Action[1]' and `PageID`='$PageID' order by `ID` desc limit 1");
-			list($PreviousContent) = mysql_fetch_array($PreviousQuery);
-			
-			$Title[] = FishFormat($PageTitle, "strip");			
-			$Content['Title'] .= FishFormat($PageTitle);
-			
-			$nl = '#**!)@<>#';
-
-			$PreviousContent = str_replace("\n", "<br>", $PreviousContent);
-			$PageContent = str_replace("\n", "<br>", $PageContent);
-			
-			ob_start();
-			inline_diff($PreviousContent, $PageContent, $nl);
-			$Content['Body'] .= ob_get_contents();
-			ob_end_clean();
-			
-			date_default_timezone_set('America/New_York');
-			$PageEditTime = formatTime($PageEditTime);
-			$Content['Footer'] = "This page is an old revision made by <b><a href='/names?id=$AccountID'>$PageName</a></b> on $PageEditTime.";
-
-			if($PageDescription)
-				$Content['Footer'] .= "<br />'$PageDescription'";
-		}
+        include('src/actions/diff.php');
+        $Content = diff($Path, $Action, $Content);
 	break;
 	
 	case "Massrevert":
