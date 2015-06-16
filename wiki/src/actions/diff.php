@@ -24,8 +24,8 @@ function diff($path, $action, $content)
         $Title[] = FishFormat($PageTitle, "strip");			
         $content['Title'] .= FishFormat($PageTitle);
         
-        $old = explode("\n", $PreviousContent);
-        $new = explode("\n", $PageContent);
+        $old = explode("\n", html_entity_decode($PreviousContent, ENT_QUOTES));
+        $new = explode("\n", html_entity_decode($PageContent, ENT_QUOTES));
 
         // Initialize the diff class
         $diff = new Diff($old, $new);
