@@ -679,7 +679,7 @@ JavaScript;
 	break;
 
 	case "recent":
-		$Head = '<meta name="robots" content="noindex, nofollow" />';
+//		$Head = '<meta name="robots" content="noindex, nofollow" />';
 		$Content['UserNav']->Active("Recent Activity");
 
 		if(empty($_SESSION['Recent']))
