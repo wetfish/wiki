@@ -10,16 +10,20 @@ if(empty($ID))
 $AccountQuery = mysql_query("Select `Name` from `Wiki_Accounts` where `ID`='$ID'");
 list($AccountName) = mysql_fetch_array($AccountQuery);
 
-$AccountName = gethostbyaddr($AccountName);
-$AccountName = preg_replace('/\d+-\d+-\d+-\d+/', substr(md5(hash('whirlpool', $AccountName)), 0, 8), $AccountName);
+$hostname = gethostbyaddr($AccountName);
+
+// Replace the first half of a hostname with a hash
+$hostname = explode('.', $hostname);
+$hostname = array_slice($hostname, floor(count($hostname) / 2));
+$hostname = substr(hash('whirlpool', $AccountName), 0, 8) . "." . implode(".", $hostname);
 
 if($ID == $_SESSION['ID'])
 {
-	$Title = "Names you've edited with";
+	$Title = "Names you ($hostname) have edited with";
 }
 else
 {
-	$Title = "Names $AccountName has edited with";
+	$Title = "Names $hostname has edited with";
 }
 
 $NameQuery = mysql_query("Select `Name`, max(`EditTime`),count(*) as n
