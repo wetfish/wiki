@@ -17,7 +17,14 @@ if($Search)
 	
 	$Results = mysql_num_rows(mysql_query($Query));
 	$Time = time();
-	$IP = $_SERVER['REMOTE_ADDR'];
+
+    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+        $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    else
+        $userIP = $_SERVER['REMOTE_ADDR'];
+
+    // Make sure the user IP is sanitized
+    $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 	
 	list($Data, $Links) = Paginate($Query, 25, $_GET['page'], $_SERVER['QUERY_STRING']);
 
@@ -42,13 +49,13 @@ if($Search)
 	{
 		$TimeQuery = mysql_query("Select `Time`
 									from `Wiki Searches`
-									where `IP`='$IP' and `Search`='$Search'
+									where `IP`='$userIP' and `Search`='$Search'
 									order by `ID` desc");
 
 		list($OldTime) = mysql_fetch_array($TimeQuery);
 
 		if($OldTime + 86400 < $Time)
-			mysql_query("Insert into `Wiki Searches` values ('', '$Time', '$Results', '$Search', '$IP')");
+			mysql_query("Insert into `Wiki Searches` values ('', '$Time', '$Results', '$Search', '$userIP')");
 	}
 	
 	echo "<center>$Links</center>";	

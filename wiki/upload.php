@@ -39,8 +39,16 @@ if($_FILES)
 			chmod("upload/$Filename.$Extension", 0644);
 
 			$Time = time();
-			$Account = $_SERVER['REMOTE_ADDR'];
-			mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$Account', '{$Image['name']}', 'upload/$Filename.$Extension')");
+
+            if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+                $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            else
+                $userIP = $_SERVER['REMOTE_ADDR'];
+
+            // Make sure the user IP is sanitized
+            $userIP = preg_replace('/[^0-9.]/', '', $userIP);
+
+            mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
 				
 			echo "<meta http-equiv='refresh' content='2;url=upload/$Filename.$Extension'>Image added!";
 		}

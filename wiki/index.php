@@ -32,6 +32,14 @@ function PageTitler($Page)
 	return $Page;
 }
 
+if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+    $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+else
+    $userIP = $_SERVER['REMOTE_ADDR'];
+
+// Make sure the user IP is sanitized
+$userIP = preg_replace('/[^0-9.]/', '', $userIP);
+
 // Original apache rewrite
 if(isset($_GET['SUPERdickPAGE']))
 {
@@ -113,12 +121,12 @@ if($_SESSION['Name'])
 }
 else
 {
-	$LoginQuery = mysql_query("SELECT `ID`,`Verified`,`EditTime` FROM `Wiki_Accounts` WHERE `Name`='{$_SERVER['REMOTE_ADDR']}'");
+	$LoginQuery = mysql_query("SELECT `ID`,`Verified`,`EditTime` FROM `Wiki_Accounts` WHERE `Name`='$userIP'");
 	list($ID, $Verified, $EditTime) = mysql_fetch_array($LoginQuery);
 
 	if(empty($ID))
 	{
-		mysql_query("INSERT INTO `Wiki_Accounts` VALUES ('NULL', '{$_SERVER['REMOTE_ADDR']}', '', '', '', '0', '')");
+		mysql_query("INSERT INTO `Wiki_Accounts` VALUES ('NULL', '$userIP', '', '', '', '0', '')");
 		$ID = mysql_insert_id();
 	}
 
