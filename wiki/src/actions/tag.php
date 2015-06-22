@@ -1,6 +1,6 @@
 <?php
 
-function tagPage($path, $action, $content)
+function tag($path, $action, $content)
 {
 	$action = implode('/', $action);
 	$action = explode('/', $action, 3);

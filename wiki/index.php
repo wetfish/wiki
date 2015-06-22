@@ -155,12 +155,7 @@ switch($Action[0])
 							on duplicate key update `count` = '$count'");
 		}
 	break;
-	
-	case "tag":
-		include('src/actions/tagPage.php');
-		$Content = tagPage($Path, $Action, $Content);
-	break;
-	
+    
 	case "edit":
 	case "preview":
 		$Head = '<meta name="robots" content="noindex, nofollow" />';
@@ -574,11 +569,6 @@ JavaScript;
 		}
 	break;
 	
-	case "history":
-		include('src/actions/history.php');
-		$Content = history($Path, $Action, $Content);
-	break;
-
 	case "source":
 		$Head = '<meta name="robots" content="noindex, nofollow" />';
 		$Content['PageNav']->Active("Page History");
@@ -611,12 +601,7 @@ JavaScript;
 			$Content['Footer'] = "This page is an old revision made by <b><a href='/names?id=$AccountID'>$PageName</a></b> on $PageEditTime.";
 		}
 	break;
-	
-	case "diff":
-        include('src/actions/diff.php');
-        $Content = diff($Path, $Action, $Content);
-	break;
-	
+    
 	case "Massrevert":
 		$Reverted = array();
 
@@ -878,35 +863,6 @@ JavaScript;
 		}
 	break;
 
-	case "login":
-		$Content['UserNav']->Active("Login");
-		$Content['Title'] = "Super Secret Login Form";
-
-		if($_POST)
-		{
-			if($_POST['Password'] == LOGIN_PASSWORD)
-			{
-				$_SESSION['bypass'] = true;
-				$Content['Body'] = "YOU DID IT FRIEND!!<br /><br />You will now be brought back to your previous page.";
-				$Content['Body'] .= Redirect(str_replace("//", "/", "/$Path"));
-			}
-		}
-		
-		if(empty($_SESSION['bypass']))
-		{
-			$Content['Body'] .= "Protip: The super secret password is the same as the PIBDGAF ichc password.";
-			
-			$Form['_Options'] = "action:".str_replace("//", "/", "/$Path/?login").";";
-			$Form['Password']['Text'] = "Password:";
-			$Form['Password']['Form'] = "name:Password; type:password;";
-			$Form['Submit']['Form'] = "type:submit; value:Submit;";
-			
-			$Content['Body'] .= Format($Form, Form);
-		}
-
-#			$_SESSION['ID'] = $ID;
-	break;
-
 	case "logout":
 		$Content['UserNav']->Active("Logout");
 
@@ -932,79 +888,18 @@ JavaScript;
 	break;
 
 	default:
-		$Content['PageNav']->Active("View Page");
+        // If you're on a page and there is no action, view it!
+        if(empty($Action) || !is_string($Action[0]))
+        {
+            $Action[0] = "view";
+        }
 
-		$PageQuery = mysql_query("SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path`='$Path'");
-		list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime) = mysql_fetch_array($PageQuery);
-		
-		$tagQuery = mysql_query("Select tags.`tag`, stats.`count`
-									from `Wiki_Tags` as tags,
-										 `Wiki_Tag_Statistics` as stats
-										 
-									where tags.`pageID` = '$PageID'
-										and stats.`tag` = tags.`tag`");
-										
-		while(list($tagName, $tagCount) = mysql_fetch_array($tagQuery))
-		{
-			$plural = 's';
-			
-			if($tagCount == 1)
-				$plural = '';
-			
-			$tagLink = urlencode($tagName);
-			$tagTitle = str_replace('-', ' ', $tagName);
-			$tagLinks[] = "<a href='/?tag/$tagLink' title='$tagCount tagged page{$plural}'>$tagTitle</a>";
-		}
+        // Include the code for this action
+        include "src/actions/{$Action[0]}.php";
 
-		$tagLinks = implode(" | ", $tagLinks);
-		
-		if($tagLinks)
-			$tagLinks = "<hr />Tags: $tagLinks";
-		
-		$PageTitle = PageTitler($PageTitle);
-
-		if(empty($PageContent))
-		{
-			$PageContent = array("Hello friend. b{Wetfish regrets to inform you this page does not exist.}",
-								 "",
-								 "Confused? This is the {{wiki|Wetfish Wiki}}, a place anyone can edit!",
-								 "It appears you've stumbled upon a place none have yet traveled.",
-								 "Would you like to be the first? {{{$Path}/?edit|All it takes is a click.}}",
- 								 "",
-								 "i{But please, don't wallow.}",
-								 "i{A new page surely follows.}",
-								 "i{You have the power.}");
-
-			$PageContent = implode("<br />", $PageContent);
-		}
-		
-		else
-		{
-			mysql_query("Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
-		}
-
-		$Title[] = FishFormat($PageTitle, "strip");
-		$Content['Title'] .= FishFormat($PageTitle);
-		$Content['Body'] .= FishFormat($PageContent);
-
-		if($PageEdits)
-		{
-			$EditCount = count(explode(",", $PageEdits));
-			
-			date_default_timezone_set('America/New_York');
-			$PageEditTime = formatTime($PageEditTime);
-
-			if($pageViews != 1)
-				$viewPlural = 's';
-
-			if($EditCount != 1)
-				$Plural = "s";
-
-			$Content['Tags'] = $tagLinks;
-			$Content['Footer'] = "<b>".number_format($pageViews)."</b> page view{$viewPlural}. <b>$EditCount</b> edit{$Plural} &ensp;&mdash;&ensp; Last modified <b>$PageEditTime</b>.";
-//			$Content['Footer'] = "This page has been edited <b>$EditCount</b> time{$Plural}, and was last edited on $PageEditTime.";
-		}
-	break;
+        // Call it
+        $Content = call_user_func($Action[0], $Path, $Action, $Content);
+    break;
 }
 
 
