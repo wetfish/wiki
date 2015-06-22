@@ -5,68 +5,68 @@ function Wiki(Type)
     switch(Type)
     {
         case "Bold":
-            Output.start = " b {";
-            Output.end = "} ";
+            Output.start = " b [";
+            Output.end = "] ";
         break;
         
         case "Italics":
-            Output.start = " i {";
-            Output.end = "} ";
+            Output.start = " i [";
+            Output.end = "] ";
         break;
         
         case "Underline":
-            Output.start = " u {";
-            Output.end = "} ";
+            Output.start = " u [";
+            Output.end = "] ";
         break;
         
         case "Strike":
-            Output.start = " s {";
-            Output.end = "} ";
+            Output.start = " s [";
+            Output.end = "] ";
         break;
         
         case "Big":
-            Output.start = " big {";
-            Output.end = "} ";
+            Output.start = " big [";
+            Output.end = "] ";
         break;
         
         case "Medium":
-            Output.start = " med {";
-            Output.end = "} ";
+            Output.start = " med [";
+            Output.end = "] ";
         break;
         
         case "Small":
-            Output.start = " small {";
-            Output.end = "} ";
+            Output.start = " small [";
+            Output.end = "] ";
         break;
         
         case "Rainbow":
-            Output.start = " rainbow {";
-            Output.end = "} ";
+            Output.start = " rainbow [";
+            Output.end = "] ";
         break;
         
         case "Internal":
-            Output.start = "{{";
-            Output.end = "}}";
+            Output.start = "[[";
+            Output.end = "]]";
         break;
         
         case "External":
-            Output.start = " url {";
-            Output.end = "} ";
+            Output.start = " url [";
+            Output.end = "] ";
         break;
         
         case "Image":
-            Output.start = " image {";
-            Output.end = "} ";
+            Output.start = " image [";
+            Output.end = "] ";
         break;
         
         case "Video":
-            Output.start = " video {";
-            Output.end = "} ";
+            Output.start = " video [";
+            Output.end = "] ";
         break;
         
         case "Music":
-            Output.start = " music {";
-            Output.end = "} ";
+            Output.start = " music [";
+            Output.end = "] ";
         break;
     }
     
@@ -102,7 +102,7 @@ window.onload = function(){
         var Form = document.getElementById('TheInternet');
         Form.action = Form.action + 'edit';
     });
-}			
+}
 
 var RecaptchaOptions = {
     theme : 'blackglass'

@@ -366,7 +366,7 @@ $Content['Body'] .= <<<SuperNav
 	$(document).ready(function ()
 	{
 		
-		Window(	"<span class='medium'>Super Edit 3.1 !!!</span><hr />"+
+		Window(	"<span class='medium'>Super Edit 3.2 !!!</span><hr />"+
 				"<table><tr><td>"+
 				"<a href='javascript:Wiki(\"Bold\")'>Bold</a> &emsp; <a href='javascript:Wiki(\"Italics\")'>Italics</a> &emsp; <a href='javascript:Wiki(\"Underline\")'>Underline</a> &emsp; <a href='javascript:Wiki(\"Strike\")'>Strike</a><br />"+
 				"<a href='javascript:Wiki(\"Big\")'>Big</a> &emsp; <a href='javascript:Wiki(\"Medium\")'>Medium</a> &emsp; <a href='javascript:Wiki(\"Small\")'>Small</a> &emsp; <a href='javascript:Wiki(\"Rainbow\")'>Rainbow</a>"+
@@ -969,7 +969,7 @@ $HTML = <<<HTML
 		<!-- <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>  -->
 		
 		<script type="text/javascript" src="/jquery-fieldselection.js"></script>
-		<script type="text/javascript" src="/window.js"></script>
+		<script type="text/javascript" src="/js/window.js"></script>
 		<script src='/src/js/wetki.js'></script>
 		<!-- <script src='/src/js/jquery.transit.js'></script> -->
 		<link href="/window.css" rel="stylesheet" type="text/css" />
