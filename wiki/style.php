@@ -39,6 +39,7 @@ span.title { font-size: 18pt; font-weight:bold; }
 .warning { background:yellow; color:black; font-weight:bold; padding:0px 4px 0px 4px; }
 .error { background:red; color:black; font-weight:bold; padding:0px 4px 0px 4px; }
 
+.ui-draggable { z-index: 3; }
 .super { background-image:url('super.gif'); }
 .duper { position:absolute; top:0; bottom:0; right:0; left:0; display:none; }
 .nav { -webkit-border-top-left-radius: 8px;
