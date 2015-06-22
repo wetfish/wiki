@@ -1,6 +1,6 @@
 <?php
 
-function view($path, $action, $content)
+function view($path, $action, $title, $content)
 {
     $content['PageNav']->Active("View Page");
 
@@ -53,7 +53,7 @@ function view($path, $action, $content)
         mysql_query("Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
     }
 
-    $Title[] = FishFormat($PageTitle, "strip");
+    $title[] = FishFormat($PageTitle, "strip");
     $content['Title'] .= FishFormat($PageTitle);
     $content['Body'] .= FishFormat($PageContent);
 
@@ -74,7 +74,7 @@ function view($path, $action, $content)
         $content['Footer'] = "<b>".number_format($pageViews)."</b> page view{$viewPlural}. <b>$EditCount</b> edit{$Plural} &ensp;&mdash;&ensp; Last modified <b>$PageEditTime</b>.";
     }
 
-    return $content;
+    return array($title, $content);
 }
 
 ?>

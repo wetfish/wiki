@@ -3,7 +3,7 @@
 // Include the diff class
 require_once dirname(__FILE__).'/../libraries/Diff.php';
 
-function diff($path, $action, $content)
+function diff($path, $action, $title, $content)
 {
     $Head = '<meta name="robots" content="noindex, nofollow" />';
     $content['PageNav']->Active("Page History");
@@ -69,7 +69,7 @@ JavaScript;
             $content['Footer'] .= "<br />'$PageDescription'";
     }
 
-    return $content;
+    return array($title, $content);
 }
 
 ?>

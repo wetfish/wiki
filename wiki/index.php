@@ -155,12 +155,7 @@ switch($Action[0])
 							on duplicate key update `count` = '$count'");
 		}
 	break;
-	
-	case "tag":
-		include('src/actions/tagPage.php');
-		$Content = tagPage($Path, $Action, $Content);
-	break;
-	
+    
 	case "edit":
 	case "preview":
 		$Head = '<meta name="robots" content="noindex, nofollow" />';
@@ -903,7 +898,7 @@ JavaScript;
         include "src/actions/{$Action[0]}.php";
 
         // Call it
-        $Content = call_user_func($Action[0], $Path, $Action, $Content);
+        list($Title, $Content) = call_user_func($Action[0], $Path, $Action, $Title, $Content);
     break;
 }
 

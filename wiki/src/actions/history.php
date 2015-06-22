@@ -1,6 +1,6 @@
 <?php
 
-function history($path, $action, $content)
+function history($path, $action, $title, $content)
 {
 	$Head = '<meta name="robots" content="noindex, nofollow" />';
 	$content['PageNav']->Active("Page History");
@@ -66,7 +66,7 @@ function history($path, $action, $content)
 			$content['ExtraNav']->Add("Revert Page", FormatPath("/$path/")."?revert/$action[1]");
 		}
 
-		$Title[] = FishFormat($PageTitle, "strip");
+		$title[] = FishFormat($PageTitle, "strip");
 		$PageContent = FishFormat($PageContent);
 
 		$previousPath = FormatPath("/$path/?history/{$previous['ID']}");
@@ -152,7 +152,7 @@ function history($path, $action, $content)
 JavaScript;
 
 	
-	return $content;
+	return array($title, $content);
 }
 
 ?>

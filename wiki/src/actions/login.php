@@ -1,6 +1,6 @@
 <?php
 
-function login($path, $action, $content)
+function login($path, $action, $title, $content)
 {
     $content['UserNav']->Active("Login");
     $content['Title'] = "Super Secret Login Form";
@@ -27,5 +27,5 @@ function login($path, $action, $content)
         $content['Body'] .= Format($Form, Form);
     }
 
-    return $content;
+    return array($title, $content);
 }

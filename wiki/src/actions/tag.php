@@ -1,6 +1,6 @@
 <?php
 
-function tag($path, $action, $content)
+function tag($path, $action, $title, $content)
 {
 	$action = implode('/', $action);
 	$action = explode('/', $action, 3);
@@ -116,7 +116,7 @@ function tag($path, $action, $content)
 		else
 			$next['Path'] = "/?tag/$tag/";
 
-		$Title[] = FishFormat($PageTitle, "strip");
+		$title[] = FishFormat($PageTitle, "strip");
 		$content['Title'] .= "<a href='{$previous['Path']}' title='Previous - {$previous['Title']}'>⟨</a> ".FishFormat($PageTitle)." <a href='{$next['Path']}' title='Next - {$next['Title']}'>⟩</a>";
 		$content['Body'] .= FishFormat($PageContent);
 		$content['Tags'] = $tagLinks;
@@ -243,7 +243,7 @@ JavaScript;
 
 	
 	$content['Footer'] = " <a href='{$previous['Path']}' title='Previous - {$previous['Title']}'>Previous</a> &emsp; You are browsing <b><a href='/?tag/$tag'>$cleanTag</a></b>, this tag appears on <b>$tagTotal</b> page{$footerPlural}. &emsp; <a href='{$next['Path']}' title='Next - {$next['Title']}'>Next</a>";
-	return $content;
+	return array($title, $content);
 }
 
 ?>
