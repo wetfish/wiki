@@ -155,7 +155,12 @@ switch($Action[0])
 							on duplicate key update `count` = '$count'");
 		}
 	break;
-    
+	
+	case "tag":
+		include('src/actions/tagPage.php');
+		$Content = tagPage($Path, $Action, $Content);
+	break;
+	
 	case "edit":
 	case "preview":
 		$Head = '<meta name="robots" content="noindex, nofollow" />';
@@ -969,204 +974,9 @@ $HTML = <<<HTML
 		<!-- <script src='/src/js/jquery.transit.js'></script> -->
 		<link href="/window.css" rel="stylesheet" type="text/css" />
 		
-		<script type="text/javascript">
-			function Wiki(Type)
-			{
-				var Output = new Object;
-			
-				switch(Type)
-				{
-					case "Bold":
-						Output.start = " b {";
-						Output.end = "} ";
-					break;
-					
-					case "Italics":
-						Output.start = " i {";
-						Output.end = "} ";
-					break;
-					
-					case "Underline":
-						Output.start = " u {";
-						Output.end = "} ";
-					break;
-					
-					case "Strike":
-						Output.start = " s {";
-						Output.end = "} ";
-					break;
-					
-					case "Big":
-						Output.start = " big {";
-						Output.end = "} ";
-					break;
-					
-					case "Medium":
-						Output.start = " med {";
-						Output.end = "} ";
-					break;
-					
-					case "Small":
-						Output.start = " small {";
-						Output.end = "} ";
-					break;
-					
-					case "Rainbow":
-						Output.start = " rainbow {";
-						Output.end = "} ";
-					break;
-					
-					case "Internal":
-						Output.start = "{{";
-						Output.end = "}}";
-					break;
-					
-					case "External":
-						Output.start = " url {";
-						Output.end = "} ";
-					break;
-					
-					case "Image":
-						Output.start = " image {";
-						Output.end = "} ";
-					break;
-					
-					case "Video":
-						Output.start = " video {";
-						Output.end = "} ";
-					break;
-					
-					case "Music":
-						Output.start = " music {";
-						Output.end = "} ";
-					break;
-				}
-				
-				var Text = $('#Editbox').getSelection().text;
-				$('#Editbox').replaceSelection(Output.start + Text + Output.end);
-			}
-		
-			function Jump(URL)
-			{
-				if(URL == undefined)
-					URL = 'https://wiki.wetfish.net/';
-				
-				window.location.href = URL; 
-			}
-
-			function SuperJump(URL)
-			{
-				if(URL == undefined)
-					URL = 'https://wiki.wetfish.net/';
-				
-				window.open(URL, '_blank'); 
-			}
-			
-			function SelectAction(Type)
-			{
-				var Form = document.getElementById('TheInternet');
-				Form.action = Form.action + Type;
-				Form.submit();
-			}
-			
-			window.onload = function(){
-				$('#TheInternet').submit(function() {
-					var Form = document.getElementById('TheInternet');
-					Form.action = Form.action + 'edit';
-				});
-			}			
-			
-			var RecaptchaOptions = {
-				theme : 'blackglass'
-			};
-		</script>
+		<script type="text/javascript" src="/js/wiki.js"></script>
+		<script type="text/javascript" src="/js/swim.js"></script>
         
-        <script>
-            var transform =
-            {
-                x: 0,
-                y: 0,
-                rotate: 0,
-                flip: 1,
-                
-                // Function for managing transforms
-                update: function(selector)
-                {
-                    $(selector).css({'transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
-                    $(selector).css({'-webkit-transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
-                }
-            }
-
-            var swim =
-            {
-                up: 30,
-                down: 50,
-                next: 'up',
-                
-                update: function()
-                {
-                    var pos = $('#kristyfish')[0].getBoundingClientRect();
-
-                    // If the fish is off the screen
-                    if(pos.left > $(window).width() || pos.left < -(pos.width))
-                    {
-                        // Special handlers to make sure the fish never swims off into infinity
-                        if(pos.left > $(window).width())
-                        {
-                            transform.x = $(window).width();
-                        }
-                        
-                        if(pos.left < -(pos.width))
-                        {
-                            transform.x = -(pos.width);
-                        }
-                        
-                        transform.y = Math.random() * $('body').height();
-                        transform.flip *= -1;
-
-                        swim.up *= -1;
-                        swim.down *= -1;
-                    }
-
-                    if(swim.next == 'up')
-                    {
-                        transform.x += swim.up;
-                        transform.rotate = 10;
-                        swim.next = 'down';
-                    }
-                    else
-                    {
-                        transform.x += swim.down;
-                        transform.rotate = 0;
-                        swim.next = 'up';
-                    }
-
-                    transform.update('#kristyfish');
-                    setTimeout(swim.update, 510);
-                }
-            }
-
-            $(document).ready(function()
-            {
-                $('.fishwrap').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
-                $('.fishwrap').height($('html').height());
-
-                $('#kristyfish').load(function()
-                {
-                    transform.x = $(window).width();
-                    transform.y = Math.random() * $('body').height();
-                    transform.update(this);
-
-                    // Start swimming
-                    setTimeout(function()
-                    {
-                        $('#kristyfish').addClass('swimming');
-                        swim.update();
-                    }, 10);
-                });
-            });
-		</script>
-
 		<link rel="icon" type="image/png" href="/favzz.png"/>
 	</head>
 	<body>
