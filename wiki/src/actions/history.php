@@ -10,7 +10,7 @@ function history($path, $action, $title, $content)
 
 	$totalQuery = mysql_query("Select `ID`
 								from `Wiki_Edits`
-								where `PageID` = '$pageID'");							
+								where `PageID` = '$pageID'");
 	
 	$nextQuery = mysql_query("Select `ID`, `Title`
 								from `Wiki_Edits`
