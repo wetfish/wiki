@@ -63,7 +63,7 @@ else
     }
 }
 
-$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive');
+$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive', 'replace');
 $get = array_change_key_case($_GET);
 
 foreach($_GET as $action => $value)
