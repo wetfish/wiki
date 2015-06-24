@@ -54,6 +54,12 @@ function view($path, $action, $title, $content)
         mysql_query("Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
     }
 
+    if($_SESSION['admin'])
+    {
+        $content['ExtraNav'] = new Navigation;
+        $content['ExtraNav']->Add("Archive This Page", FormatPath("/$path/")."?archive");
+    }
+
     $title[] = FishFormat($PageTitle, "strip");
     $content['Title'] .= FishFormat($PageTitle);
     $content['Body'] .= FishFormat($PageContent);

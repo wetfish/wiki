@@ -106,6 +106,12 @@ function tag($path, $action, $title, $content)
 			mysql_query("Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
 		}
 
+        if($_SESSION['admin'])
+        {
+            $content['ExtraNav'] = new Navigation;
+            $content['ExtraNav']->Add("Archive This Page", FormatPath("/$path/")."?archive");
+        }
+
 		if($previous['Path'])
 			$previous['Path'] = "/{$previous['Path']}/?tag/$tag";
 		else
