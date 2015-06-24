@@ -64,7 +64,6 @@ else
 }
 
 $actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive');
-//$actions = array('recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'freeze');
 $get = array_change_key_case($_GET);
 
 foreach($_GET as $action => $value)
@@ -599,15 +598,6 @@ SuperNav;
 		}
 	break;
 
-	case "freeze":
-		if($_SESSION['Background'])
-			unset($_SESSION['Background']);
-		else
-			$_SESSION['Background'] = "Frozen";
-
-		$Content['Body'] = "<b>Background updated...</b> <meta http-equiv='refresh' content='2;url=/$Path'>";
-	break;
-
 	default:
         // If you're on a page and there is no action, view it!
         if(empty($Action) || !is_string($Action[0]))
@@ -650,135 +640,9 @@ if(empty($Content['Footer']))
 $Content['UserNav'] = $Content['UserNav']->Export();
 $Content['PageNav'] = $Content['PageNav']->Export();
 
-/*
-if($_SESSION['Background'] == "Frozen")
-	$Freeze = "<span class='small'><a href='".FormatPath("/$Path/?freeze")."'>Refresh Background</a></span>";
-else
-	$Freeze = "<span class='small'><a href='".FormatPath("/$Path/?freeze")."'>Freeze Background</a></span>";
-*/
-
 if($Content['ExtraNav'])
-	$Content['ExtraNav'] = '<div class="extranav">'.$Content['ExtraNav']->Export().'</div>';
+    $Content['ExtraNav'] = '<div class="extranav">'.$Content['ExtraNav']->Export().'</div>';
 
-$HTML = <<<HTML
-<?xml version="1.0" encoding="utf-8" ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="https://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-	<head>
-		<title>$Title</title>
-
-		$Head
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<meta name="google-site-verification" content="lj_UCeIzlK8MDZyzJ-73XUUZHgroWS_1kQ6kkNar0Vg" />
-		<link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
-		<link href="/style.php" rel="stylesheet" type="text/css" />
-		<link href="/colorbox.css" rel="stylesheet" type="text/css" />
-		<link href="/src/css/diff.css" rel="stylesheet" type="text/css" />
-		<!--[if IE]>
-				<link href="/styleie.css" rel="stylesheet" type="text/css" media="screen" />
-		<![endif]-->
-
-		<script type="text/javascript" src="/js/jquery.min.js"></script>
-		<script type="text/javascript" src="/js/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="/jquery.colorbox.js"></script>
-		<script type="text/javascript" src="/jquery.json-2.2.min.js"></script>
-		<!-- <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>  -->
-		
-		<script type="text/javascript" src="/jquery-fieldselection.js"></script>
-		<script type="text/javascript" src="/js/window.js"></script>
-		<script src='/src/js/wetki.js'></script>
-		<!-- <script src='/src/js/jquery.transit.js'></script> -->
-		<link href="/window.css" rel="stylesheet" type="text/css" />
-		
-		<script type="text/javascript" src="/js/wiki.js"></script>
-		<script type="text/javascript" src="/js/swim.js"></script>
-        
-		<link rel="icon" type="image/png" href="/favzz.png"/>
-	</head>
-	<body>
-		<div class="bodyborder">
-			<div class="body">
-				<div class="header">
-					$Freeze
-		
-					<a class='header' href='https://wiki.wetfish.net/' onclick='cornify_add(); setTimeout("Jump()", 5000); return false;'><img src='/thisiswetfish.png' border='0'></a>
-				</div>
-
-				<div class="navigation">
-					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/search')">
-						<a class="nav exempt" href="https://wiki.wetfish.net/search">Search</a>
-					</div>
-					
-					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/browse')">
-						<a class="nav exempt" href="https://wiki.wetfish.net/browse">Browse</a>
-					</div>
-					
-					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/?random')">
-						<a class="nav exempt" href="https://wiki.wetfish.net/?random">Random</a>
-					</div>
-
-					<div class="navbox" onClick="SuperJump('https://wiki.wetfish.net/chat/')">
-						<a class="nav exempt" href="https://wiki.wetfish.net/chat/" onClick="return false" target="_blank">Chat</a>
-					</div>
-
-<!--					<div class="navbox" onClick="Jump('https://music.wetfish.net/')">
-						<a class="nav exempt" href="https://music.wetfish.net/">Playlists</a>
-					</div>
--->
-					<div class='navbox' onClick="Jump('/popular')">
-						<a class='nav exempt' href='/popular'>Popular</a>
-					</div>
-
-					<div class='navbox' onClick="Jump('/tags')">
-						<a class='nav exempt' href='/tags'>Tags</a>
-					</div>
-					
-					<div class="navbox" onClick="Jump('https://wiki.wetfish.net/qpalz/')">
-						<a class="nav exempt" href="https://wiki.wetfish.net/qpalz/">Media</a>
-					</div>
-				</div>
-
-				<div class="subnav">
-					<hr />
-					<div class="usernav">
-						{$Content['UserNav']}
-					</div>
-
-					<div class="pagenav">
-						{$Content['PageNav']}
-					</div>
-					<hr />
-				</div>
-
-				{$Content['ExtraNav']}
-
-				<div class="title">{$Content['Title']}</div>
-				
-				<br />
-				
-				<div class="content">{$Content['Body']}</div>
-
-				<div style='clear:both;'></div>
-				
-				{$Content['Tags']}
-				
-				<hr />
-				<center><iframe id='leader-friend' src='https://ads.wetfish.net/friendship/leader.html' style='width:750px; height:115px; border:0; outline:0; overflow:hidden;' scrolling="no"></iframe></center>
-			</div>
-		</div>
-
-		<div class="footer">
-			<div class="footerborder">
-				<div class="footerbox">
-					{$Content['Footer']}
-				</div>
-			</div>
-		</div>		
-        <div class="fishwrap"></div>
-	</body>
-</html>
-HTML;
-
-echo $HTML;
+include "src/template.php";
 
 ?>
