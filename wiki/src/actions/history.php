@@ -66,6 +66,11 @@ function history($path, $action, $title, $content)
 			$content['ExtraNav']->Add("Revert Page", FormatPath("/$path/")."?revert/$action[1]");
 		}
 
+        if($_SESSION['admin'])
+        {
+            $content['ExtraNav']->Add("Archive This Edit", FormatPath("/$path/")."?archive/$action[1]");
+        }
+
 		$title[] = FishFormat($PageTitle, "strip");
 		$PageContent = FishFormat($PageContent);
 
@@ -95,6 +100,13 @@ function history($path, $action, $title, $content)
 
 		$HistoryQuery = "SELECT `ID`,`AccountID`,`EditTime`,`Size`,`Tags`,`Name`,`Description`,`Title` FROM `Wiki_Edits` WHERE `PageID`='$PageID' ORDER BY `ID` DESC";
 		list($Data, $Links) = Paginate($HistoryQuery, 50, $_GET['page'], $_SERVER['QUERY_STRING']);
+
+        if($_SESSION['admin'])
+        {
+            $content['ExtraNav'] = new Navigation;
+            $content['ExtraNav']->Add("Archive All Edits", FormatPath("/$path/")."?archive");
+        }
+
 		
 		$content['Body'] .= "<hr /><center>$Links</center><hr />";
 		$content['Body'] .= "<table width='100%' class='history'>";

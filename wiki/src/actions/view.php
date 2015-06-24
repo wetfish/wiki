@@ -26,10 +26,11 @@ function view($path, $action, $title, $content)
         $tagLinks[] = "<a href='/?tag/$tagLink' title='$tagCount tagged page{$plural}'>$tagTitle</a>";
     }
 
-    $tagLinks = implode(" | ", $tagLinks);
-    
     if($tagLinks)
+    {
+        $tagLinks = implode(" | ", $tagLinks);    
         $tagLinks = "<hr />Tags: $tagLinks";
+    }
     
     $PageTitle = PageTitler($PageTitle);
 
