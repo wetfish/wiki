@@ -10,13 +10,13 @@ function diff($path, $action, $title, $content)
     
     if(is_numeric($action[1]))
     {
-        $pageQuery = mysql_query("SELECT `PageID`,`AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]'");
+        $pageQuery = mysql_query("SELECT `PageID`,`AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
         list($PageID, $AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $pageContent) = mysql_fetch_array($pageQuery);
 
-        $previousQuery = mysql_query("Select `ID`, `Content` from `Wiki_Edits` where `ID` < '$action[1]' and `PageID`='$PageID' order by `ID` desc limit 1");
+        $previousQuery = mysql_query("Select `ID`, `Content` from `Wiki_Edits` where `ID` < '$action[1]' and `PageID`='$PageID' and `Archived` = 0 order by `ID` desc limit 1");
         list($previousID, $previousContent) = mysql_fetch_array($previousQuery);
 
-        $nextQuery = mysql_query("Select `ID` from `Wiki_Edits` where `ID` > '$action[1]' and `PageID`='$PageID' order by `ID` limit 1");
+        $nextQuery = mysql_query("Select `ID` from `Wiki_Edits` where `ID` > '$action[1]' and `PageID`='$PageID' and `Archived` = 0 order by `ID` limit 1");
         list($nextID) = mysql_fetch_array($nextQuery);
 
         if(!empty($previousID))

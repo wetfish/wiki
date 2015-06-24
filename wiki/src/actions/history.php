@@ -10,16 +10,16 @@ function history($path, $action, $title, $content)
 
 	$totalQuery = mysql_query("Select `ID`
 								from `Wiki_Edits`
-								where `PageID` = '$pageID'");
+								where `PageID` = '$pageID' and `Archived` = 0");
 	
 	$nextQuery = mysql_query("Select `ID`, `Title`
 								from `Wiki_Edits`
-								where `PageID` = '$pageID'
+								where `PageID` = '$pageID' and `Archived` = 0
 								order by `ID` desc limit 1");
 
 	$previousQuery = mysql_query("Select `ID`, `Title`
 								from `Wiki_Edits`
-								where `PageID` = '$pageID'
+								where `PageID` = '$pageID' and `Archived` = 0
 								order by `ID` limit 1");
 
 
@@ -30,21 +30,21 @@ function history($path, $action, $title, $content)
 									
 	if(is_numeric($action[1]))
 	{
-		$PreviousQuery = mysql_query("Select `Content` from `Wiki_Edits` where `ID` < '$action[1]' order by `ID` desc limit 1");
+		$PreviousQuery = mysql_query("Select `Content` from `Wiki_Edits` where `ID` < '$action[1]' and `Archived` = 0 order by `ID` desc limit 1");
 		list($PreviousContent) = mysql_fetch_array($PreviousQuery);
 
-		$PageQuery = mysql_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]'");
+		$PageQuery = mysql_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
 		list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent) = mysql_fetch_array($PageQuery);
 		
 		
 		$previousQuery = mysql_query("Select `ID`, `Title`
 										from `Wiki_Edits`
-										where `PageID` = '$pageID' and `ID` > '$action[1]'
+										where `PageID` = '$pageID' and `ID` > '$action[1]' and `Archived` = 0
 											order by `ID` limit 1");
 
 		$nextQuery = mysql_query("Select `ID`, `Title`
 										from `Wiki_Edits`
-										where `PageID` = '$pageID' and `ID` < '$action[1]'
+										where `PageID` = '$pageID' and `ID` < '$action[1]' and `Archived` = 0
 											order by `ID` desc limit 1");
 											
 		$pagePrevious = mysql_fetch_array($previousQuery);
@@ -98,7 +98,7 @@ function history($path, $action, $title, $content)
 		$PageQuery = mysql_query("SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
 		list($PageID) = mysql_fetch_array($PageQuery);
 
-		$HistoryQuery = "SELECT `ID`,`AccountID`,`EditTime`,`Size`,`Tags`,`Name`,`Description`,`Title` FROM `Wiki_Edits` WHERE `PageID`='$PageID' ORDER BY `ID` DESC";
+		$HistoryQuery = "SELECT `ID`,`AccountID`,`EditTime`,`Size`,`Tags`,`Name`,`Description`,`Title` FROM `Wiki_Edits` WHERE `PageID`='$PageID' and `Archived` = 0 ORDER BY `ID` DESC";
 		list($Data, $Links) = Paginate($HistoryQuery, 50, $_GET['page'], $_SERVER['QUERY_STRING']);
 
         if($_SESSION['admin'])
