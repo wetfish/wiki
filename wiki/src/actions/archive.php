@@ -38,7 +38,22 @@ function archive($path, $action, $title, $content)
     {
         if($_POST['confirmed'])
         {
-            $content['Body'] = "<p><b>Page archived!</b></p>";
+            // Get the page ID
+            $PageQuery = mysql_query("SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
+            list($pageID) = mysql_fetch_array($PageQuery);
+
+            if($pageID)
+            {
+                mysql_query("Update `Wiki_Edits` set `Archived` = '1' where `PageID` = '{$pageID}'");
+                mysql_query("Delete from `Wiki_Tags` where `pageID` = '{$pageID}'");
+                mysql_query("Delete from `Wiki_Pages` where `ID` = '{$pageID}'");
+                $content['Body'] = "<p><b>Page archived!</b></p>";
+            }
+            else
+            {
+                $content['Body'] = "<p><b>This isn't a page you goose.</b></p>";
+            }
+
         }
         else
         {
