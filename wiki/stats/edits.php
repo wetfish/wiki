@@ -5,25 +5,18 @@ require('phpgraphlib.php');
 
 date_default_timezone_set('America/New_York');
 
-// Use date to generate the current day.
-// Omitting the specific time passed makes strtotime() return today's first second.
-
-$Today = strtotime(date("d F Y"));
-$Day = 86400; // Seconds
-
-$LastWeek = $Today - ($Day * 30);
-
-$Query = mysql_query("Select `EditTime` from `Wiki_Edits` where `EditTime` > $LastWeek");
-while(list($Time) = mysql_fetch_array($Query))
+$display = strtotime("30 days ago");
+$query = mysql_query("Select `EditTime` from `Wiki_Edits` where `EditTime` > $display order by `EditTime` asc");
+while(list($time) = mysql_fetch_array($query))
 {
-	$When = date('d M', $Time);
-	$Data[$When]++;
+    $when = date('d M', $time);
+    $data[$when]++;
 }
 
-$Graph = new PHPGraphLib(800,400);
-$Graph->addData($Data);
-$Graph->setTitle("Edits This Month");
-$Graph->setTextColor("blue");
-$Graph->createGraph();
+$graph = new PHPGraphLib(800,400);
+$graph->addData($data);
+$graph->setTitle("Edits This Month");
+$graph->setTextColor("blue");
+$graph->createGraph();
 
 ?>
