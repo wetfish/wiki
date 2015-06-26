@@ -35,7 +35,7 @@ $(document).ready(function()
 		if($(this).is('.navbox'))
 			superDuper.addClass('nav');
 		
-		superDuper.offset( $(this).offset() );
+		superDuper.offset( $(this).position() );
 		superDuper.height( $(this).outerHeight() );
 		superDuper.width( $(this).outerWidth() );
 		
