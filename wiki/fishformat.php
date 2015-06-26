@@ -109,7 +109,7 @@ function ReplaceKeywords($Matches)
 
 			case "style":
 				$args = explode("|", $GoodStuff, 2);
-				
+				$args[0] = preg_replace("/([\s\n]|&emsp;)+/", " ", $args[0]);
 				return "<div style='{$args[0]}'>{$args[1]}</div>";
 			break;
 
