@@ -206,19 +206,30 @@ iframe[src="about:blank"]{display:none;}
 .fishwrap { position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; }
 .swimming { transition: all 0.5s; }
 
-.wiki-box {
+.wiki-box, .title-box {
 	border:1px solid rgba(0,0,0,0.3);
 	background-color: rgba(0,0,0,0.2);
 	padding:8px;
 }
 
-.wiki-box-title {
+.wiki-box-title, .title-box h1 {
 	border:1px solid rgba(0,0,0,0.3);
 	background-color: rgba(0,0,0,0.2);
 	padding:2px 8px;
 	font-size:14pt;
 	border-radius:2px;
 	font-weight:bold;
+}
+
+.title-box h1 {
+    margin: 0;
+    display: inline-block;
+}
+
+.title-box span {
+    display: inline-block;
+    padding: 0 24px;
+    transform: translateY(-2px);
 }
 
 img {

@@ -94,6 +94,11 @@ function ReplaceKeywords($Matches)
 					return "<div class='wiki-box'><div class='wiki-box-title'>{$args[0]}</div>{$args[1]}</div>";
 			break;
 
+            case "titlebox":
+                $args = explode("|", $GoodStuff, 2);
+                return "<div class='title-box'><h1>{$args[0]}</h1><span>{$args[1]}</span></div><div></div>";
+            break;
+
 			case "box":
 				$args = explode("|", $GoodStuff, 2);
 
@@ -733,7 +738,7 @@ function FishFormat($Input, $Action='markup')
 							'Color',
 							'Magic',
 							'Bold|B',
-							'Box|Title|Infobox',
+							'Box|Title|Infobox|TitleBox',
 							'Underline|U',
 							'Italics?|I',
 							'Strike|S',
