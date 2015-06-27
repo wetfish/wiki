@@ -137,9 +137,9 @@ JavaScript;
         
         shuffle($randomTitles);
         shuffle($randomPhrases);
-        
-        $content['Title'] = FishFormat("rainbow[{$randomTitles[0]}] {$Random['Title']}");		
-        $content['Body'] = FishFormat("redirect[ {$Random['Path']}/?random ] ad[right] big,big,big,big[{$randomPhrases[0]}] ");
+
+        header("Location: /{$Random['Path']}/?random");
+        exit;
     }
 
     return array($title, $content);
