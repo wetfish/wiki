@@ -22,7 +22,7 @@ $lonelyQuery = "Select page.`ID`, page.`Views`, page.`Path`, page.`Title`, page.
 					left join `Wiki_Edits` as edit on page.`ID` = edit.`PageID`
 					left join `Wiki_Tags` as tag on page.`ID` = tag.`pageID`
 					group by page.`ID`
-					order by page.`Views`, tagCount, editCount, page.`EditTime`";
+					order by tagCount, editCount, page.`Views`, page.`EditTime`";
 
 list($lonelyPages, $navigation) = Paginate($lonelyQuery, 50, $_GET['page'], $_SERVER['QUERY_STRING']);
 
