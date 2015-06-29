@@ -669,6 +669,27 @@ function ReplaceLinks($Matches)
 			
 			return "soundcloud[$GoodStuff?id=$trackID]";
 		break;
+
+        case "date":
+            list($time, $format) = explode('|', $GoodStuff, 2);
+
+            if(empty($time))
+            {
+                $time = time();
+            }
+
+            if(!is_numeric($time))
+            {
+                $time = strtotime($time);
+            }
+            
+            if(empty($format))
+            {
+                $format = 'l, F j, Y';
+            }
+
+            return date($format, $time);
+        break;
 	}
 }
 
@@ -686,7 +707,7 @@ function FishFormat($Input, $Action='markup')
 			while(preg_match('/^ *:+/m', $Output)) {
 				$Output = preg_replace('/^( *):/m','\1    ', $Output); }
 
-			preg_match_all("/\b(Image|IMG|SoundCloud) \s* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $Output, $Matches);
+			preg_match_all("/\b(Image|IMG|SoundCloud|Date) \s* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $Output, $Matches);
 			
 			foreach($Matches[0] as $Key => $String)
 			{
