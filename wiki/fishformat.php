@@ -693,6 +693,38 @@ function ReplaceLinks($Matches)
 	}
 }
 
+function replace_links($matches)
+{
+    // Replace spaces with hyphens
+    $page = str_replace(" ", "-", $matches[1]);
+    
+    // Remove invalid characters from URLs
+    $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
+    $page = str_replace($invalid, "", $page);
+
+    // Check if the page exists
+    $escaped_page = mysql_real_escape_string($page);
+    $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
+    list($page_exists) = mysql_fetch_array($page_query);
+
+    if(empty($page_exists))
+    {
+        $class = "broken";
+    }
+
+    if(isset($_GET['random']))
+        $random = "/?random";
+
+    if(count($matches) == 3)
+    {
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[2]}</a>";
+    }
+    else
+    {
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$page}</a>";
+    }
+}
+
 function FishFormat($Input, $Action='markup')
 {
 	switch($Action)
@@ -740,18 +772,13 @@ function FishFormat($Input, $Action='markup')
 			$Output = $Input;
 			$Output = str_replace("    ", "&emsp;&emsp;&emsp;", $Output);
 
-            if(isset($_GET['random']))
-                $random = "/?random";
+            // Links with custom text
+            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "replace_links", $Output);
 
-			$Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/',
-			                                create_function('$Match', 'return "<a href=\'https://wiki.wetfish.net/".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;"), "", str_replace(" ", "-", $Match[1]))."'.$random.'\'>$Match[2]</a>";'),
-			                                 $Output);
-			$Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})/', 
-			                                create_function('$Match', 'return "<a href=\'https://wiki.wetfish.net/".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;"), "", str_replace(" ", "-", $Match[1]))."'.$random.'\'>$Match[1]</a>";'),
-			                                $Output);
-			
-			$Output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $Output);
+            // Basic links
+            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})/', "replace_links", $Output);
 
+            $Output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $Output);
 			
 			$Keywords = array('Ad|Ads',
 							'Pre',

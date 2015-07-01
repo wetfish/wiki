@@ -25,6 +25,8 @@ a.title:hover { text-decoration: underline; }
 a.header { color:#FFFFFF; font-weight:bold; font-size:22pt; float:right; padding:4px 24px 0px 0px; }
 a.header:hover { text-decoration:none; }
 
+a.broken { color:hsla(336, 97%, 55%, 1); }
+
 span.title { font-size: 18pt; font-weight:bold; }
 .strike { text-decoration:line-through; }
 .big { font-size: 160%; font-weight: bold; }
