@@ -725,7 +725,7 @@ function replace_links($matches)
     }
     else
     {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$page}</a>";
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}</a>";
     }
 }
 
