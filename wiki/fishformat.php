@@ -702,16 +702,20 @@ function replace_links($matches)
     $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
     $page = str_replace($invalid, "", $page);
 
-    // Check if the page exists
-    $escaped_page = mysql_real_escape_string($page);
-    $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
-    list($page_exists) = mysql_fetch_array($page_query);
-
-    if(empty($page_exists))
+    // Don't check if the page exists when linking to special pages
+    if(!(strpos($page, "?") !== false))
     {
-        $class = "broken";
-    }
+        // Check if the page exists
+        $escaped_page = mysql_real_escape_string($page);
+        $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
+        list($page_exists) = mysql_fetch_array($page_query);
 
+        if(empty($page_exists))
+        {
+            $class = "broken";
+        }
+    }
+    
     if(isset($_GET['random']))
         $random = "/?random";
 
