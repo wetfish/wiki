@@ -58,6 +58,7 @@ function view($path, $action, $title, $content)
     {
         $content['ExtraNav'] = new Navigation;
         $content['ExtraNav']->Add("Archive This Page", FormatPath("/$path/")."?archive");
+        $content['ExtraNav']->Add("Rename This Page", FormatPath("/$path/")."?rename");
     }
 
     $title[] = FishFormat($PageTitle, "strip");

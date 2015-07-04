@@ -63,7 +63,7 @@ else
     }
 }
 
-$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive', 'replace');
+$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive', 'replace', 'rename');
 $get = array_change_key_case($_GET);
 
 foreach($_GET as $action => $value)
@@ -605,11 +605,21 @@ SuperNav;
             $Action[0] = "view";
         }
 
+        $source = $Action[0];
+        $function = $Action[0];
+
+        // Check if this action function is already defined (predefined PHP function)
+        if(function_exists($Action[0]))
+        {
+            // Prepend "action_" to the function name instead
+            $function = "action_" . $function;
+        }
+
         // Include the code for this action
-        include "src/actions/{$Action[0]}.php";
+        include "src/actions/{$source}.php";
 
         // Call it
-        list($Title, $Content) = call_user_func($Action[0], $Path, $Action, $Title, $Content);
+        list($Title, $Content) = call_user_func($function, $Path, $Action, $Title, $Content);
     break;
 }
 
