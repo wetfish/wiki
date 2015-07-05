@@ -284,7 +284,7 @@ function ReplaceKeywords($Matches)
 				}
 				else
 				{
-					if(strpos($Link, 'http://') === false)
+					if(strpos($Link, 'http://') === false && strpos($Link, 'https://') === false)
 						$Link = "/$Link";
 				
 					unset($Size);
@@ -436,7 +436,7 @@ function ReplaceKeywords($Matches)
 				$URL = parse_url($Derp);
 				parse_str($URL['query'], $Query);
 
-				if((strpos($Derp, 'http://') === false) or ((strpos($Derp, 'http://') !== false) and (preg_match('/^.*\.?wetfish.net$/i', $URL['host']))))
+				if((strpos($Derp, 'http://') === false or strpos($Link, 'https://') === false) or ((strpos($Derp, 'http://') !== false) and (preg_match('/^.*\.?wetfish.net$/i', $URL['host']))))
 				{
 					if($Delay)
 					{
