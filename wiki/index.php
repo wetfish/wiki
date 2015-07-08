@@ -184,7 +184,7 @@ switch($Action[0])
 			$Account = $_POST['Account'];
 			$Anonymous = $_POST['Anonymous'];
             $oldPageTitle = $PageTitle;
-			$PageTitle = Clean($_POST['Title']);
+			$PageTitle = FishFormat(Clean($_POST['Title']), 'edit');
             $oldPageContent = $PageContent;
             $PageContent = FishFormat(Clean($_POST['Content'], 'textarea'), 'edit');
 			$Description = Clean($_POST['Description']);
