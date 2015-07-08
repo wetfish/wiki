@@ -350,7 +350,6 @@ function ReplaceKeywords($Matches)
 				return "<iframe width='640' height='360' src='https://www.youtube.com/embed/{$Query['v']}' frameborder='0' allowfullscreen></iframe>";
 				return "<object width='640' height='360'><param name='movie' value='https://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='https://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='480' height='295'></embed></object>";
 			break;
-
 			case "playlist":
 				$url = parse_url($GoodStuff);
 				parse_str($url['query'], $query);
@@ -693,7 +692,17 @@ function ReplaceLinks($Matches)
 	}
 }
 
-function replace_links($matches)
+function basic_link($matches)
+{
+    return replace_links($matches, 'basic');
+}
+
+function custom_link($matches)
+{
+    return replace_links($matches, 'custom');
+}
+
+function replace_links($matches, $mode)
 {
     // Replace spaces with hyphens
     $page = str_replace(" ", "-", $matches[1]);
@@ -719,13 +728,13 @@ function replace_links($matches)
     if(isset($_GET['random']))
         $random = "/?random";
 
-    if(count($matches) == 3)
+    if($mode == "custom")
     {
         return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[2]}</a>";
     }
     else
     {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}</a>";
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}{$matches[2]}</a>";
     }
 }
 
@@ -777,11 +786,11 @@ function FishFormat($Input, $Action='markup')
 			$Output = str_replace("    ", "&emsp;&emsp;&emsp;", $Output);
 
             // Links with custom text
-            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "replace_links", $Output);
+            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "custom_link", $Output);
 
             // Basic links
-            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})/', "replace_links", $Output);
-
+            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})(s)?/', "basic_link", $Output);
+            
             $Output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $Output);
 			
 			$Keywords = array('Ad|Ads',
