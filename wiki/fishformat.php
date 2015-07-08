@@ -1,6 +1,28 @@
 <?php
 
 error_reporting(E_ALL ^ E_NOTICE);
+
+function embed_youtube($input)
+{
+    $url = parse_url($input);
+    parse_str($url['query'], $Query);
+    
+    return "<iframe width='640' height='360' src='https://www.youtube.com/embed/{$Query['v']}' frameborder='0' allowfullscreen></iframe>";
+}
+
+function embed_vimeo($input)
+{
+    $url = parse_url($input);
+    $videoID = preg_replace("/[^0-9]/", "", $url['path']);
+
+    return "<iframe src='https://player.vimeo.com/video/{$videoID}?byline=0&amp;portrait=0&amp;badge=0&amp;color=ffffff' width='640' height='360' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
+}
+
+function embed_html5($input)
+{
+    return "<video controls><source src='/{$input}'></video>";
+}
+
 function ReplaceKeywords($Matches)
 {
 	if($Matches[2])
@@ -341,27 +363,33 @@ function ReplaceKeywords($Matches)
 					return "<embed type='application/x-shockwave-flash' src='https://motherless.com/flash/player.swf' style='' id='player' name='player' quality='high' allowfullscreen='true' allowscriptaccess='always' wmode='transparent' flashvars='file=https://members.motherless.com/movies/$Filename[1].flv&amp;image=https://motherless.com/thumbs/$Video.jpg&amp;mute=false&amp;streamer=lighttpd&amp;link=https://motherless.com/$Video' width='680' height='560'>";
 				}
 			break;
-			
-			case "video":
-			case "youtube":
-				$URL = parse_url($GoodStuff);
-				parse_str($URL['query'], $Query);
-				
-				return "<iframe width='640' height='360' src='https://www.youtube.com/embed/{$Query['v']}' frameborder='0' allowfullscreen></iframe>";
-				return "<object width='640' height='360'><param name='movie' value='https://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&'></param><param name='allowFullScreen' value='true'></param><param name='allowscriptaccess' value='always'></param><embed src='https://www.youtube.com/v/{$Query['v']}&hl=en_US&fs=1&' type='application/x-shockwave-flash' allowscriptaccess='always' allowfullscreen='true' width='480' height='295'></embed></object>";
-			break;
+
+            case "video":
+                $url = parse_url($GoodStuff);
+
+                if(preg_match("/youtube.com$/i", $url['host']))
+                    return embed_youtube($GoodStuff);
+
+                if(preg_match("/vimeo.com$/i", $url['host']))
+                    return embed_vimeo($GoodStuff);
+
+                // Otherwise, it must be a html5 video!
+                return embed_html5($GoodStuff);
+            break;
+
+            case "youtube":
+                return embed_youtube($GoodStuff);
+            break;
+
+            case "vimeo":
+                return embed_vimeo($GoodStuff);
+            break;
+
 			case "playlist":
 				$url = parse_url($GoodStuff);
 				parse_str($url['query'], $query);
 
 				return "<iframe width='640' height='360' src='https://www.youtube.com/embed/videoseries?list={$query['list']}&index={$query['index']}' frameborder='0' allowfullscreen></iframe>";			
-			break;
-			
-			case "vimeo":
-				$URL = parse_url($GoodStuff);
-				$videoID = preg_replace("/[^0-9]/", "", $URL['path']);
-				
-				return "<iframe src='https://player.vimeo.com/video/$videoID?byline=0&amp;portrait=0&amp;badge=0&amp;color=ffffff' width='640' height='360' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
 			break;
 			
 			case "soundcloud":
@@ -590,6 +618,7 @@ function ReplaceLinks($Matches)
 	{
 		case "img":
 		case "image":
+        case "video":
 			list($Link, $Size, $Position, $Border, $Text) = explode("|", $GoodStuff, 5);
 
 			$Link = trim($Link);
@@ -601,15 +630,22 @@ function ReplaceLinks($Matches)
 									
 			if(preg_match("{https?}", $URL['scheme']) and !preg_match("/.wetfish.net$/", $URL['host']))
 			{				
-				$Path = pathinfo($Link);
+				$Path = pathinfo($URL['path']);
 				$Filename = uuid();
 				$Extension = $Path['extension'];
 				
 				if(strpos($Extension, '?') !== FALSE)
 					$Extension = substr($Extension, 0, strpos($Extension, '?'));
 				
-				if(preg_match('/^(jpe?g|gif|png)$/i', $Extension))
+				if(preg_match('/^(jpe?g|gif|png|webm|gifv)$/i', $Extension))
 				{
+                    // Automatically convert gifv urls to webm
+                    if($Extension == "gifv")
+                    {
+                        $Extension = "webm";
+                        $Link = str_replace(".gifv", ".webm", $Link);
+                    }
+                    
 					while(file_exists("upload/$Filename.$Extension"))
 					{
 						$Filename = uuid();
@@ -631,15 +667,16 @@ function ReplaceLinks($Matches)
 					mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
 	
 					$Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
-					return "img[$Text]";
+
+					return strtolower($Matches[1]) . "[$Text]";
 				}
 				else
 				{
 					return "HACKER!!!!!!!!!!!!!!";
 				}
 			}
-			
-			return "img[$GoodStuff]";
+            
+			return strtolower($Matches[1]) . "[$GoodStuff]";
 		break;
 		
 		case "soundcloud":
@@ -752,7 +789,7 @@ function FishFormat($Input, $Action='markup')
 			while(preg_match('/^ *:+/m', $Output)) {
 				$Output = preg_replace('/^( *):/m','\1    ', $Output); }
 
-			preg_match_all("/\b(Image|IMG|SoundCloud|Date) \s* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $Output, $Matches);
+			preg_match_all("/\b(Image|IMG|Video|SoundCloud|Date) \s* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $Output, $Matches);
 			
 			foreach($Matches[0] as $Key => $String)
 			{
