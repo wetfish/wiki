@@ -627,8 +627,13 @@ function ReplaceLinks($Matches)
 			$Border = trim($Border);
 			$Text = trim($Text);
 			$URL = parse_url($Link);
-									
-			if(preg_match("{https?}", $URL['scheme']) and !preg_match("/.wetfish.net$/", $URL['host']))
+            
+            // Automatically rehost content that isn't on wetfish, youtube, or vimeo
+			if(preg_match("{https?}", $URL['scheme']) and
+                (!preg_match("/.wetfish.net$/", $URL['host']) and
+                 !preg_match("/.youtube.com$/", $URL['host']) and
+                 !preg_match("/.vimeo.com$/", $URL['host'])
+                ))
 			{				
 				$Path = pathinfo($URL['path']);
 				$Filename = uuid();
