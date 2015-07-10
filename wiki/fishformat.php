@@ -2,6 +2,7 @@
 
 error_reporting(E_ALL ^ E_NOTICE);
 
+// Shouldn't these do some sort of filtering / sanitization?
 function embed_youtube($input)
 {
     $url = parse_url($input);
@@ -16,6 +17,12 @@ function embed_vimeo($input)
     $videoID = preg_replace("/[^0-9]/", "", $url['path']);
 
     return "<iframe src='https://player.vimeo.com/video/{$videoID}?byline=0&amp;portrait=0&amp;badge=0&amp;color=ffffff' width='640' height='360' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
+}
+
+function embed_vine($input)
+{
+    $url = parse_url($input);
+    return "<iframe src='https://vine.co/{$url['path']}/embed/simple?audio=1' width='600' height='600' frameborder='0'></iframe>";
 }
 
 function embed_html5($input)
@@ -367,11 +374,14 @@ function ReplaceKeywords($Matches)
             case "video":
                 $url = parse_url($GoodStuff);
 
-                if(preg_match("/youtube.com$/i", $url['host']))
+                if(preg_match("/(^|\.)youtube.com$/i", $url['host']))
                     return embed_youtube($GoodStuff);
 
-                if(preg_match("/vimeo.com$/i", $url['host']))
+                if(preg_match("/(^|\.)vimeo.com$/i", $url['host']))
                     return embed_vimeo($GoodStuff);
+
+                if(preg_match("/(^|\.)vine.co$/i", $url['host']))
+                    return embed_vine($GoodStuff);
 
                 // Otherwise, it must be a html5 video!
                 return embed_html5($GoodStuff);
@@ -383,6 +393,10 @@ function ReplaceKeywords($Matches)
 
             case "vimeo":
                 return embed_vimeo($GoodStuff);
+            break;
+
+            case "vine":
+                return embed_vine($GoodStuff);
             break;
 
 			case "playlist":
@@ -628,11 +642,12 @@ function ReplaceLinks($Matches)
 			$Text = trim($Text);
 			$URL = parse_url($Link);
             
-            // Automatically rehost content that isn't on wetfish, youtube, or vimeo
-			if(preg_match("{https?}", $URL['scheme']) and
-                (!preg_match("/.wetfish.net$/", $URL['host']) and
-                 !preg_match("/.youtube.com$/", $URL['host']) and
-                 !preg_match("/.vimeo.com$/", $URL['host'])
+            // Automatically rehost content that isn't on wetfish or certain embedded sites
+            if(preg_match("{https?}", $URL['scheme']) and
+                (!preg_match("/(^|\.)wetfish\.net$/", $URL['host']) and
+                 !preg_match("/(^|\.)youtube\.com$/", $URL['host']) and
+                 !preg_match("/(^|\.)vimeo\.com$/", $URL['host']) and
+                 !preg_match("/(^|\.)vine\.co$/", $URL['host'])
                 ))
 			{				
 				$Path = pathinfo($URL['path']);
