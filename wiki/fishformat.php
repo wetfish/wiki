@@ -30,6 +30,14 @@ function embed_html5($input)
     return "<video controls><source src='/{$input}'></video>";
 }
 
+function embed_codepen($input)
+{
+    $url = parse_url($input);
+    $path = str_replace('/pen/', '/embed/', $url['path']);
+
+    return "<iframe height='420' scrolling='no' src='https://codepen.io/{$path}?height=420&theme-id=0&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>";
+}
+
 function ReplaceKeywords($Matches)
 {
 	if($Matches[2])
@@ -599,6 +607,10 @@ function ReplaceKeywords($Matches)
             case "anchor":
                 return "<a name='$GoodStuff'>&nbsp;</a>";
             break;
+
+            case "codepen":
+                return embed_codepen($GoodStuff);
+            break;
 		}
 	}
 	else
@@ -884,7 +896,8 @@ function FishFormat($Input, $Action='markup')
 							'Playlist',
 							'Style',
 							'Total',
-                            'Anchor');
+                            'Anchor',
+                            'Codepen');
 							
 			$Keywords = implode('|', $Keywords);
 
