@@ -671,6 +671,13 @@ function ReplaceLinks($Matches)
 				
 				if(preg_match('/^(jpe?g|gif|png|webm|gifv|mp4|ogv)$/i', $Extension))
 				{
+                    // If a video extension was used
+                    if(preg_match('/^(webm|gifv|mp4|ogv)$/i', $Extension))
+                    {
+                        // Force the tag to be video
+                        $Matches[1] = "video";
+                    }
+                    
                     // Automatically convert gifv urls to webm
                     if($Extension == "gifv")
                     {
