@@ -238,6 +238,11 @@ img {
 	max-width:100%;
 }
 
+video {
+    max-width: 100%;
+    max-height: 100%;
+}
+
 CSS;
 
 ?>

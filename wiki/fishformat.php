@@ -669,7 +669,7 @@ function ReplaceLinks($Matches)
 				if(strpos($Extension, '?') !== FALSE)
 					$Extension = substr($Extension, 0, strpos($Extension, '?'));
 				
-				if(preg_match('/^(jpe?g|gif|png|webm|gifv)$/i', $Extension))
+				if(preg_match('/^(jpe?g|gif|png|webm|gifv|mp4|ogv)$/i', $Extension))
 				{
                     // Automatically convert gifv urls to webm
                     if($Extension == "gifv")
