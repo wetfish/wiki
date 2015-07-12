@@ -243,6 +243,10 @@ video {
     max-height: 100%;
 }
 
+pre {
+    float: left;
+}
+
 CSS;
 
 ?>
