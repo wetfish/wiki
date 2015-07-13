@@ -596,7 +596,7 @@ function ReplaceKeywords($Matches)
 
 					$rainbowCounter++;
 
-					$randomHue = $rainbowCounter * 24 % 360;
+					$randomHue = -1 * $rainbowCounter * 24 % 360;
 					$randomSaturation = rand(0, 5) + 95;
 					$randomLuminosity = rand(0, 24) + 44;
 
