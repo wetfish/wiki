@@ -31,7 +31,6 @@ function embed_html5($input, $options = array())
     $options = array_merge($default, $options);
     $attributes = array();
 
-
     foreach($options as $option => $value)
     {
         if($value)
@@ -289,7 +288,8 @@ function ReplaceKeywords($Matches)
                     (
                         'autoplay' => true,
                         'controls' => false,
-                        'muted' => true
+                        'muted' => true,
+                        'loop' => true
                     );
 
                     return embed_html5($Link, $options);
