@@ -1,12 +1,24 @@
 <?php
 
-namespace Model;
-
-class Page
+class Page extends Model
 {
-    public function get($args)
+    // MySQL connection must be passed to the constructor
+    function __construct($mysql)
     {
-        var_dump($args);
+        $this->connection = $mysql;
+    }
+    
+    public function get($select)
+    {
+        // Select statement must be an array!
+        if(!is_array($select))
+            return;
+
+        // Default glue should be 'and'
+        if(!isset($select['__glue']))
+            $select['__glue'] = 'and';
+        
+        return $this->query('Select * from `Wiki_Pages` where ?', $select);
     }
 }
 
