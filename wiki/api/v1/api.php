@@ -1,5 +1,9 @@
 <?php
 
+// Required functions for displaying wiki markup
+require "../../functions.php";
+require "../../fishformat.php";
+
 class API
 {
     // The model must be passed when the API is constructed
@@ -39,13 +43,21 @@ class API
     // Function to display a page's content
     public function content($path)
     {
-        $this->model->page->get('hi');
+        $path = implode('/', $path);
+        $result = $this->model->page->get(array('path' => $path));
+        $page = $result->fetch_object();
+
+        return FishFormat($page->Content);
     }
 
     // Function to display a page's source
     public function source($path)
     {
+        $path = implode('/', $path);
+        $result = $this->model->page->get(array('path' => $path));
+        $page = $result->fetch_object();
 
+        return $page->Content;
     }
 }
 
