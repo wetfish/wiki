@@ -33,9 +33,11 @@ class API
             $response = array
             (
                 'status' => 'error',
+                'code' => 400,
                 'message' => 'Invalid method.'
             );
-            
+
+            header('Content-Type: application/json');
             return json_encode($response);
         }
     }
@@ -58,6 +60,54 @@ class API
         $page = $result->fetch_object();
 
         return $page->Content;
+    }
+
+    // Function to display JSON containing a page's content
+    public function json($path)
+    {
+        $path = implode('/', $path);
+        $result = $this->model->page->get(array('path' => $path));
+        $page = $result->fetch_object();
+
+        if(empty($page))
+        {
+            $response = array
+            (
+                'status' => 'error',
+                'code' => 404,
+                'message' => 'Page does not exist.'
+            );
+
+            header('Content-Type: application/json');
+            return json_encode($response);
+        }
+        else
+        {
+            $response = array
+            (
+                'status' => 'success',
+                'code' => 200,
+                'path' => $page->Path,
+                'views' => $page->Views,
+                'edits' => count(explode(',', $page->Edits)),
+                'modified' => $page->EditTime,
+
+                'title' => array
+                (
+                    'formatted' => FishFormat($page->Title),
+                    'source' => $page->Title
+                ),
+
+                'content' => array
+                (
+                    'formatted' => FishFormat($page->Content),
+                    'source' => $page->Content
+                )
+            );
+
+            header('Content-Type: application/json');
+            return json_encode($response);
+        }
     }
 }
 
