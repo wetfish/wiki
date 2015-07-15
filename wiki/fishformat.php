@@ -332,15 +332,15 @@ function ReplaceKeywords($Matches)
 					$Info = pathinfo($Link);
 
                     // Make sure the file actually exists
-                    if(!file_exists("upload/{$Info['basename']}"))
+                    if(!file_exists(__DIR__ . "/upload/{$Info['basename']}"))
                     {
                         // Display an icon if the image can't be loaded
                         $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
                     }
                     else
                     {
-                        if(!file_exists("upload/{$Size}_{$Info['basename']}"))
-                            ResizeImage($Link, "upload/{$Size}_{$Info['basename']}", $Size);
+                        if(!file_exists(__DIR__ . "/upload/{$Size}_{$Info['basename']}"))
+                            ResizeImage($Link, __DIR__ . "/upload/{$Size}_{$Info['basename']}", $Size);
                             
                         $ImageText = "<a href='/$Link' class='exempt'><img src='/upload/{$Size}_{$Info['basename']}' border='0' /></a>";
                     }
@@ -355,7 +355,7 @@ function ReplaceKeywords($Matches)
 					$URL = parse_url($Link);
 
                     // Make sure wiki images exist
-                    if(preg_match("{^/upload}", $URL['path']) && !file_exists(".{$URL['path']}"))
+                    if(preg_match("{^/upload}", $URL['path']) && !file_exists(__DIR__ . "{$URL['path']}"))
                     {
                         // Display an icon if the image can't be loaded
                         $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
