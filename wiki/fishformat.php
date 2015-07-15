@@ -233,48 +233,41 @@ function ReplaceKeywords($Matches)
 			break;
 			
 			case "url":
-				list($Link, $Text) = explode("|", $GoodStuff, 2);
+                list($link, $text) = explode("|", $GoodStuff, 2);
 
-				$Link = trim($Link);
-				$Text = trim($Text);
+                $link = trim($link);
+                $text = trim($text);
+                $url = parse_url($link);
 
-				if(preg_match("{(\S*)://(.*)}", $Link, $LinkMatches))
-				{
-					$LinkMatches[1] = trim($LinkMatches[1]);
-					$LinkMatches[2] = trim($LinkMatches[2]);
+                switch($url['scheme'])
+                {
+                    case "http":
+                    case "https":
+                    case "ftp":
+                    case "irc":
+                        if(empty($text))
+                            $text = $link;
 
-					switch(strtolower($LinkMatches[1]))
-					{
-						case "http":
-						case "https":
-						case "ftp":
-						case "irc":
-							$URL = "$LinkMatches[1]://$LinkMatches[2]";
+                        return "<a href='{$link}' target='_blank'>{$text}</a>";
+                    break;
 
-							if(empty($Text))
-								$Text = $URL;
+                    case "fish":
+                        $link = "https://wiki.wetfish.net{$url['path']}";
 
-							return "<a href='$URL' target='_blank'>$Text</a>";
-						break;
+                        if(empty($text))
+                            $text = $url['path'];
 
-						case "fish":
-							$URL = "https://wiki.wetfish.net/$LinkMatches[2]";
+                        return "<a href='{$url['path']}'>{$text}</a>";
+                    break;
 
-							if(empty($Text))
-								$Text = $URL;
+                    default:
+                        if(empty($text))
+                            $text = "http://{$link}";
 
-							return "<a href='$URL'>$Text</a>";
-						break;
-					}
-				}
-				else
-				{
-					if(empty($Text))
-						$Text = "http://$Link";
-
-					return "<a href='http://$Link' target='_blank'>$Text</a>";
-				}
-			break;
+                        return "<a href='http://{$link}' target='_blank'>{$text}</a>";
+                    break;
+                }
+            break;
 
 			case "image":
 			case "img":
