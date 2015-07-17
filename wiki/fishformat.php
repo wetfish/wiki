@@ -955,9 +955,9 @@ function FishFormat($Input, $Action='markup')
 			$Output = str_replace("&lt;3", "<span class='error'>&lt;3</span>", $Output);
 
 #			$Output = preg_replace('{<div>\n+}', "<div>", $Output); # Strip newlines before stuff too.
-			$Output = preg_replace('{</div>\n+}', "</div>", $Output); # Strip newlines after images.
-			$Output = preg_replace('{</a></div>\n+}', '</a></div>', $Output); # Strip newlines after images.
-			$Output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $Output); # Strip newlines after images.
+//			$Output = preg_replace('{</a></div>\n+}', '</a></div>', $Output); # Strip newlines after images.
+			$Output = preg_replace('{div>\n+<div}', "div><div", $Output); # Strip newlines between images.
+			$Output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $Output); # Strip newlines after titles.
 			$Output = str_replace("<hr />\n", "<hr />", $Output); # No need for a <br /> after a <hr />, unless there's a lot.
 			$Output = str_replace("\n", "<br />", $Output);
 		break;
