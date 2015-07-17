@@ -40,36 +40,27 @@
                 </div>
 
                 <div class="navigation">
-                    <div class="navbox" onClick="Jump('https://wiki.wetfish.net/search')">
-                        <a class="nav exempt" href="https://wiki.wetfish.net/search">Search</a>
-                    </div>
-                    
-                    <div class="navbox" onClick="Jump('https://wiki.wetfish.net/browse')">
-                        <a class="nav exempt" href="https://wiki.wetfish.net/browse">Browse</a>
-                    </div>
-                    
-                    <div class="navbox" onClick="Jump('https://wiki.wetfish.net/?random')">
-                        <a class="nav exempt" href="https://wiki.wetfish.net/?random">Random</a>
+                    <div class="navbox" onClick="Jump('/news')">
+                        <a class="nav exempt" href="/news">News</a>
                     </div>
 
-                    <div class="navbox" onClick="SuperJump('https://wiki.wetfish.net/chat/')">
-                        <a class="nav exempt" href="https://wiki.wetfish.net/chat/" onClick="return false" target="_blank">Chat</a>
-                    </div>
-
-<!--					<div class="navbox" onClick="Jump('https://music.wetfish.net/')">
-                        <a class="nav exempt" href="https://music.wetfish.net/">Playlists</a>
-                    </div>
--->
                     <div class='navbox' onClick="Jump('/popular')">
                         <a class='nav exempt' href='/popular'>Popular</a>
                     </div>
-
-                    <div class='navbox' onClick="Jump('/tags')">
-                        <a class='nav exempt' href='/tags'>Tags</a>
+                    
+                    <div class="navbox" onClick="Jump('/browse')">
+                        <a class="nav exempt" href="/browse">Browse</a>
                     </div>
                     
-                    <div class="navbox" onClick="Jump('https://wiki.wetfish.net/qpalz/')">
-                        <a class="nav exempt" href="https://wiki.wetfish.net/qpalz/">Media</a>
+                    <div class="navbox" onClick="Jump('/?random')">
+                        <a class="nav exempt" href="/?random">Random</a>
+                    </div>
+                    
+                    <div class="navbox" onClick="Jump('/search')">
+                        <a class="nav exempt" href="/search">Search</a>
+                    </div>
+                    <div class='navbox' onClick="Jump('/tags')">
+                        <a class='nav exempt' href='/tags'>Tags</a>
                     </div>
                 </div>
 
