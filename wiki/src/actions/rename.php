@@ -20,11 +20,11 @@ function action_rename($path, $action, $title, $content)
         // We can only change the path of an existing page...
         if($page_id)
         {
-            $new = mysql_real_escape_string($_POST['new']);
-            mysql_query("Update `Wiki_Pages` set `Path` = '{$new}' where ID = '{$page_id}'");
+            $new = str_replace(" ", "-", $_POST['new']);
+            mysql_query("Update `Wiki_Pages` set `Path` = '".mysql_real_escape_string($new)."' where ID = '{$page_id}'");
             
             $content['Title'] = "Page renamed!";
-            $content['Body'] = "<p>The old page <b>{$path}</b> has been renamed to <a href='/{$_POST['new']}'>{$_POST['new']}</a></p>";
+            $content['Body'] = "<p>The old page <b>{$path}</b> has been renamed to <a href='/{$new}'>{$_POST['new']}</a></p>";
         }
         else
         {
