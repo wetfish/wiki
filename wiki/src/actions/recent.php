@@ -66,7 +66,7 @@ function recent($path, $action, $title, $content)
                 $PageTitle = FishFormat($PageTitle, "format");
                 $DiffURL = str_replace("//", "/", "/$PagePath/?diff/$EditID");
                 
-                $content['Body'] .= "<tr $Class><td style='min-width:{$minWidth}px;'>$PageTime</td><td>$PageSize</td><td>$pageTags</td><td><b><a href='/names?id=$AccountID'>$PageName</a></b></td><td style='max-width:400px'><span style='float:right;'><a href='$DiffURL' rel='nofollow'>d</a></span><b><a href='/$PagePath'>$PageTitle</a></b></td><td class='multi-line'>$PageDescription</td></tr>";
+                $content['Body'] .= "<tr $Class><td style='min-width:{$minWidth}px;'>$PageTime</td><td>$PageSize</td><td>$pageTags</td><td><b><a href='/edits?name=$PageName'>$PageName</a></b></td><td style='max-width:400px'><span style='float:right;'><a href='$DiffURL' rel='nofollow'>d</a></span><b><a href='/$PagePath'>$PageTitle</a></b></td><td class='multi-line'>$PageDescription</td></tr>";
             }
         }
 

@@ -245,7 +245,6 @@ video {
 
 pre {
     max-width: 100%;
-    float: left;
 }
 
 CSS;
