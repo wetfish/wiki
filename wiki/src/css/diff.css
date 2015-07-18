@@ -41,17 +41,17 @@
     background-color:hsla(108, 95%, 60%, 0.3);
 }
 
-del {
+.Differences del {
     font-size:110%;
     background-color:hsla(348, 98%, 52%, 0.6);
 }
 
-ins {
+.Differences ins {
     font-size:110%; 
     background-color:hsla(108, 95%, 60%, 0.6);
 }
 
-pre {
+.Differences pre {
     width: 100%;
     overflow: auto;
 }
