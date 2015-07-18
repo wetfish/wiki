@@ -149,7 +149,7 @@ function ReplaceKeywords($Matches)
 
             case "titlebox":
                 $args = explode("|", $GoodStuff, 2);
-                return "<div class='title-box'><h1>{$args[0]}</h1><span>{$args[1]}</span></div><div></div>";
+                return "<header class='title-box'><h1>{$args[0]}</h1><span>{$args[1]}</span></header>";
             break;
 
 			case "box":
@@ -956,10 +956,17 @@ function FishFormat($Input, $Action='markup')
 
 #			$Output = preg_replace('{<div>\n+}', "<div>", $Output); # Strip newlines before stuff too.
 //			$Output = preg_replace('{</a></div>\n+}', '</a></div>', $Output); # Strip newlines after images.
-			$Output = preg_replace('{div>\n+<div}', "div><div", $Output); # Strip newlines between images.
-			$Output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $Output); # Strip newlines after titles.
-			$Output = str_replace("<hr />\n", "<hr />", $Output); # No need for a <br /> after a <hr />, unless there's a lot.
-			$Output = str_replace("\n", "<br />", $Output);
+
+            // Strip newlines between images.
+            $Output = preg_replace('{div>\n+<div}', "div><div", $Output); 
+
+            // Strip newlines after titles and headings
+            $Output = preg_replace('{header>\n+}', "header>", $Output);
+            $Output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $Output);
+            $Output = str_replace("<hr />\n", "<hr />", $Output);
+
+            // Replace newlines with line breaks
+            $Output = str_replace("\n", "<br />", $Output);
 		break;
 	}
 	
