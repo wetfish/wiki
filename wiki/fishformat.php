@@ -653,6 +653,20 @@ function ReplaceKeywords($Matches)
             case "codepen":
                 return embed_codepen($GoodStuff);
             break;
+
+            case "fb":
+            case "fishbux":
+                list($amount, $image) = explode("|", $GoodStuff, 2);
+
+                // Make sure image is an integer
+                $image = (int)$image;
+
+                // If none is set, generate a random image
+                if(!$image)
+                    $image = mt_rand(1, 4);
+                
+                return "<div class='fishbux'> {$amount}  <div class='wrap'><img src='/upload/fishbux/bux{$image}.gif'></div></div>";
+            break;
 		}
 	}
 	else
@@ -939,7 +953,8 @@ function FishFormat($Input, $Action='markup')
 							'Style',
 							'Total',
                             'Anchor',
-                            'Codepen');
+                            'Codepen',
+                            'FB|FishBux');
 							
 			$Keywords = implode('|', $Keywords);
 

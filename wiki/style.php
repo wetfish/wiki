@@ -247,6 +247,24 @@ pre {
     max-width: 100%;
 }
 
+.fishbux {
+    color: yellow;
+    position: relative;
+    display: inline-block;
+}
+
+.fishbux .wrap {
+    position: absolute;
+    top: -10px;
+    right: -50px;
+}
+
+.fishbux img {
+    margin: 0px 8px;
+    display: inline-block;
+    max-width: 100%;
+}
+
 CSS;
 
 ?>
