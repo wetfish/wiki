@@ -54,6 +54,25 @@ function embed_codepen($input)
     return "<iframe height='420' scrolling='no' src='https://codepen.io/{$path}?height=420&theme-id=0&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>";
 }
 
+function embed_soundcloud($input)
+{
+    $url = parse_url($input);
+    parse_str($url['query'], $get);
+
+    if(preg_match('{/sets/}', $url['path']))
+    {
+        $endpoint = 'playlists';
+    }
+    else
+    {
+        $endpoint = 'tracks';
+    }
+
+    $options = "&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true";
+    $src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/{$endpoint}/{$get['id']}{$options}";
+    return "<iframe width='100%' height='166' scrolling='no' frameborder='no' src='{$src}'></iframe>";
+}
+
 function ReplaceKeywords($Matches)
 {
 	if($Matches[2])
@@ -441,10 +460,7 @@ function ReplaceKeywords($Matches)
 			break;
 			
 			case "soundcloud":
-				$URL = parse_url($GoodStuff);
-				parse_str($URL['query'], $Query);
-				
-				return "<iframe width='100%' height='166' scrolling='no' frameborder='no' src='https://w.soundcloud.com/player/?url=http%3A%2F%2Fapi.soundcloud.com%2Ftracks%2F{$Query['id']}&show_artwork=true'></iframe>";
+                return embed_soundcloud($GoodStuff);
 			break;		
 			
 			case "ytcracker":
