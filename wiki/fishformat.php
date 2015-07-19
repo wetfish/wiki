@@ -663,7 +663,7 @@ function ReplaceKeywords($Matches)
 
                 // If none is set, generate a random image
                 if(!$image)
-                    $image = mt_rand(1, 4);
+                    $image = mt_rand(2, 4);
                 
                 return "<div class='fishbux'> {$amount}  <div class='wrap'><img src='/upload/fishbux/bux{$image}.gif'></div></div>";
             break;
