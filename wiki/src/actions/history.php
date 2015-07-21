@@ -99,7 +99,9 @@ function history($path, $action, $title, $content)
 		list($PageID) = mysql_fetch_array($PageQuery);
 
 		$HistoryQuery = "SELECT `ID`,`AccountID`,`EditTime`,`Size`,`Tags`,`Name`,`Description`,`Title` FROM `Wiki_Edits` WHERE `PageID`='$PageID' and `Archived` = 0 ORDER BY `ID` DESC";
-		list($Data, $Links) = Paginate($HistoryQuery, 50, $_GET['page'], $_SERVER['QUERY_STRING']);
+
+        $request = parse_url($_SERVER['REQUEST_URI']);
+		list($Data, $Links) = Paginate($HistoryQuery, 50, $_GET['page'], $request['query']);
 
         if($_SESSION['admin'])
         {
