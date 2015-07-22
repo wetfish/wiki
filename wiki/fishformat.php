@@ -80,7 +80,7 @@ function ReplaceKeywords($Matches)
 	else
 		$GoodStuff = $Matches[4];
 
-	if($GoodStuff)
+	if($GoodStuff !== "")
 	{		
 		switch(strtolower($Matches[1]))
 		{
@@ -280,7 +280,7 @@ function ReplaceKeywords($Matches)
 
                     default:
                         if(empty($text))
-                            $text = "http://{$link}";
+                            $text = $link;
 
                         return "<a href='http://{$link}' target='_blank'>{$text}</a>";
                     break;
