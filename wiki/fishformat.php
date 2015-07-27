@@ -430,6 +430,9 @@ function ReplaceKeywords($Matches)
                 if(preg_match("/(^|\.)youtube.com$/i", $url['host']))
                     return embed_youtube($GoodStuff);
 
+                if(preg_match("/(^|\.)youtu.be$/i", $url['host']))
+                    return embed_youtube($GoodStuff);
+
                 if(preg_match("/(^|\.)vimeo.com$/i", $url['host']))
                     return embed_vimeo($GoodStuff);
 
@@ -714,6 +717,7 @@ function ReplaceLinks($Matches)
             if(preg_match("{https?}", $URL['scheme']) and
                 (!preg_match("/^wiki\.wetfish\.net$/", $URL['host']) and
                  !preg_match("/(^|\.)youtube\.com$/", $URL['host']) and
+                 !preg_match("/(^|\.)youtu\.be$/", $URL['host']) and
                  !preg_match("/(^|\.)vimeo\.com$/", $URL['host']) and
                  !preg_match("/(^|\.)vine\.co$/", $URL['host'])
                 ))
