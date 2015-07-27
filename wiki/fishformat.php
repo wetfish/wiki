@@ -6,9 +6,18 @@ error_reporting(E_ALL ^ E_NOTICE);
 function embed_youtube($input)
 {
     $url = parse_url($input);
-    parse_str($url['query'], $Query);
+    $query = array();
+
+    if($url['host'] == 'youtu.be')
+    {
+        $query['v'] = trim($url['path'], '/');
+    }
+    else
+    {
+        parse_str($url['query'], $query);
+    }
     
-    return "<iframe width='640' height='360' src='https://www.youtube.com/embed/{$Query['v']}' frameborder='0' allowfullscreen></iframe>";
+    return "<iframe width='640' height='360' src='https://www.youtube.com/embed/{$query['v']}' frameborder='0' allowfullscreen></iframe>";
 }
 
 function embed_vimeo($input)
@@ -427,16 +436,16 @@ function ReplaceKeywords($Matches)
             case "video":
                 $url = parse_url($GoodStuff);
 
-                if(preg_match("/(^|\.)youtube.com$/i", $url['host']))
+                if(preg_match("/(^|\.)youtube\.com$/i", $url['host']))
                     return embed_youtube($GoodStuff);
 
-                if(preg_match("/(^|\.)youtu.be$/i", $url['host']))
+                if(preg_match("/(^|\.)youtu\.be$/i", $url['host']))
                     return embed_youtube($GoodStuff);
 
-                if(preg_match("/(^|\.)vimeo.com$/i", $url['host']))
+                if(preg_match("/(^|\.)vimeo\.com$/i", $url['host']))
                     return embed_vimeo($GoodStuff);
 
-                if(preg_match("/(^|\.)vine.co$/i", $url['host']))
+                if(preg_match("/(^|\.)vine\.co$/i", $url['host']))
                     return embed_vine($GoodStuff);
 
                 // Otherwise, it must be a html5 video!
