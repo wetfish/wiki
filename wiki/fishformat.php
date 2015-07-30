@@ -679,6 +679,10 @@ function ReplaceKeywords($Matches)
                 
                 return "<div class='fishbux'> {$amount}  <div class='wrap'><img src='/upload/fishbux/bux{$image}.gif'></div></div>";
             break;
+
+            case "nsfw":
+                return "<div class='nsfw'><span class='warning'>NSFW content hidden.<p>(Click to show)</p></span>{$GoodStuff}</div>";
+            break;
 		}
 	}
 	else
@@ -967,7 +971,8 @@ function FishFormat($Input, $Action='markup')
 							'Total',
                             'Anchor',
                             'Codepen',
-                            'FB|FishBux');
+                            'FB|FishBux',
+                            'NSFW');
 							
 			$Keywords = implode('|', $Keywords);
 

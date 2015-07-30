@@ -265,6 +265,32 @@ pre {
     max-width: 100%;
 }
 
+.nsfw {
+    display: inline-block;
+    position: relative;
+}
+
+.nsfw .warning {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color:#000;
+    color: #fff;
+    text-align: center;
+    vertical-align: middle;
+    padding-top: 22%;
+}
+
+.nsfw .warning p {
+    font-size: 60%;
+}
+
+.nsfw.show .warning {
+    display: none;
+}
+
 CSS;
 
 ?>
