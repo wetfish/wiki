@@ -15,6 +15,8 @@
                 <link href="/styleie.css" rel="stylesheet" type="text/css" media="screen" />
         <![endif]-->
 
+        <script type="text/javascript" src="/src/js/basic.js"></script>
+        <script type="text/javascript" src="/src/js/wiki2.js"></script>
         <script type="text/javascript" src="/js/jquery.min.js"></script>
         <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
         <script type="text/javascript" src="/jquery.colorbox.js"></script>

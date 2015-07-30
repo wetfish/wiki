@@ -1,0 +1,9 @@
+{
+  "name": "wetfish-wiki",
+  "version": "1.0.0",
+  "description": "A messy wiki that's only useful for wetfish",
+  "author": "Rachel Fish <rachel@wetfish.net> (https://wetfish.net)",
+  "dependencies": {
+    "wetfish-basic": "^0.7.4"
+  }
+}
