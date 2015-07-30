@@ -279,7 +279,7 @@ function ReplaceKeywords($Matches)
                     break;
 
                     case "fish":
-                        $link = "https://wiki.wetfish.net/{$url['host']}";
+                        $link = "https://wiki.wetfish.net/{$url['host']}{$url['path']}";
 
                         if(empty($text))
                             $text = $url['host'];
