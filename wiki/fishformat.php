@@ -1006,9 +1006,15 @@ function FishFormat($Input, $Action='markup')
 #			$Output = preg_replace('{<div>\n+}', "<div>", $Output); # Strip newlines before stuff too.
 //			$Output = preg_replace('{</a></div>\n+}', '</a></div>', $Output); # Strip newlines after images.
 
-            // Strip newlines between images.
-            $Output = preg_replace('{div>\n+<div}', "div><div", $Output); 
+            // Allow HTML comments
+            $Output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $Output);
 
+            // Strip newlines around comments
+            $Output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $Output);            
+            
+            // Strip newlines between images.
+            $Output = preg_replace('{div>\n+<div}', "div><div", $Output);
+            
             // Strip newlines after titles and headings
             $Output = preg_replace('{header>\n+}', "header>", $Output);
             $Output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $Output);
