@@ -880,6 +880,29 @@ function replace_links($matches, $mode)
     }
 }
 
+function replace_lists($matches)
+{
+    $type = $matches[1];
+    $list = explode("\n", trim($matches[0]));
+
+    foreach($list as $index => $row)
+    {
+        $row = preg_replace("/^\s*[-*#]\s*/", "", $row);
+        $list[$index] = "<li>{$row}</li>";
+    }
+
+    $list = implode("", $list);
+
+    if($type == '#')
+    {
+        return "<ol>{$list}</ol>";
+    }
+    else
+    {
+        return "<ul>{$list}</ul>";
+    }
+}
+
 function FishFormat($Input, $Action='markup')
 {
 	switch($Action)
@@ -1005,6 +1028,9 @@ function FishFormat($Input, $Action='markup')
 
 #			$Output = preg_replace('{<div>\n+}', "<div>", $Output); # Strip newlines before stuff too.
 //			$Output = preg_replace('{</a></div>\n+}', '</a></div>', $Output); # Strip newlines after images.
+
+            // Ordered and unordered lists
+            $Output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)[^\n]+(?:\n|$))+/m", 'replace_lists', $Output);
 
             // Allow HTML comments
             $Output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $Output);
