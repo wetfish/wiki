@@ -197,7 +197,7 @@ switch($Action[0])
 			if(preg_match("/(ross|fox)/i", $Name) and $Path == 'rossthefox')
 				$PageContent = FishFormat($PageContent, 'ross');
 
-            if(preg_match('/^260/', $userIP) && preg_match('/^news/', $Path))
+            if(preg_match('/^(2600|2601)/', $userIP) && preg_match('/^news/', $Path))
             {
                 $Form['_Errors']['Content'] = "Error: Your subnet is not allowed to edit on this page";
             }
