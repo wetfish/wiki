@@ -15,7 +15,7 @@ a { color:#E87EE1; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
 a.nav { color:#98b3cd; font-size:12pt; font-weight:bold; 
-	text-shadow: 4px 4px 4px #0A002F;
+    text-shadow: 4px 4px 4px #0A002F;
  }
 a.nav:hover { text-decoration:none; }
 
@@ -92,9 +92,9 @@ div.usernav { float:right; padding-right:23px; }
 div.pagenav { padding-left:23px; }
 div.extranav { float:right; font-size:8pt; }
 div.title {
-	padding-left:23px; font-size: 42pt; font-weight:bold;
-	font-family: 'Lobster', serif;
-	text-shadow: 4px 4px 4px #0A002F;
+    padding-left:23px; font-size: 42pt; font-weight:bold;
+    font-family: 'Lobster', serif;
+    text-shadow: 4px 4px 4px #0A002F;
 }
 
 div.footer { position:relative; }
@@ -147,18 +147,18 @@ span.ins{background:#6348b1}
 
 #jetpack
 {	position:absolute;
-	display:none;
-	top:128px;
-	left:128px;
-	border:1px solid #FFF;
-	font-family:Tahoma, Helvetica, Arial;
-	font-size:10pt;
-	color: #FFF;
-	padding:8px;
-	background-image:url('bg.png');
-	z-index:999;
-	-moz-border-radius:8px;
-	-webkit-border-radius:8px;
+    display:none;
+    top:128px;
+    left:128px;
+    border:1px solid #FFF;
+    font-family:Tahoma, Helvetica, Arial;
+    font-size:10pt;
+    color: #FFF;
+    padding:8px;
+    background-image:url('bg.png');
+    z-index:999;
+    -moz-border-radius:8px;
+    -webkit-border-radius:8px;
     border-radius: 8px;
 }
 
@@ -172,19 +172,19 @@ iframe[src="about:blank"]{display:none;}
 
 
 .history td {
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .multi-line {
-	overflow: auto !important;
-	white-space: normal !important;
+    overflow: auto !important;
+    white-space: normal !important;
 }
 
 .date:hover {
-	text-decoration: underline;
-	cursor:help;
+    text-decoration: underline;
+    cursor:help;
 }
 
 
@@ -200,7 +200,7 @@ iframe[src="about:blank"]{display:none;}
 .page-navigation.bottom { border-bottom: 0; margin-bottom: 0; }
 
 #kristyfish {
-	position: absolute;
+    position: absolute;
     -webkit-transform-style: preserve-3d;
     backface-visibility: visible;
 }
@@ -209,18 +209,18 @@ iframe[src="about:blank"]{display:none;}
 .swimming { transition: all 0.5s; }
 
 .wiki-box, .title-box {
-	border:1px solid rgba(0,0,0,0.3);
-	background-color: rgba(0,0,0,0.2);
-	padding:8px;
+    border:1px solid rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.2);
+    padding:8px;
 }
 
 .wiki-box-title, .title-box h1 {
-	border:1px solid rgba(0,0,0,0.3);
-	background-color: rgba(0,0,0,0.2);
-	padding:2px 8px;
-	font-size:14pt;
-	border-radius:2px;
-	font-weight:bold;
+    border:1px solid rgba(0,0,0,0.3);
+    background-color: rgba(0,0,0,0.2);
+    padding:2px 8px;
+    font-size:14pt;
+    border-radius:2px;
+    font-weight:bold;
 }
 
 .title-box h1 {
@@ -235,7 +235,7 @@ iframe[src="about:blank"]{display:none;}
 }
 
 img {
-	max-width:100%;
+    max-width:100%;
 }
 
 video {
