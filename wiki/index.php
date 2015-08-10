@@ -194,9 +194,14 @@ switch($Action[0])
             $Time = Time();
             $Size = strlen($PageContent);
 
-            if(preg_match('/^(2600|2601)/', $userIP) && preg_match('/^news/', $Path))
+            include('src/ban.php');
+
+            if(isset($banlist))
             {
-                $Form['_Errors']['Content'] = "Error: Your subnet is not allowed to edit on this page";
+                if(user_banned($banlist, $userIP))
+                {
+                    $Form['_Errors']['Content'] = "Error: Your subnet is currently blocked from editing. Please <a href='https://login.wetfish.net/'>register an account</a>!";
+                }
             }
 
             if($Account == "on")
@@ -242,6 +247,7 @@ switch($Action[0])
                 if (!$Resp->is_valid and !$_SESSION['bypass'] and $Action[0] != "preview")
                     $Form['_Errors']['Captcha'] = "You did it wrong! Please try again.";
             }
+
 
             if($Time < $_SESSION['EditTime'] + 15)
                 $Form['_Erros']['_Global'] = "Please wait 15 seconds between edits.";

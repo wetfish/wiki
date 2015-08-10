@@ -34,6 +34,8 @@ span.title { font-size: 18pt; font-weight:bold; }
 .small { font-size: 80%; }
 .warning { background:yellow; color:black; font-weight:bold; padding:0px 4px 0px 4px; }
 .error { background:red; color:black; font-weight:bold; padding:0px 4px 0px 4px; }
+.error a { color: yellow; }
+
 
 .ui-draggable { z-index: 3; }
 .super { background-image:url('super.gif'); }

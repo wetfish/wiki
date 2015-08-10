@@ -325,4 +325,17 @@ function formatTime($timestamp)
     }
 }
 
+function user_banned($bans, $user_ip)
+{
+    foreach($bans as $ban)
+    {
+        if(preg_match("/$ban/", $user_ip))
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 ?>
