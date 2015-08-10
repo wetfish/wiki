@@ -930,18 +930,7 @@ function FishFormat($Input, $Action='markup')
 				$Output = str_replace($String, ReplaceLinks($Derp), $Output);
 			}			
 		break;
-
-		case "ross":
-			$Output = $Input;
-
-			$Output = preg_replace('/\bhe\b/i', 'she', $Output);
-			$Output = preg_replace('/\bhis\b/i', 'her', $Output);
-			$Output = preg_replace('/\bross\b/i', 'Roseline', $Output);
-			$Output = preg_replace('/\bmale\b/i', 'female', $Output);
-			$Output = preg_replace('/\bnot a furry\b/i', 'a really, REALLY REALLY BIG FURRYY!!!!!!!!', $Output);
-			$Output = preg_replace('/\bnot a tranny\b/i', 'absolutely in love with makeup and SHOES *^___^*', $Output);
-		break;
-
+        
 		case "format":
 			$Output = preg_replace('/(\w{14})/', "$1&#8203;", $Input);
 		break;
