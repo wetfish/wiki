@@ -681,7 +681,12 @@ function ReplaceKeywords($Matches)
             break;
 
             case "nsfw":
-                return "<div class='nsfw'><span class='warning'>NSFW content hidden.<p>(Click to show)</p></span>{$GoodStuff}</div>";
+                return "<div class='nsfw'><span class='message'>NSFW content hidden.<p>(Click to show)</p></span>{$GoodStuff}</div>";
+            break;
+
+            case "snip":
+            case "hide":
+                return "<div class='snip'><span class='message'>[ <a>Read More</a> ]</span> <div class='stuff'>{$GoodStuff}</div></div>";
             break;
         }
     }
@@ -984,7 +989,8 @@ function FishFormat($Input, $Action='markup')
                             'Anchor',
                             'Codepen',
                             'FB|FishBux',
-                            'NSFW');
+                            'NSFW',
+                            'Snip|Hide');
                             
             $Keywords = implode('|', $Keywords);
 

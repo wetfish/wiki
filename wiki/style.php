@@ -272,7 +272,7 @@ pre {
     position: relative;
 }
 
-.nsfw .warning {
+.nsfw .message {
     position: absolute;
     top: 0;
     left: 0;
@@ -283,14 +283,35 @@ pre {
     text-align: center;
     vertical-align: middle;
     padding-top: 22%;
+    font-weight: bold;
 }
 
-.nsfw .warning p {
+.nsfw .message p {
     font-size: 60%;
+    font-weight: normal;
 }
 
-.nsfw.show .warning {
+.nsfw.show .message {
     display: none;
+}
+
+.snip {
+    display: inline;
+    margin-left: 1em;
+}
+
+.snip .message {
+    cursor: pointer;
+    font-size:75%;
+}
+
+.snip .stuff {
+    display: none;
+    margin-left: 1em;
+}
+
+.snip.show .stuff {
+    display: inline;
 }
 
 CSS;
