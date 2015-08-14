@@ -55,6 +55,21 @@ function embed_html5($input, $options = array())
     return "<video $attributes><source src='/{$input}'></video>";
 }
 
+function embed_ted($ted)
+{
+    $url = parse_url($ted);
+
+    if(preg_match("/(^|\.)ted\.com$/i", $url['host']))
+    {
+        if(!preg_match("\.html$", $url['path']))
+        {
+            $url['path'] .= ".html";
+        }
+
+        return "<iframe src='https://embed-ssl.ted.com{$url['path']}' width='854' height='480' frameborder='0' scrolling='no' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
+    }
+ }
+
 function embed_codepen($input)
 {
     $url = parse_url($input);
@@ -448,20 +463,18 @@ function ReplaceKeywords($Matches)
                 if(preg_match("/(^|\.)vine\.co$/i", $url['host']))
                     return embed_vine($GoodStuff);
 
+               if(preg_match("/(^|\.)ted\.com$/i", $url['host']))
+                    return embed_ted($GoodStuff);
+
                 // Otherwise, it must be a html5 video!
                 return embed_html5($GoodStuff);
             break;
 
             case "youtube":
-                return embed_youtube($GoodStuff);
-            break;
-
             case "vimeo":
-                return embed_vimeo($GoodStuff);
-            break;
-
             case "vine":
-                return embed_vine($GoodStuff);
+            case "ted":
+                return call_user_func('embed_' . $Matches[1], $GoodStuff);
             break;
 
             case "playlist":
@@ -737,7 +750,8 @@ function ReplaceLinks($Matches)
                  !preg_match("/(^|\.)youtube\.com$/", $URL['host']) and
                  !preg_match("/(^|\.)youtu\.be$/", $URL['host']) and
                  !preg_match("/(^|\.)vimeo\.com$/", $URL['host']) and
-                 !preg_match("/(^|\.)vine\.co$/", $URL['host'])
+                 !preg_match("/(^|\.)vine\.co$/", $URL['host']) and
+                 !preg_match("/(^|\.)ted\.com$/", $URL['host'])
                 ))
             {				
                 $Path = pathinfo($URL['path']);
@@ -969,8 +983,7 @@ function FishFormat($Input, $Action='markup')
                             'URL',
                             'Image|IMG',
                             'Redirect',
-                            'Video|Youtube',
-                            'Vimeo',
+                            'Video|Youtube|Vimeo|Vine|Ted',
                             'SoundCloud',
                             'Load',
                             'Music',
