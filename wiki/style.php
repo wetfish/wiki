@@ -2,7 +2,7 @@
 
 header('Content-type: text/css');
 echo <<<CSS
-body { margin:0 4% 64px 4%; background-image:url('missingno.png'); color: #FFFFFF; font-family: Tahoma,Helvetica,Sans-serif; font-size:10pt; overflow-x: hidden; z-index: 0; }
+body { margin:0 4% 64px 4%; background-image:url('missingno.png'); color: #FFFFFF; font-family: Tahoma,Helvetica,Sans-serif; font-size:10pt; overflow-x: hidden; z-index: 0; min-height: 100vh; }
 hr { height: 0px;  border: solid #98b3cd; border-width: 1px 0px 0px 0px; margin: 4px 0px; }
 
 p { padding:0px; margin:0px }
@@ -203,12 +203,16 @@ iframe[src="about:blank"]{display:none;}
 
 #kristyfish {
     position: absolute;
-    -webkit-transform-style: preserve-3d;
-    backface-visibility: visible;
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
 }
 
-.fishwrap { position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; }
-.swimming { transition: all 0.5s; }
+.fishwrap {
+    position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden;
+    z-index: -1;
+}
+
+.swimming { transition: transform 0.5s ease; }
 
 .wiki-box, .title-box {
     border:1px solid rgba(0,0,0,0.3);

@@ -13,6 +13,11 @@ var transform =
     }
 }
 
+
+
+
+
+
 var swim =
 {
     up: 30,
@@ -58,14 +63,18 @@ var swim =
         }
 
         transform.update('#kristyfish');
-        setTimeout(swim.update, 510);
     }
+}
+
+function resize()
+{
+    var height = Math.max($(window).height(), $('body').height());
+    $('.fishwrap').height(height);
 }
 
 $(document).ready(function()
 {
-    $('.fishwrap').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
-    $('.fishwrap').height($('html').height());
+    $('.fishwrap').append("<div src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
 
     $('#kristyfish').load(function()
     {
@@ -77,7 +86,19 @@ $(document).ready(function()
         setTimeout(function()
         {
             $('#kristyfish').addClass('swimming');
+            $('#kristyfish').on('transitionend', function()
+            {
+                swim.update();
+            });
+
             swim.update();
         }, 10);
     });
+
+    resize();
+});
+
+$(window).on('load resize', function()
+{
+    resize();
 });
