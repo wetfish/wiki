@@ -13,11 +13,6 @@ var transform =
     }
 }
 
-
-
-
-
-
 var swim =
 {
     up: 30,
@@ -68,13 +63,13 @@ var swim =
 
 function resize()
 {
-    var height = Math.max($(window).height(), $('body').height());
+    var height = Math.max($(window).height(), $('html').height());
     $('.fishwrap').height(height);
 }
 
 $(document).ready(function()
 {
-    $('.fishwrap').append("<div src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
+    $('.fishwrap').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
 
     $('#kristyfish').load(function()
     {
