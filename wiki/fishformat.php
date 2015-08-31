@@ -907,7 +907,11 @@ function replace_lists($matches)
     foreach($list as $index => $row)
     {
         $row = preg_replace("/^\s*[-*#]\s*/", "", $row);
-        $list[$index] = "<li>{$row}</li>";
+
+        if($row)
+        {
+            $list[$index] = "<li>{$row}</li>";
+        }
     }
 
     $list = implode("", $list);
