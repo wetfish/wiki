@@ -1038,7 +1038,7 @@ function FishFormat($Input, $Action='markup')
 //			$Output = preg_replace('{</a></div>\n+}', '</a></div>', $Output); # Strip newlines after images.
 
             // Ordered and unordered lists
-            $Output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)[^\n]+(?:\n|$))+/m", 'replace_lists', $Output);
+            $Output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)\s+[^\n]+(?:\n|$))+/m", 'replace_lists', $Output);
 
             // Allow HTML comments
             $Output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $Output);
