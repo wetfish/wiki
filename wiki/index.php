@@ -80,6 +80,9 @@ if(strpos($Path, ' ') !== FALSE || strpos($Path, '%20') !== FALSE)
 
 $Path = trim($Path, "/");
 
+if($Path == "home")
+    $Path = "";
+
 $Title[] = "wetfish.net";
 
 $Content = array();
