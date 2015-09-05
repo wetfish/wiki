@@ -61,9 +61,9 @@ function embed_ted($ted)
 
     if(preg_match("/(^|\.)ted\.com$/i", $url['host']))
     {
-        if(!preg_match("\.html$", $url['path']))
+        if(preg_match("/\.html$/", $url['path']))
         {
-            $url['path'] .= ".html";
+            $url['path'] = preg_replace("/\.html$/", "", $url['path']);
         }
 
         return "<iframe src='https://embed-ssl.ted.com{$url['path']}' width='854' height='480' frameborder='0' scrolling='no' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
