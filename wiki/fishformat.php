@@ -926,21 +926,170 @@ function replace_lists($matches)
     }
 }
 
-function FishFormat($Input, $Action='markup')
+function replace_once($search, $replacement, $string)
 {
-    switch($Action)
+    // We have to use preg_replace instead of str_replace to ensure this match is only replaced once
+    return preg_replace("/" . preg_quote($search, "/") . "/", $replacement, $string, 1);
+}
+
+function find_markup($input)
+{
+    $tags = array
+    (
+        'Ad|Ads',
+        'Pre',
+        'Flash',
+        'Color',
+        'Magic',
+        'Bold|B',
+        'Box|Title|Infobox|TitleBox',
+        'Underline|U',
+        'Italics?|I',
+        'Strike|S',
+        'Heading|SubHeading',
+        'Big',
+        'Medium|Med',
+        'Small|Sml',
+        'URL',
+        'Image|IMG',
+        'Redirect',
+        'Video|Youtube|Vimeo|Vine|Ted',
+        'SoundCloud',
+        'Load',
+        'Music',
+        'Snow',
+        '(?:Double|Dbl)?Rainbow2?',
+        'Glitch',
+        'Red',
+        'Redtube',
+        'Motherless',
+        'Embed',
+        'Center',
+        'Right|Left',
+        'Playlist',
+        'Style',
+        'Total',
+        'Anchor',
+        'Codepen',
+        'FB|FishBux',
+        'NSFW',
+        'Snip|Hide',
+    );
+
+    $start = array
+    (
+        '{',
+        '\['
+    );
+
+    $end = array
+    (
+        '}',
+        '\]'
+    );
+
+    $braces = implode('', $start) . implode('', $end);
+    $tags = implode('|', $tags);
+    $start = implode('|', $start);
+    $end = implode('|', $end);
+
+    // Don't treat newlines as whitespace
+    $whitespace = "[^\S\n]*";
+
+    // Match all tags, or tag groups
+    $tags = "(?:(?:(?:$tags),$whitespace)+)?(?:$tags)";
+
+    // Regex for matching tags with delimiters
+    $delimited = "\b($tags)$whitespace([^ $braces])(?:$start)(.+)(?:$end)\\2";
+
+    // Regex for matching regular tags
+    $regular = "\b($tags)$whitespace(?:$start)(.+?)(?:$end)";
+    $output = array();
+
+    while(preg_match("/(?:$delimited|$regular)/is", $input, $match))
+    {
+        $input = replace_once($match[0], "", $input);
+        $data = array
+        (
+            'source' => $match[0],
+            'tag' => ($match[1]) ? $match[1] : $match[4],
+            'content' => ($match[3]) ? $match[3] : $match[5] 
+        );
+
+        if(preg_match("/(?:$delimited|$regular)/is", $data['content']))
+        {
+            $data['content'] = find_markup($data['content']);
+        }
+
+        $output[] = $data;
+    }
+
+    return $output;
+}
+
+function filter_markup($input)
+{
+    $output = array();
+    
+    foreach($input as $object)
+    {
+        if(is_array($object['content']))
+        {
+            $filtered = filter_markup($object['content']);
+
+            foreach($filtered as $markup)
+            {
+                $text .= $markup['text'];
+            }
+        }
+        else
+        {
+            $text = explode('|', $object['content']);
+            $text = array_pop($text);
+        }
+
+        $output[] = array
+        (
+            'source' => $object['source'],
+            'text' => $text
+        );
+    }
+
+    return $output;
+}
+
+function FishFormat($text, $action='markup')
+{
+    switch($action)
     {
         case "strip":
-            $Output = str_replace("\n", "", $Input);
+            $markup = find_markup($text);
+            $markup = filter_markup($markup);
+
+            foreach($markup as $filtered)
+            {
+                $text = replace_once($filtered['source'], $filtered['text'], $text);
+            }
+
+            // Remove newlines
+            $text = str_replace("\n", "", $text);
+
+            // Filter links
+            $text = preg_replace("/(?:\[\[|{{)([^\]\|}]+)(?:\]\]|}})/", "\\1", $text);
+            $text = preg_replace("/(?:\[\[|{{)[^\]}]+\|([^\]}]+)(?:\]\]|}})/", "\\1", $text);
+
+            $output = $text;
         break;
 
         case "edit":
-            $Output = str_replace("\t", "    ", $Input);
+            $output = str_replace("\t", "    ", $text);
 
-            while(preg_match('/^ *:+/m', $Output)) {
-                $Output = preg_replace('/^( *):/m','\1    ', $Output); }
 
-            preg_match_all("/\b(Image|IMG|Video|SoundCloud|Date) \s* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $Output, $Matches);
+
+            while(preg_match('/^ *:+/m', $output)) {
+                $output = preg_replace('/^( *):/m','\1    ', $output); }
+
+            preg_match_all("/\b(Image|IMG|Video|SoundCloud|Date) \s* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $output, $Matches);
             
             foreach($Matches[0] as $Key => $String)
             {
@@ -950,25 +1099,25 @@ function FishFormat($Input, $Action='markup')
                 $Derp[3] = $Matches[3][$Key];
                 $Derp[4] = $Matches[4][$Key];
 
-                $Output = str_replace($String, ReplaceLinks($Derp), $Output);
+                $output = str_replace($String, ReplaceLinks($Derp), $output);
             }			
         break;
         
         case "format":
-            $Output = preg_replace('/(\w{14})/', "$1&#8203;", $Input);
+            $output = preg_replace('/(\w{14})/', "$1&#8203;", $text);
         break;
 
         default:
-            $Output = $Input;
-            $Output = str_replace("    ", "&emsp;&emsp;&emsp;", $Output);
+            $output = $text;
+            $output = str_replace("    ", "&emsp;&emsp;&emsp;", $output);
 
             // Links with custom text
-            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "custom_link", $Output);
+            $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "custom_link", $output);
 
             // Basic links
-            $Output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})(s)?/', "basic_link", $Output);
+            $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})(s)?/', "basic_link", $output);
             
-            $Output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $Output);
+            $output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $output);
             
             $Keywords = array('Ad|Ads',
                             'Pre',
@@ -1011,20 +1160,20 @@ function FishFormat($Input, $Action='markup')
                             
             $Keywords = implode('|', $Keywords);
 
-            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [}\]] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $Output)) {
-                $Output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $Output); }
+            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [}\]] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $output)) {
+                $output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $output); }
 
-            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [}\]] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", $Output)) {
-                $Output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $Output); }
+            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [}\]] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", $output)) {
+                $output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $output); }
 
-            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $Output)) {
-                $Output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeywords", $Output); }
+            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $output)) {
+                $output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeywords", $output); }
 
-            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $Output)) {
-                $Output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeywords", $Output); }
+            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $output)) {
+                $output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeywords", $output); }
 
-            #$Output = preg_replace('/#(\D\w+)/', "<a href='irc://irc.wetfish.net/$1'>#$1</a>", $Output);
-            #$Output = preg_replace('/([\S\/<>&]{14})/', "$1&#8203;", $Output);
+            #$output = preg_replace('/#(\D\w+)/', "<a href='irc://irc.wetfish.net/$1'>#$1</a>", $output);
+            #$output = preg_replace('/([\S\/<>&]{14})/', "$1&#8203;", $output);
 
             $Search[':Z'] = "<span class='warning'>:Z</span>";
             $Search[':downy:'] = "<span class='warning medium' style='font-family:helvetica'>.'<u>/</u>)</span>";
@@ -1032,38 +1181,38 @@ function FishFormat($Input, $Action='markup')
             
             foreach($Search as $Key => $Value)
             {
-                $Output = str_replace($Key, $Value, $Output);
+                $output = str_replace($Key, $Value, $output);
             }
             
-            #$Output = str_replace(":2", "<span class='warning'>:2</span>", $Output);
-            $Output = str_replace("&lt;3", "<span class='error'>&lt;3</span>", $Output);
+            #$output = str_replace(":2", "<span class='warning'>:2</span>", $output);
+            $output = str_replace("&lt;3", "<span class='error'>&lt;3</span>", $output);
 
-#			$Output = preg_replace('{<div>\n+}', "<div>", $Output); # Strip newlines before stuff too.
-//			$Output = preg_replace('{</a></div>\n+}', '</a></div>', $Output); # Strip newlines after images.
+#			$output = preg_replace('{<div>\n+}', "<div>", $output); # Strip newlines before stuff too.
+//			$output = preg_replace('{</a></div>\n+}', '</a></div>', $output); # Strip newlines after images.
 
             // Ordered and unordered lists
-            $Output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)\s+[^\n]+(?:\n|$))+/m", 'replace_lists', $Output);
+            $output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)\s+[^\n]+(?:\n|$))+/m", 'replace_lists', $output);
 
             // Allow HTML comments
-            $Output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $Output);
+            $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
 
             // Strip newlines around comments
-            $Output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $Output);            
+            $output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $output);            
             
             // Strip newlines between images.
-            $Output = preg_replace('{div>\n+<div}', "div><div", $Output);
+            $output = preg_replace('{div>\n+<div}', "div><div", $output);
             
             // Strip newlines after titles and headings
-            $Output = preg_replace('{header>\n+}', "header>", $Output);
-            $Output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $Output);
-            $Output = str_replace("<hr />\n", "<hr />", $Output);
+            $output = preg_replace('{header>\n+}', "header>", $output);
+            $output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $output);
+            $output = str_replace("<hr />\n", "<hr />", $output);
 
             // Replace newlines with line breaks
-            $Output = str_replace("\n", "<br />", $Output);
+            $output = str_replace("\n", "<br />", $output);
         break;
     }
     
-        return $Output;
+        return $output;
 }
 
 ?>
