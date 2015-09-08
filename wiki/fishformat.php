@@ -844,6 +844,7 @@ function find_markup($input)
         'FB|FishBux',
         'NSFW',
         'Snip|Hide',
+        'Date',
     );
     
     $start = array
@@ -859,6 +860,7 @@ function find_markup($input)
     );
 
     $braces = implode('', $start) . implode('', $end);
+    $content = '[^'.implode('', $start).']+?';
     $tags = implode('|', $tags);
     $start = implode('|', $start);
     $end = implode('|', $end);
@@ -873,7 +875,7 @@ function find_markup($input)
     $delimited = "\b($tags)$whitespace([^ $braces])(?:$start)(.+)(?:$end)\\2";
 
     // Regex for matching regular tags
-    $regular = "\b($tags)$whitespace(?:$start)(.+?)(?:$end)";
+    $regular = "\b($tags)$whitespace(?:$start)($content)(?:$end)";
     $output = array();
 
     while(preg_match("/(?:$delimited|$regular)/is", $input, $match))
@@ -936,7 +938,7 @@ function rewrite_markup($input, $markup)
     {
         if(is_array($object['content']))
         {
-            $output = replace_once($object['source'], rewrite_markup($object['source'], $object['content']));
+            $output = replace_once($object['source'], rewrite_markup($object['source'], $object['content']), $output);
         }
         else
         {
@@ -1120,8 +1122,15 @@ function FishFormat($text, $action='markup')
             while(preg_match('/^ *:+/m', $output)) {
                 $output = preg_replace('/^( *):/m','\1    ', $output); }
 
+            // Filter links
+            $output = str_replace(array('[[', ']]', '{{', '}}'), array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), $output);
+
+            // Rewrite specific tags (images, soundcloud, date)
             $markup = find_markup($output);
             $output = rewrite_markup($output, $markup);
+
+            // Un-filter links
+            $output = str_replace(array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), array('[[', ']]', '{{', '}}'), $output);
         break;
         
         case "format":
