@@ -653,7 +653,6 @@ shuffle($Titles);
                 
 $Title[] = $Titles[0];
 $Title = implode(" &mdash; ", $Title);
-$Title = str_replace(array('{', '}'), '', $Title);
 
 if(empty($Content['Footer']))
     $Content['Footer'] = '(´ﾟ∀ﾟ)つ Oops! Feet not found. ';
