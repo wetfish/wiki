@@ -9,8 +9,8 @@
         <meta name="google-site-verification" content="lj_UCeIzlK8MDZyzJ-73XUUZHgroWS_1kQ6kkNar0Vg" />
         <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
         <link href="/style.php" rel="stylesheet" type="text/css" />
-        <link href="/colorbox.css" rel="stylesheet" type="text/css" />
         <link href="/src/css/diff.css" rel="stylesheet" type="text/css" />
+        <link href="/window.css" rel="stylesheet" type="text/css" />
         <!--[if IE]>
                 <link href="/styleie.css" rel="stylesheet" type="text/css" media="screen" />
         <![endif]-->
@@ -19,16 +19,8 @@
         <script type="text/javascript" src="/src/js/wiki2.js"></script>
         <script type="text/javascript" src="/js/jquery.min.js"></script>
         <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="/jquery.colorbox.js"></script>
-        <script type="text/javascript" src="/jquery.json-2.2.min.js"></script>
-        <!-- <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>  -->
-        
-        <script type="text/javascript" src="/jquery-fieldselection.js"></script>
         <script type="text/javascript" src="/js/window.js"></script>
-        <script src='/src/js/wetki.js'></script>
-        <!-- <script src='/src/js/jquery.transit.js'></script> -->
-        <link href="/window.css" rel="stylesheet" type="text/css" />
-        
+        <script type="text/javascript" src='/src/js/wetki.js'></script>        
         <script type="text/javascript" src="/js/wiki.js"></script>
         <script type="text/javascript" src="/js/swim.js"></script>
         
