@@ -16,13 +16,11 @@
         <![endif]-->
 
         <script type="text/javascript" src="/src/js/basic.js"></script>
+        <script type="text/javascript" src="/src/js/dragondrop.js"></script>
+        <script type="text/javascript" src="/src/js/wiki.js"></script>
         <script type="text/javascript" src="/src/js/wiki2.js"></script>
-        <script type="text/javascript" src="/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="/js/window.js"></script>
-        <script type="text/javascript" src='/src/js/wetki.js'></script>        
-        <script type="text/javascript" src="/js/wiki.js"></script>
-        <script type="text/javascript" src="/js/swim.js"></script>
+        <script type="text/javascript" src="/src/js/window.js"></script>
+        <script type="text/javascript" src="/src/js/swim.js"></script>
         
         <link rel="icon" type="image/png" href="/favzz.png"/>
     </head>

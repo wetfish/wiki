@@ -370,7 +370,7 @@ $Content['Body'] .= <<<SuperNav
     $(document).ready(function ()
     {
         
-        Window(	"<span class='medium'>Super Edit 3.2 !!!</span><hr />"+
+        Window(	"<span class='medium'>Super Edit 3.3 !!!</span><hr />"+
                 "<table><tr><td>"+
                 "<a href='javascript:Wiki(\"Bold\")'>Bold</a> &emsp; <a href='javascript:Wiki(\"Italics\")'>Italics</a> &emsp; <a href='javascript:Wiki(\"Underline\")'>Underline</a> &emsp; <a href='javascript:Wiki(\"Strike\")'>Strike</a><br />"+
                 "<a href='javascript:Wiki(\"Big\")'>Big</a> &emsp; <a href='javascript:Wiki(\"Medium\")'>Medium</a> &emsp; <a href='javascript:Wiki(\"Small\")'>Small</a> &emsp; <a href='javascript:Wiki(\"Rainbow\")'>Rainbow</a>"+

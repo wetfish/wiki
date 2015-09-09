@@ -38,7 +38,7 @@ span.title { font-size: 18pt; font-weight:bold; }
 
 
 .ui-draggable { z-index: 3; }
-.super { background-image:url('super.gif'); }
+.super { background-image:url('super.gif'); opacity: 0; transition: opacity 0.8s }
 .duper { position:absolute; top:0; bottom:0; right:0; left:0; display:none; }
 .nav { -webkit-border-top-left-radius: 8px;
 -webkit-border-top-right-radius: 8px;
@@ -316,6 +316,15 @@ pre {
 
 .snip.show .stuff {
     display: inline;
+}
+
+.dragon {
+    z-index: 1337;
+    transition: transform 0.5s;
+}
+
+.dragging {
+    transition: transform 0s;
 }
 
 CSS;

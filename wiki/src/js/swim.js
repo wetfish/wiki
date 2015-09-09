@@ -8,8 +8,8 @@ var transform =
     // Function for managing transforms
     update: function(selector)
     {
-        $(selector).css({'transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
-        $(selector).css({'-webkit-transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
+        $(selector).style({'transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
+        $(selector).style({'-webkit-transform': 'translate('+transform.x+'px, '+transform.y+'px) rotate('+transform.rotate+'deg) scaleX('+transform.flip+')'});
     }
 }
 
@@ -21,7 +21,7 @@ var swim =
     
     update: function()
     {
-        var pos = $('#kristyfish')[0].getBoundingClientRect();
+        var pos = $('#kristyfish').el[0].getBoundingClientRect();
 
         // If the fish is off the screen
         if(pos.left > $(window).width() || pos.left < -(pos.width))
@@ -64,14 +64,14 @@ var swim =
 function resize()
 {
     var height = Math.max($(window).height(), $('html').height());
-    $('.fishwrap').height(height);
+    $('.fishwrap').style({'height': height + 'px'});
 }
 
 $(document).ready(function()
 {
     $('.fishwrap').append("<img src='https://wiki.wetfish.net/upload/52a357b9-3680-9030-34ed-fc68895773c1.png' id='kristyfish'>");
 
-    $('#kristyfish').load(function()
+    $('#kristyfish').on('load', function()
     {
         transform.x = $(window).width();
         transform.y = Math.random() * $('body').height();
