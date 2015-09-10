@@ -860,7 +860,7 @@ function find_markup($input)
     );
 
     $braces = implode('', $start) . implode('', $end);
-    $content = '[^'.implode('', $start).']+?';
+    $content = '[^'.implode('', $start).']*?';
     $tags = implode('|', $tags);
     $start = implode('|', $start);
     $end = implode('|', $end);
@@ -872,7 +872,7 @@ function find_markup($input)
     $tags = "(?:(?:(?:$tags),$whitespace)+)?(?:$tags)";
 
     // Regex for matching tags with delimiters
-    $delimited = "\b($tags)$whitespace([^ $braces])(?:$start)(.+)(?:$end)\\2";
+    $delimited = "\b($tags)$whitespace([^ $braces])(?:$start)(.*)(?:$end)\\2";
 
     // Regex for matching regular tags
     $regular = "\b($tags)$whitespace(?:$start)($content)(?:$end)";
