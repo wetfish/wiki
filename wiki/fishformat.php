@@ -519,7 +519,7 @@ function ReplaceKeywords($Matches)
                 
                 if(preg_match('/^.*\.?wetfish.net$/i', $URL['host']))
                 {
-                    $ID = uuid();				
+                    $ID = preg_replace("/^[0-9]+/", "", uuid());
                     
                     if($URL['host'] == 'danger.wetfish.net')
                     {
