@@ -8,7 +8,7 @@ include('src/libraries/simple_html_dom.php');
 
 require('recaptchalib.php');
 #require('diff/inline_function.php');
-require('fishformat.php');
+require('src/markup/fishformat.php');
 require('navigation.php');
 include('fun/paginate.php');
 

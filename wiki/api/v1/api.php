@@ -2,7 +2,7 @@
 
 // Required functions for displaying wiki markup
 require "../../functions.php";
-require "../../fishformat.php";
+require "../../src/markup/fishformat.php";
 
 class API
 {

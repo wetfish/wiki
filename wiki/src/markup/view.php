@@ -1,100 +1,76 @@
 <?php
 
-error_reporting(E_ALL ^ E_NOTICE);
-
-// Shouldn't these do some sort of filtering / sanitization?
-function embed_youtube($input)
+function basic_link($matches)
 {
-    $url = parse_url($input);
-    $query = array();
+    return replace_links($matches, 'basic');
+}
 
-    if($url['host'] == 'youtu.be')
+function custom_link($matches)
+{
+    return replace_links($matches, 'custom');
+}
+
+function replace_links($matches, $mode)
+{
+    // Replace spaces with hyphens
+    $page = str_replace(" ", "-", $matches[1]);
+    
+    // Remove invalid characters from URLs
+    $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
+    $page = str_replace($invalid, "", $page);
+
+    // Don't check if the page exists when linking to special pages
+    if(!(strpos($page, "?") !== false))
     {
-        $query['v'] = trim($url['path'], '/');
-    }
-    else
-    {
-        parse_str($url['query'], $query);
+        // Check if the page exists
+        $escaped_page = mysql_real_escape_string($page);
+        $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
+        list($page_exists) = mysql_fetch_array($page_query);
+
+        if(empty($page_exists))
+        {
+            $class = "broken";
+        }
     }
     
-    return "<iframe width='640' height='360' src='https://www.youtube.com/embed/{$query['v']}' frameborder='0' allowfullscreen></iframe>";
-}
+    if(isset($_GET['random']))
+        $random = "/?random";
 
-function embed_vimeo($input)
-{
-    $url = parse_url($input);
-    $videoID = preg_replace("/[^0-9]/", "", $url['path']);
-
-    return "<iframe src='https://player.vimeo.com/video/{$videoID}?byline=0&amp;portrait=0&amp;badge=0&amp;color=ffffff' width='640' height='360' frameborder='0' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
-}
-
-function embed_vine($input)
-{
-    $url = parse_url($input);
-    return "<iframe src='https://vine.co/{$url['path']}/embed/simple?audio=1' width='600' height='600' frameborder='0'></iframe>";
-}
-
-function embed_html5($input, $options = array())
-{
-    $default = array('controls' => true);
-    $options = array_merge($default, $options);
-    $attributes = array();
-
-    foreach($options as $option => $value)
+    if($mode == "custom")
     {
-        if($value)
-        {
-            if($value === true)
-                array_push($attributes, $option);
-            else
-                array_push($attributes, "$option='$value'");
-        }
-    }
-
-    $attributes = implode(' ', $attributes);
-    return "<video $attributes><source src='/{$input}'></video>";
-}
-
-function embed_ted($ted)
-{
-    $url = parse_url($ted);
-
-    if(preg_match("/(^|\.)ted\.com$/i", $url['host']))
-    {
-        if(preg_match("/\.html$/", $url['path']))
-        {
-            $url['path'] = preg_replace("/\.html$/", "", $url['path']);
-        }
-
-        return "<iframe src='https://embed-ssl.ted.com{$url['path']}' width='854' height='480' frameborder='0' scrolling='no' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>";
-    }
- }
-
-function embed_codepen($input)
-{
-    $url = parse_url($input);
-    $path = str_replace('/pen/', '/embed/', $url['path']);
-
-    return "<iframe height='420' scrolling='no' src='https://codepen.io/{$path}?height=420&theme-id=0&default-tab=result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'></iframe>";
-}
-
-function embed_soundcloud($input)
-{
-    $url = parse_url($input);
-    parse_str($url['query'], $get);
-
-    if(preg_match('{/sets/}', $url['path']))
-    {
-        $endpoint = 'playlists';
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[2]}</a>";
     }
     else
     {
-        $endpoint = 'tracks';
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}{$matches[2]}</a>";
+    }
+}
+
+function replace_lists($matches)
+{
+    $type = $matches[1];
+    $list = explode("\n", trim($matches[0]));
+
+    foreach($list as $index => $row)
+    {
+        $row = preg_replace("/^\s*[-*#]\s*/", "", $row);
+
+        if($row)
+        {
+            $list[$index] = "<li>{$row}</li>";
+        }
     }
 
-    $options = "&amp;auto_play=false&amp;hide_related=false&amp;show_comments=true&amp;show_user=true&amp;show_reposts=false&amp;visual=true";
-    $src = "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/{$endpoint}/{$get['id']}{$options}";
-    return "<iframe width='100%' height='166' scrolling='no' frameborder='no' src='{$src}'></iframe>";
+    $list = implode("", $list);
+
+    if($type == '#')
+    {
+        return "<ol>{$list}</ol>";
+    }
+    else
+    {
+        return "<ul>{$list}</ul>";
+    }
 }
 
 function ReplaceKeywords($Matches)
@@ -375,15 +351,15 @@ function ReplaceKeywords($Matches)
                     $Info = pathinfo($Link);
 
                     // Make sure the file actually exists
-                    if(!file_exists(__DIR__ . "/upload/{$Info['basename']}"))
+                    if(!file_exists(__DIR__ . "/../../upload/{$Info['basename']}"))
                     {
                         // Display an icon if the image can't be loaded
                         $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
                     }
                     else
                     {
-                        if(!file_exists(__DIR__ . "/upload/{$Size}_{$Info['basename']}"))
-                            ResizeImage($Link, __DIR__ . "/upload/{$Size}_{$Info['basename']}", $Size);
+                        if(!file_exists(__DIR__ . "/../../upload/{$Size}_{$Info['basename']}"))
+                            ResizeImage($Link, __DIR__ . "/../../upload/{$Size}_{$Info['basename']}", $Size);
                             
                         $ImageText = "<a href='/$Link' class='exempt'><img src='/upload/{$Size}_{$Info['basename']}' border='0' /></a>";
                     }
@@ -398,7 +374,7 @@ function ReplaceKeywords($Matches)
                     $URL = parse_url($Link);
 
                     // Make sure wiki images exist
-                    if(preg_match("{^/upload}", $URL['path']) && !file_exists(__DIR__ . "{$URL['path']}"))
+                    if(preg_match("{^/upload}", $URL['path']) && !file_exists(__DIR__ . "/../..{$URL['path']}"))
                     {
                         // Display an icon if the image can't be loaded
                         $ImageText = "<a href='#error' class='exempt'><img src='/upload/apple.gif' title='There was an error loading this image' border='0' /></a>";
@@ -721,528 +697,6 @@ function ReplaceKeyPENIS($Matches)
 
 
     return $Matches[2]."[".ReplaceKeywords($FixedMatches)."]";
-}
-
-function basic_link($matches)
-{
-    return replace_links($matches, 'basic');
-}
-
-function custom_link($matches)
-{
-    return replace_links($matches, 'custom');
-}
-
-function replace_links($matches, $mode)
-{
-    // Replace spaces with hyphens
-    $page = str_replace(" ", "-", $matches[1]);
-    
-    // Remove invalid characters from URLs
-    $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
-    $page = str_replace($invalid, "", $page);
-
-    // Don't check if the page exists when linking to special pages
-    if(!(strpos($page, "?") !== false))
-    {
-        // Check if the page exists
-        $escaped_page = mysql_real_escape_string($page);
-        $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
-        list($page_exists) = mysql_fetch_array($page_query);
-
-        if(empty($page_exists))
-        {
-            $class = "broken";
-        }
-    }
-    
-    if(isset($_GET['random']))
-        $random = "/?random";
-
-    if($mode == "custom")
-    {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[2]}</a>";
-    }
-    else
-    {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}{$matches[2]}</a>";
-    }
-}
-
-function replace_lists($matches)
-{
-    $type = $matches[1];
-    $list = explode("\n", trim($matches[0]));
-
-    foreach($list as $index => $row)
-    {
-        $row = preg_replace("/^\s*[-*#]\s*/", "", $row);
-
-        if($row)
-        {
-            $list[$index] = "<li>{$row}</li>";
-        }
-    }
-
-    $list = implode("", $list);
-
-    if($type == '#')
-    {
-        return "<ol>{$list}</ol>";
-    }
-    else
-    {
-        return "<ul>{$list}</ul>";
-    }
-}
-
-function replace_once($search, $replacement, $string)
-{
-    // We have to use preg_replace instead of str_replace to ensure this match is only replaced once
-    return preg_replace("/" . preg_quote($search, "/") . "/", $replacement, $string, 1);
-}
-
-function find_markup($input)
-{
-    $tags = array
-    (
-        'Ad|Ads',
-        'Pre',
-        'Flash',
-        'Color',
-        'Magic',
-        'Bold|B',
-        'Box|Title|Infobox|TitleBox',
-        'Underline|U',
-        'Italics?|I',
-        'Strike|S',
-        'Heading|SubHeading',
-        'Big',
-        'Medium|Med',
-        'Small|Sml',
-        'URL',
-        'Image|IMG',
-        'Redirect',
-        'Video|Youtube|Vimeo|Vine|Ted',
-        'SoundCloud',
-        'Load',
-        'Music',
-        'Snow',
-        '(?:Double|Dbl)?Rainbow2?',
-        'Glitch',
-        'Red',
-        'Redtube',
-        'Motherless',
-        'Embed',
-        'Center',
-        'Right|Left',
-        'Playlist',
-        'Style',
-        'Total',
-        'Anchor',
-        'Codepen',
-        'FB|FishBux',
-        'NSFW',
-        'Snip|Hide',
-        'Date',
-    );
-    
-    $start = array
-    (
-        '{',
-        '\['
-    );
-
-    $end = array
-    (
-        '}',
-        '\]'
-    );
-
-    $braces = implode('', $start) . implode('', $end);
-    $content = '[^'.implode('', $start).']*?';
-    $tags = implode('|', $tags);
-    $start = implode('|', $start);
-    $end = implode('|', $end);
-
-    // Don't treat newlines as whitespace
-    $whitespace = "[^\S\n]*";
-
-    // Match all tags, or tag groups
-    $tags = "(?:(?:(?:$tags),$whitespace)+)?(?:$tags)";
-
-    // Regex for matching tags with delimiters
-    $delimited = "\b($tags)$whitespace([^ $braces])(?:$start)(.*)(?:$end)\\2";
-
-    // Regex for matching regular tags
-    $regular = "\b($tags)$whitespace(?:$start)($content)(?:$end)";
-    $output = array();
-
-    while(preg_match("/(?:$delimited|$regular)/is", $input, $match))
-    {
-        $input = replace_once($match[0], "", $input);
-        $data = array
-        (
-            'source' => $match[0],
-            'tag' => ($match[1]) ? $match[1] : $match[4],
-            'content' => ($match[3]) ? $match[3] : $match[5] 
-        );
-
-        if(preg_match("/(?:$delimited|$regular)/is", $data['content']))
-        {
-            $data['content'] = find_markup($data['content']);
-        }
-
-        $output[] = $data;
-    }
-
-    return $output;
-}
-
-function filter_markup($input)
-{
-    $output = array();
-    
-    foreach($input as $object)
-    {
-        if(is_array($object['content']))
-        {
-            $filtered = filter_markup($object['content']);
-
-            foreach($filtered as $markup)
-            {
-                $text .= $markup['text'];
-            }
-        }
-        else
-        {
-            $text = explode('|', $object['content']);
-            $text = array_pop($text);
-        }
-
-        $output[] = array
-        (
-            'source' => $object['source'],
-            'text' => $text
-        );
-    }
-
-    return $output;
-}
-
-function rewrite_markup($input, $markup)
-{
-    $output = $input;
-    
-    foreach($markup as $object)
-    {
-        if(is_array($object['content']))
-        {
-            $output = replace_once($object['source'], rewrite_markup($object['source'], $object['content']), $output);
-        }
-        else
-        {
-            $tags = explode(",", $object['tag']);
-
-            foreach($tags as $tag)
-            {
-                $replacement = replace_markup($tag, $object['content']);
-
-                if($replacement)
-                {
-                    if(is_array($replacement))
-                    {
-                        $output = replace_once($object['source'], $object['tag'] . '[' . $replacement['content'] . ']', $output);
-                    }
-                    else
-                    {
-                        $output = replace_once($object['source'], $replacement, $output);
-                    }
-                }
-            }
-        }
-    }
-
-    return $output;
-}
-
-function replace_markup($tag, $content)
-{
-    switch(strtolower($tag))
-    {
-        case "img":
-        case "image":
-        case "video":
-            list($Link, $Size, $Position, $Border, $Text) = explode("|", $content, 5);
-
-            $Link = trim($Link);
-            $Size = trim($Size);
-            $Position = trim(strtolower($Position));
-            $Border = trim($Border);
-            $Text = trim($Text);
-            $URL = parse_url($Link);
-            
-            // Automatically rehost content that isn't on wetfish or certain embedded sites
-            if(preg_match("{https?}", $URL['scheme']) and
-                (!preg_match("/^wiki\.wetfish\.net$/", $URL['host']) and
-                 !preg_match("/(^|\.)youtube\.com$/", $URL['host']) and
-                 !preg_match("/(^|\.)youtu\.be$/", $URL['host']) and
-                 !preg_match("/(^|\.)vimeo\.com$/", $URL['host']) and
-                 !preg_match("/(^|\.)vine\.co$/", $URL['host']) and
-                 !preg_match("/(^|\.)ted\.com$/", $URL['host'])
-                ))
-            {
-                $Path = pathinfo($URL['path']);
-                $Filename = uuid();
-                $Extension = $Path['extension'];
-                
-                if(strpos($Extension, '?') !== FALSE)
-                    $Extension = substr($Extension, 0, strpos($Extension, '?'));
-                
-                if(preg_match('/^(jpe?g|gif|png|webm|gifv|mp4|ogv)$/i', $Extension))
-                {
-                    // Automatically convert gifv urls to webm
-                    if($Extension == "gifv")
-                    {
-                        $Extension = "webm";
-                        $Link = str_replace(".gifv", ".webm", $Link);
-                    }
-                    
-                    while(file_exists("upload/$Filename.$Extension"))
-                    {
-                        $Filename = uuid();
-                    }
-                        
-                    file_put_contents("upload/$Filename.$Extension", file_get_contents($Link));
-                    chmod("upload/$Filename.$Extension", 0644);
-
-                    $Time = time();
-
-                    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-                        $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                    else
-                        $userIP = $_SERVER['REMOTE_ADDR'];
-
-                    // Make sure the user IP is sanitized
-                    $userIP = preg_replace('/[^0-9.]/', '', $userIP);
-
-                    mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
-    
-                    $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
-
-                    return array('tag' => strtolower($tag), 'content' => $Text);
-                }
-                else
-                {
-                    return "HACKER!!!!!!!!!!!!!!";
-                }
-            }
-
-            return array('tag' => strtolower($tag), 'content' => $content);
-        break;
-        
-        case "soundcloud":
-            $URL = parse_url($content);
-            parse_str($URL['query'], $Query);
-
-            if($Query['id'])
-                return array('tag' => 'soundcloud', 'content' => $content);
-            else
-            {
-                $options = array
-                (
-                    'http'=>array
-                    (
-                        'method'=>"GET",
-                        'header'=>"Accept-language: en\r\n" .
-                                  "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0\r\n" 
-                    )
-                );
-
-                $context = stream_context_create($options);
-                $html = file_get_html($content, false, $context);
-                $androidHack = $html->find("meta[property='al:android:url']", 0)->getAttribute('content');
-                $trackID = preg_replace("/[^0-9]/", "", $androidHack);
-            }
-            
-            return array('tag' => 'soundcloud', 'content' => "$content?id=$trackID");
-        break;
-
-        case "date":
-            list($time, $format) = explode('|', $content, 2);
-
-            if(empty($time))
-            {
-                $time = time();
-            }
-
-            if(!is_numeric($time))
-            {
-                $time = strtotime($time);
-            }
-            
-            if(empty($format))
-            {
-                $format = 'l, F j, Y';
-            }
-
-            return date($format, $time);
-        break;
-    }
-
-    return false;
-}
-
-function FishFormat($text, $action='markup')
-{
-    switch($action)
-    {
-        case "strip":
-            $markup = find_markup($text);
-            $markup = filter_markup($markup);
-
-            foreach($markup as $filtered)
-            {
-                $text = replace_once($filtered['source'], $filtered['text'], $text);
-            }
-
-            // Remove newlines
-            $text = str_replace("\n", "", $text);
-
-            // Filter links
-            $text = preg_replace("/(?:\[\[|{{)([^\]\|}]+)(?:\]\]|}})/", "\\1", $text);
-            $text = preg_replace("/(?:\[\[|{{)[^\]}]+\|([^\]}]+)(?:\]\]|}})/", "\\1", $text);
-
-            $output = $text;
-        break;
-
-        case "edit":
-            $output = str_replace("\t", "    ", $text);
-
-            while(preg_match('/^ *:+/m', $output)) {
-                $output = preg_replace('/^( *):/m','\1    ', $output); }
-
-            // Filter links
-            $output = str_replace(array('[[', ']]', '{{', '}}'), array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), $output);
-
-            // Rewrite specific tags (images, soundcloud, date)
-            $markup = find_markup($output);
-            $output = rewrite_markup($output, $markup);
-
-            // Un-filter links
-            $output = str_replace(array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), array('[[', ']]', '{{', '}}'), $output);
-        break;
-        
-        case "format":
-            $output = preg_replace('/(\w{14})/', "$1&#8203;", $text);
-        break;
-
-        default:
-            $output = $text;
-            $output = str_replace("    ", "&emsp;&emsp;&emsp;", $output);
-
-            // Links with custom text
-            $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "custom_link", $output);
-
-            // Basic links
-            $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})(s)?/', "basic_link", $output);
-            
-            $output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $output);
-            
-            $Keywords = array('Ad|Ads',
-                            'Pre',
-                            'Flash',
-                            'Color',
-                            'Magic',
-                            'Bold|B',
-                            'Box|Title|Infobox|TitleBox',
-                            'Underline|U',
-                            'Italics?|I',
-                            'Strike|S',
-                            'Heading|SubHeading',
-                            'Big',
-                            'Medium|Med',
-                            'Small|Sml',
-                            'URL',
-                            'Image|IMG',
-                            'Redirect',
-                            'Video|Youtube|Vimeo|Vine|Ted',
-                            'SoundCloud',
-                            'Load',
-                            'Music',
-                            'Snow',
-                            '(?:Double|Dbl)?Rainbow2?',
-                            'Glitch',
-                            'Red',
-                            'Redtube',
-                            'Motherless',
-                            'Embed',
-                            'Center',
-                            'Right|Left',
-                            'Playlist',
-                            'Style',
-                            'Total',
-                            'Anchor',
-                            'Codepen',
-                            'FB|FishBux',
-                            'NSFW',
-                            'Snip|Hide');
-                            
-            $Keywords = implode('|', $Keywords);
-
-            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [}\]] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $output); }
-
-            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [}\]] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $output); }
-
-            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeywords", $output); }
-
-            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeywords", $output); }
-
-            #$output = preg_replace('/#(\D\w+)/', "<a href='irc://irc.wetfish.net/$1'>#$1</a>", $output);
-            #$output = preg_replace('/([\S\/<>&]{14})/', "$1&#8203;", $output);
-
-            $Search[':Z'] = "<span class='warning'>:Z</span>";
-            $Search[':downy:'] = "<span class='warning medium' style='font-family:helvetica'>.'<u>/</u>)</span>";
-            $Search[':dunno'] = "<span class='warning'>¯\(º_o)/¯</span>";
-            
-            foreach($Search as $Key => $Value)
-            {
-                $output = str_replace($Key, $Value, $output);
-            }
-            
-            #$output = str_replace(":2", "<span class='warning'>:2</span>", $output);
-            $output = str_replace("&lt;3", "<span class='error'>&lt;3</span>", $output);
-
-#			$output = preg_replace('{<div>\n+}', "<div>", $output); # Strip newlines before stuff too.
-//			$output = preg_replace('{</a></div>\n+}', '</a></div>', $output); # Strip newlines after images.
-
-            // Ordered and unordered lists
-            $output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)\s+[^\n]+(?:\n|$))+/m", 'replace_lists', $output);
-
-            // Allow HTML comments
-            $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
-
-            // Strip newlines around comments
-            $output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $output);            
-            
-            // Strip newlines between images.
-            $output = preg_replace('{div>\n+<div}', "div><div", $output);
-            
-            // Strip newlines after titles and headings
-            $output = preg_replace('{header>\n+}', "header>", $output);
-            $output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $output);
-            $output = str_replace("<hr />\n", "<hr />", $output);
-
-            // Replace newlines with line breaks
-            $output = str_replace("\n", "<br />", $output);
-        break;
-    }
-    
-        return $output;
 }
 
 ?>
