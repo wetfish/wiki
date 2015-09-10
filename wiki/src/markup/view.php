@@ -126,18 +126,6 @@ function ReplaceKeywords($Matches)
                 return "<center>$GoodStuff</center>";
             break;
             
-            case "magic":
-                $Words = str_split_unicode(html_entity_decode($GoodStuff, false, 'UTF-8'));
-                $Splitter = '';
-                            
-                foreach($Words as $Word)
-                {
-                    $magic .= "<span class='magic'>$Word</span>";
-                }
-                
-                return "<span class='brew'>$GoodStuff</span>";
-            break;
-            
             case "color":
                 $args = explode("|", $GoodStuff, 3);
 
@@ -402,28 +390,6 @@ function ReplaceKeywords($Matches)
                 return "<div style='margin:0px 8px; display:inline-block; max-width:100%; $Position $Border'>$ImageText $Text</div>";
             break;
 
-            case "red":
-            case "redtube":
-                $URL = parse_url($GoodStuff);
-                $Video = trim($URL['path'], '/');
-                
-                return "<object height='344' width='434'> <param name='movie' value='https://embed.redtube.com/player/'> <param name='FlashVars' value='id=$Video&style=redtube&autostart=false'> <embed src='https://embed.redtube.com/player/?id=$Video&style=redtube' flashvars='autostart=false' pluginspage='https://www.adobe.com/shockwave/download/download.cgi?P1_Prod_Version=ShockwaveFlash' type='application/x-shockwave-flash' height='344' width='434' /> </object>";
-            break;
-            
-            case "motherless":
-                $URL = parse_url($GoodStuff);
-                
-                if($URL['host']	== "motherless.com")
-                {
-                    $Video = trim($URL['path'], '/');
-                    $Data = file_get_contents($GoodStuff);
-                    
-                    preg_match("/var __file_url = '(.*?)';/", $Data, $Filename);
-                    
-                    return "<embed type='application/x-shockwave-flash' src='https://motherless.com/flash/player.swf' style='' id='player' name='player' quality='high' allowfullscreen='true' allowscriptaccess='always' wmode='transparent' flashvars='file=https://members.motherless.com/movies/$Filename[1].flv&amp;image=https://motherless.com/thumbs/$Video.jpg&amp;mute=false&amp;streamer=lighttpd&amp;link=https://motherless.com/$Video' width='680' height='560'>";
-                }
-            break;
-
             case "video":
                 $url = parse_url($GoodStuff);
 
@@ -462,11 +428,8 @@ function ReplaceKeywords($Matches)
             
             case "soundcloud":
                 return embed_soundcloud($GoodStuff);
-            break;		
-            
-            case "ytcracker":
-                return "<iframe width='100%' height='450' scrolling='no' frameborder='no' src='https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/2977873&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_artwork=true'></iframe>";
             break;
+            
             case "load":
             case "embed":
                 $URL = parse_url($GoodStuff);
