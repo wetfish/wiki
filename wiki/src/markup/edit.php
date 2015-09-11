@@ -1,6 +1,6 @@
 <?php
 
-function rewrite_markup($input, $markup)
+function edit_markup($input, $markup)
 {
     $output = $input;
     $markup = array_reverse($markup);
@@ -12,7 +12,7 @@ function rewrite_markup($input, $markup)
         foreach($tags as $tag)
         {
             // Check if any replacements need to be made
-            $replacement = replace_markup($tag, $object['content']);
+            $replacement = edit_replacements($tag, $object['content']);
 
             if($replacement)
             {
@@ -35,7 +35,7 @@ function rewrite_markup($input, $markup)
     return $output;
 }
 
-function replace_markup($tag, $content)
+function edit_replacements($tag, $content)
 {
     switch(strtolower($tag))
     {

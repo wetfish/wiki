@@ -2,11 +2,31 @@
 
 function replace_once($search, $replacement, $string)
 {
+    if(!preg_match("/" . preg_quote($search, "/") . "/", $string))
+    {
+        if($_SESSION['admin'] && $_SESSION['debug'])
+        {
+            echo "WARNING: NOT MATCHED!<br>";
+
+            echo "<pre style='background-color: #000;'>";
+            print_r($search);
+            echo "</pre>";
+
+            echo "<pre style='background-color: #000;'>";
+            print_r($replacement);
+            echo "</pre>";
+
+            echo "<pre style='background-color: #000;'>";
+            print_r($string);
+            echo "</pre>";
+        }
+    }
+    
     // We have to use preg_replace instead of str_replace to ensure this match is only replaced once
     return preg_replace("/" . preg_quote($search, "/") . "/", $replacement, $string, 1);
 }
 
-function find_markup($input)
+function parse_markup($input)
 {
     $tags = array
     (

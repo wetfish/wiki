@@ -1,91 +1,49 @@
 <?php
 
-function basic_link($matches)
+function view_markup($input, $markup)
 {
-    return replace_links($matches, 'basic');
-}
-
-function custom_link($matches)
-{
-    return replace_links($matches, 'custom');
-}
-
-function replace_links($matches, $mode)
-{
-    // Replace spaces with hyphens
-    $page = str_replace(" ", "-", $matches[1]);
+    $output = $input;
+    $markup = array_reverse($markup);
     
-    // Remove invalid characters from URLs
-    $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
-    $page = str_replace($invalid, "", $page);
-
-    // Don't check if the page exists when linking to special pages
-    if(!(strpos($page, "?") !== false))
+    foreach($markup as $id => $object)
     {
-        // Check if the page exists
-        $escaped_page = mysql_real_escape_string($page);
-        $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
-        list($page_exists) = mysql_fetch_array($page_query);
+        $tags = explode(",", $object['tag']);
+        $tags = array_reverse($tags);
+        $replacement = "";
 
-        if(empty($page_exists))
+        foreach($tags as $tag)
         {
-            $class = "broken";
+            if($replacement)
+            {
+                $replacement = view_replacements($tag, $replacement);
+
+            }
+            else
+            {
+                $replacement = view_replacements($tag, $object['content']);
+            }
         }
-    }
-    
-    if(isset($_GET['random']))
-        $random = "/?random";
 
-    if($mode == "custom")
-    {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[2]}</a>";
-    }
-    else
-    {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}{$matches[2]}</a>";
-    }
-}
-
-function replace_lists($matches)
-{
-    $type = $matches[1];
-    $list = explode("\n", trim($matches[0]));
-
-    foreach($list as $index => $row)
-    {
-        $row = preg_replace("/^\s*[-*#]\s*/", "", $row);
-
-        if($row)
+        if($replacement)
         {
-            $list[$index] = "<li>{$row}</li>";
+            $output = replace_once($id, $replacement, $output);
+        }
+        else
+        {
+            $output = replace_once($id, $object['source'], $output);
         }
     }
 
-    $list = implode("", $list);
-
-    if($type == '#')
-    {
-        return "<ol>{$list}</ol>";
-    }
-    else
-    {
-        return "<ul>{$list}</ul>";
-    }
+    return $output;
 }
-
-function ReplaceKeywords($Matches)
-{
-    if($Matches[2])
-        $GoodStuff = $Matches[3];
-    else
-        $GoodStuff = $Matches[4];
-
-    if($GoodStuff !== "")
-    {		
-        switch(strtolower($Matches[1]))
+function view_replacements($tag, $content)
+{    
+    if($content !== "")
+    {
+        switch(strtolower($tag))
         {
             case "total":
-                switch(strtolower($GoodStuff))
+                switch(strtolower($content))
                 {
                     case "pages":
                         $pageTotal = mysql_query("Select `ID` from `Wiki_Pages`");
@@ -93,11 +51,22 @@ function ReplaceKeywords($Matches)
                         
                         return number_format($totalPages);
                     break;
-                }
+
+                    if($args[1])
+                        $args[1] = "background-color:{$args[1]}";
+                    elseif(count($args) == 2)
+                    {
+                        return "<span style='color:{$args[0]}'>{$args[1]}</span>";
+                    }
+                    else
+                        return $content;
+                    
+                    return "<span style='color:{$args[0]}; {$args[1]}'>{$args[2]}</span>";
+                }                
             break;
             
             case "ad":
-                $position = strtolower($GoodStuff);
+                $position = strtolower($content);
                 
                 if($position == 'right')
                     $class = 'right';
@@ -118,16 +87,16 @@ function ReplaceKeywords($Matches)
             break;
             
             case "pre":
-                $GoodStuff = trim(str_replace(array("{", "}", '[', ']'), array("&#123;", "&#125;", '&#91;', '&#93;'), $GoodStuff));
-                return "<pre>$GoodStuff</pre>";
+                $content = trim(str_replace(array("{", "}", '[', ']'), array("&#123;", "&#125;", '&#91;', '&#93;'), $content));
+                return "<pre>$content</pre>";
             break;
 
             case "center":
-                return "<center>$GoodStuff</center>";
+                return "<center>$content</center>";
             break;
             
             case "color":
-                $args = explode("|", $GoodStuff, 3);
+                $args = explode("|", $content, 3);
 
                 if(count($args) == 3)
                 {
@@ -141,12 +110,12 @@ function ReplaceKeywords($Matches)
                     return "<span style='color:{$args[0]}'>{$args[1]}</span>";
                 }
                 else
-                    return $GoodStuff;
+                    return $content;
                 
             break;
             
             case "infobox":
-                $args = explode("|", $GoodStuff, 3);
+                $args = explode("|", $content, 3);
 
                 if($args[2])
                     return "<div class='wiki-box' style='{$args[0]}'><div class='wiki-box-title'>{$args[1]}</div>{$args[2]}</div>";
@@ -155,12 +124,12 @@ function ReplaceKeywords($Matches)
             break;
 
             case "titlebox":
-                $args = explode("|", $GoodStuff, 2);
+                $args = explode("|", $content, 2);
                 return "<header class='title-box'><h1>{$args[0]}</h1><span>{$args[1]}</span></header>";
             break;
 
             case "box":
-                $args = explode("|", $GoodStuff, 2);
+                $args = explode("|", $content, 2);
 
                 if($args[1])
                     return "<div class='wiki-box' style='{$args[0]}'>{$args[1]}</div>";
@@ -169,77 +138,77 @@ function ReplaceKeywords($Matches)
             break;
             
             case "title":
-                return "<div class='wiki-box-title'>$GoodStuff</div>";
+                return "<div class='wiki-box-title'>$content</div>";
             break;
 
             case "style":
-                $args = explode("|", $GoodStuff, 2);
+                $args = explode("|", $content, 2);
                 $args[0] = preg_replace("/([\s\n]|&emsp;)+/", " ", $args[0]);
                 return "<div style='{$args[0]}'>{$args[1]}</div>";
             break;
 
             case "right":
-                return "<div class='right'>$GoodStuff</div>";
+                return "<div class='right'>$content</div>";
             break;
             
             case "left":
-                return "<div class='left'>$GoodStuff</div>";
+                return "<div class='left'>$content</div>";
             break;
 
             case "bold":
             case "b":
-                return "<b>$GoodStuff</b>";
+                return "<b>$content</b>";
             break;
 
             case "underline":
             case "u":
-                return "<u>$GoodStuff</u>";
+                return "<u>$content</u>";
             break;
 
             case "italic":
             case "italics":
             case "i":
-                return "<i>$GoodStuff</i>";
+                return "<i>$content</i>";
             break;
 
             case "strike":
             case "s":
-                return "<span class='strike'>$GoodStuff</span>";
+                return "<span class='strike'>$content</span>";
             break;
 
             case "big":
-                return "<span class='big'>$GoodStuff</span>";
+                return "<span class='big'>$content</span>";
             break;
 
             case "medium":
             case "med":
-                return "<span class='medium'>$GoodStuff</span>";
+                return "<span class='medium'>$content</span>";
             break;
 
             case "small":
             case "sml":
-                return "<span class='small'>$GoodStuff</span>";
+                return "<span class='small'>$content</span>";
             break;
 
             case "redirect":
                 if(isset($_GET['random']))
-                    return "<meta http-equiv='refresh' content='1;url=/$GoodStuff/?random'>You're being brought to '$GoodStuff'...";
+                    return "<meta http-equiv='refresh' content='1;url=/$content/?random'>You're being brought to '$content'...";
                 else
-                    return "<meta http-equiv='refresh' content='1;url=/$GoodStuff'>You're being brought to '$GoodStuff'...";
+                    return "<meta http-equiv='refresh' content='1;url=/$content'>You're being brought to '$content'...";
             break;
             
             case "heading":
-                //return "<a name='".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;", " "), "", $GoodStuff)."'></a>$GoodStuff<hr />";
-                return "<div class='clear'>$GoodStuff</div><hr />";
+                //return "<a name='".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;", " "), "", $content)."'></a>$content<hr />";
+                return "<div class='clear'>$content</div><hr />";
             break;
             
             case "subheading":
-                //return "<a name='".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;", " "), "", $GoodStuff)."'></a>$GoodStuff<hr />";
-                return "$GoodStuff<hr />";
+                //return "<a name='".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;", " "), "", $content)."'></a>$content<hr />";
+                return "$content<hr />";
             break;
             
             case "url":
-                list($link, $text) = explode("|", $GoodStuff, 2);
+                list($link, $text) = explode("|", $content, 2);
 
                 $link = trim($link);
                 $text = trim($text);
@@ -277,11 +246,11 @@ function ReplaceKeywords($Matches)
 
             case "image":
             case "img":
-                //list($Link, $Size, $Position, $Border, $Text) = explode("|", $GoodStuff, 5);
+                //list($Link, $Size, $Position, $Border, $Text) = explode("|", $content, 5);
         
-                $args = explode('|', $GoodStuff, 6);
+                $args = explode('|', $content, 6);
                 $Link = trim($args[0]);
-                $Border = trim($args[3]);			
+                $Border = trim($args[3]);
                 $Text = trim($args[4]);
                 $rand = trim($args[5]);
 
@@ -391,48 +360,48 @@ function ReplaceKeywords($Matches)
             break;
 
             case "video":
-                $url = parse_url($GoodStuff);
+                $url = parse_url($content);
 
                 if(preg_match("/(^|\.)youtube\.com$/i", $url['host']))
-                    return embed_youtube($GoodStuff);
+                    return embed_youtube($content);
 
                 if(preg_match("/(^|\.)youtu\.be$/i", $url['host']))
-                    return embed_youtube($GoodStuff);
+                    return embed_youtube($content);
 
                 if(preg_match("/(^|\.)vimeo\.com$/i", $url['host']))
-                    return embed_vimeo($GoodStuff);
+                    return embed_vimeo($content);
 
                 if(preg_match("/(^|\.)vine\.co$/i", $url['host']))
-                    return embed_vine($GoodStuff);
+                    return embed_vine($content);
 
                if(preg_match("/(^|\.)ted\.com$/i", $url['host']))
-                    return embed_ted($GoodStuff);
+                    return embed_ted($content);
 
                 // Otherwise, it must be a html5 video!
-                return embed_html5($GoodStuff);
+                return embed_html5($content);
             break;
 
             case "youtube":
             case "vimeo":
             case "vine":
             case "ted":
-                return call_user_func('embed_' . $Matches[1], $GoodStuff);
+                return call_user_func('embed_' . $tag, $content);
             break;
 
             case "playlist":
-                $url = parse_url($GoodStuff);
+                $url = parse_url($content);
                 parse_str($url['query'], $query);
 
                 return "<iframe width='640' height='360' src='https://www.youtube.com/embed/videoseries?list={$query['list']}&index={$query['index']}' frameborder='0' allowfullscreen></iframe>";			
             break;
             
             case "soundcloud":
-                return embed_soundcloud($GoodStuff);
+                return embed_soundcloud($content);
             break;
             
             case "load":
             case "embed":
-                $URL = parse_url($GoodStuff);
+                $URL = parse_url($content);
                 
                 if(empty($URL['scheme']))
                     $URL['scheme'] = "http";
@@ -486,7 +455,7 @@ function ReplaceKeywords($Matches)
             break;
             
             case "music":
-                list($Derp, $Delay) = explode("|", $GoodStuff, 2);
+                list($Derp, $Delay) = explode("|", $content, 2);
 
                 $URL = parse_url($Derp);
                 parse_str($URL['query'], $Query);
@@ -501,12 +470,12 @@ function ReplaceKeywords($Matches)
                         return "$Javascript<embed id='$Unique' src='$Derp' width='0' height='0' autostart='true' loop='true' hidden='true' style='display:none;'></embed>";
                     }
                     else
-                        return "<embed src='$GoodStuff' width='0' height='0' autostart='true' loop='true' hidden='true'></embed>";
+                        return "<embed src='$content' width='0' height='0' autostart='true' loop='true' hidden='true'></embed>";
                 }
             break;
             
             case "flash":
-                list($url, $width, $height) = explode("|", $GoodStuff);
+                list($url, $width, $height) = explode("|", $content);
 
                 return "<object width='$width' height='$height'><param name='movie' value='$url'><embed src='$url' width='$width' height='$height'></embed></object>";
             break;
@@ -515,7 +484,7 @@ function ReplaceKeywords($Matches)
             case "dblrainbow":
             case "doublerainbow":
             case "rainbow2":
-                $Words = str_split_unicode(html_entity_decode($GoodStuff, ENT_QUOTES, 'UTF-8'));
+                $Words = str_split_unicode(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
                 $Splitter = '';
                             
                 foreach($Words as $Word)
@@ -552,7 +521,7 @@ function ReplaceKeywords($Matches)
             break;
                     
             case "rainbow":
-                $Words = str_split_unicode(html_entity_decode($GoodStuff, ENT_QUOTES, 'UTF-8'));
+                $Words = str_split_unicode(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
                 $Splitter = '';
                             
                 foreach($Words as $Word)
@@ -586,11 +555,11 @@ function ReplaceKeywords($Matches)
             
             case "glitch":
                 $Splitter = ' ';
-                $Words = preg_split("/$Splitter/", $GoodStuff);
+                $Words = preg_split("/$Splitter/", $content);
                 
                 if(count($Words) == 1)
                 {
-                    $Words = str_split($GoodStuff);
+                    $Words = str_split($content);
                     $Splitter = '';
                 }
                 
@@ -611,16 +580,16 @@ function ReplaceKeywords($Matches)
             break;
 
             case "anchor":
-                return "<a name='$GoodStuff'>&nbsp;</a>";
+                return "<a name='$content'>&nbsp;</a>";
             break;
 
             case "codepen":
-                return embed_codepen($GoodStuff);
+                return embed_codepen($content);
             break;
 
             case "fb":
             case "fishbux":
-                list($amount, $image) = explode("|", $GoodStuff, 2);
+                list($amount, $image) = explode("|", $content, 2);
 
                 // Make sure image is an integer
                 $image = (int)$image;
@@ -633,33 +602,94 @@ function ReplaceKeywords($Matches)
             break;
 
             case "nsfw":
-                return "<div class='nsfw'><span class='message'>NSFW content hidden.<p>(Click to show)</p></span>{$GoodStuff}</div>";
+                return "<div class='nsfw'><span class='message'>NSFW content hidden.<p>(Click to show)</p></span>{$content}</div>";
             break;
 
             case "snip":
             case "hide":
-                return "<div class='snip'><span class='message'>[ <a>Read More</a> ]</span> <div class='stuff'>{$GoodStuff}</div></div>";
+                return "<div class='snip'><span class='message'>[ <a>Read More</a> ]</span> <div class='stuff'>{$content}</div></div>";
             break;
         }
     }
     else
     {
         // Self documenting!
-        if($Matches[1])
-            return $Matches[1]."&#91;&#93;";
+        if($tag)
+            return $tag."&#91;&#93;";
     }
 }
 
-function ReplaceKeyPENIS($Matches)
+function basic_link($matches)
 {
-    $FixedMatches[] = $Matches[0];
-    $FixedMatches[] = $Matches[1];
-    $FixedMatches[] = $Matches[3];
-    $FixedMatches[] = $Matches[4];
-    $FixedMatches[] = $Matches[5];
+    return replace_links($matches, 'basic');
+}
 
+function custom_link($matches)
+{
+    return replace_links($matches, 'custom');
+}
 
-    return $Matches[2]."[".ReplaceKeywords($FixedMatches)."]";
+function replace_links($matches, $mode)
+{
+    // Replace spaces with hyphens
+    $page = str_replace(" ", "-", $matches[1]);
+    
+    // Remove invalid characters from URLs
+    $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
+    $page = str_replace($invalid, "", $page);
+
+    // Don't check if the page exists when linking to special pages
+    if(!(strpos($page, "?") !== false))
+    {
+        // Check if the page exists
+        $escaped_page = mysql_real_escape_string($page);
+        $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
+        list($page_exists) = mysql_fetch_array($page_query);
+
+        if(empty($page_exists))
+        {
+            $class = "broken";
+        }
+    }
+    
+    if(isset($_GET['random']))
+        $random = "/?random";
+
+    if($mode == "custom")
+    {
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[2]}</a>";
+    }
+    else
+    {
+        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}{$matches[2]}</a>";
+    }
+}
+
+function replace_lists($matches)
+{
+    $type = $matches[1];
+    $list = explode("\n", trim($matches[0]));
+
+    foreach($list as $index => $row)
+    {
+        $row = preg_replace("/^\s*[-*#]\s*/", "", $row);
+
+        if($row)
+        {
+            $list[$index] = "<li>{$row}</li>";
+        }
+    }
+
+    $list = implode("", $list);
+
+    if($type == '#')
+    {
+        return "<ol>{$list}</ol>";
+    }
+    else
+    {
+        return "<ul>{$list}</ul>";
+    }
 }
 
 ?>

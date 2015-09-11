@@ -17,7 +17,7 @@ function FishFormat($text, $action='markup')
     switch($action)
     {
         case "strip":
-            $parsed = find_markup($text);
+            $parsed = parse_markup($text);
             $markup = filter_markup($parsed['markup']);
 
             foreach($markup as $filtered)
@@ -45,9 +45,9 @@ function FishFormat($text, $action='markup')
             $output = str_replace(array('[[', ']]', '{{', '}}'), array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), $output);
 
             // Rewrite specific tags (images, soundcloud, date)
-            $parsed = find_markup($output);
-            $output = rewrite_markup($parsed['input'], $parsed['markup']);
-
+            $parsed = parse_markup($output);
+            $output = edit_markup($parsed['input'], $parsed['markup']);
+            
             // Un-filter links
             $output = str_replace(array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), array('[[', ']]', '{{', '}}'), $output);
         break;
@@ -68,66 +68,29 @@ function FishFormat($text, $action='markup')
 
             // Replace semicolon tags with HTML entities (for writing documentation)
             $output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $output);
-            
-            $Keywords = array('Ad|Ads',
-                            'Pre',
-                            'Flash',
-                            'Color',
-                            'Bold|B',
-                            'Box|Title|Infobox|TitleBox',
-                            'Underline|U',
-                            'Italics?|I',
-                            'Strike|S',
-                            'Heading|SubHeading',
-                            'Big',
-                            'Medium|Med',
-                            'Small|Sml',
-                            'URL',
-                            'Image|IMG',
-                            'Redirect',
-                            'Video|Youtube|Vimeo|Vine|Ted',
-                            'SoundCloud',
-                            'Load',
-                            'Music',
-                            'Snow',
-                            '(?:Double|Dbl)?Rainbow2?',
-                            'Glitch',
-                            'Embed',
-                            'Center',
-                            'Right|Left',
-                            'Playlist',
-                            'Style',
-                            'Total',
-                            'Anchor',
-                            'Codepen',
-                            'FB|FishBux',
-                            'NSFW',
-                            'Snip|Hide');
-                            
-            $Keywords = implode('|', $Keywords);
 
-            $markup = find_markup($output);
+            // Pasrse content for markup
+            $parsed = parse_markup($output);
 
-            if($_SESSION['admin'] && 1 == 2)
+            if($_SESSION['admin'] && $_SESSION['debug'])
             {
                 echo "<pre style='background-color: #000;'>";
-                print_r($markup);
+                print_r($output);
+                echo "</pre>";
+
+                echo "<pre style='background-color: #000;'>";
+                print_r($parsed['input']);
+                echo "</pre>";
+
+                echo "<pre style='background-color: #000;'>";
+                print_r($parsed['markup']);
                 echo "</pre>";
             }
 
-            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [}\]] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $output); }
-
-            while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [}\]] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\3 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $output); }
-
-            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* ([^\[{]*) \s* [\]}] \\2 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeywords", $output); }
-
-            while(preg_match("/\b($Keywords) [^\S\n]* (?:(\S) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", $output)) {
-                $output = preg_replace_callback("/\b($Keywords) [^\S\n]* (?:(.) [\[{] \s* (.*) \s* [\]}] \\2 | [\[{] \s* (.*?) \s* [\]}])/xis", "ReplaceKeywords", $output); }
+            $output = view_markup($parsed['input'], $parsed['markup']);
 
 
+            // Random replacements / emoticon type things
             $Search[':Z'] = "<span class='warning'>:Z</span>";
             $Search[':downy:'] = "<span class='warning medium' style='font-family:helvetica'>.'<u>/</u>)</span>";
             $Search[':dunno'] = "<span class='warning'>¯\(º_o)/¯</span>";
