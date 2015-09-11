@@ -17,8 +17,8 @@ function FishFormat($text, $action='markup')
     switch($action)
     {
         case "strip":
-            $markup = find_markup($text);
-            $markup = filter_markup($markup);
+            $parsed = find_markup($text);
+            $markup = filter_markup($parsed['markup']);
 
             foreach($markup as $filtered)
             {
@@ -45,8 +45,8 @@ function FishFormat($text, $action='markup')
             $output = str_replace(array('[[', ']]', '{{', '}}'), array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), $output);
 
             // Rewrite specific tags (images, soundcloud, date)
-            $markup = find_markup($output);
-            $output = rewrite_markup($output, $markup);
+            $parsed = find_markup($output);
+            $output = rewrite_markup($parsed['input'], $parsed['markup']);
 
             // Un-filter links
             $output = str_replace(array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), array('[[', ']]', '{{', '}}'), $output);
@@ -105,6 +105,15 @@ function FishFormat($text, $action='markup')
                             'Snip|Hide');
                             
             $Keywords = implode('|', $Keywords);
+
+            $markup = find_markup($output);
+
+            if($_SESSION['admin'] && 1 == 2)
+            {
+                echo "<pre style='background-color: #000;'>";
+                print_r($markup);
+                echo "</pre>";
+            }
 
             while(preg_match("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [}\]] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", $output)) {
                 $output = preg_replace_callback("/\b($Keywords), [^\S\n]* ($Keywords) [^\S\n]* (?:(\S) [\[{] \s* ([^\[{]*) \s* [\]}] \\3 | [\[{] \s* ([^\[{]*?) \s* [\]}])/xis", "ReplaceKeyPENIS", $output); }

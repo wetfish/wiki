@@ -3,32 +3,31 @@
 function rewrite_markup($input, $markup)
 {
     $output = $input;
+    $markup = array_reverse($markup);
     
-    foreach($markup as $object)
+    foreach($markup as $id => $object)
     {
-        if(is_array($object['content']))
-        {
-            $output = replace_once($object['source'], rewrite_markup($object['source'], $object['content']), $output);
-        }
-        else
-        {
-            $tags = explode(",", $object['tag']);
+        $tags = explode(",", $object['tag']);
 
-            foreach($tags as $tag)
+        foreach($tags as $tag)
+        {
+            // Check if any replacements need to be made
+            $replacement = replace_markup($tag, $object['content']);
+
+            if($replacement)
             {
-                $replacement = replace_markup($tag, $object['content']);
-
-                if($replacement)
+                if(is_array($replacement))
                 {
-                    if(is_array($replacement))
-                    {
-                        $output = replace_once($object['source'], $object['tag'] . '[' . $replacement['content'] . ']', $output);
-                    }
-                    else
-                    {
-                        $output = replace_once($object['source'], $replacement, $output);
-                    }
+                    $output = replace_once($id, $object['tag'] . '[' . $replacement['content'] . ']', $output);
                 }
+                else
+                {
+                    $output = replace_once($id, $replacement, $output);
+                }
+            }
+            else
+            {
+                $output = replace_once($id, $object['source'], $output);
             }
         }
     }

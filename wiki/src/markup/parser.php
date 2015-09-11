@@ -77,10 +77,22 @@ function find_markup($input)
     // Regex for matching regular tags
     $regular = "\b($tags)$whitespace(?:$start)($content)(?:$end)";
     $output = array();
+    $replacements = array();
 
     while(preg_match("/(?:$delimited|$regular)/is", $input, $match))
     {
-        $input = replace_once($match[0], "", $input);
+        // Generate a unique ID
+        $replacementID = uuid();
+
+        // Ensure it is unique and doesn't exist in the document
+        while($replacements[$replacementID] || strpos($input, $replacementID) !== false)
+        {
+            $replacementID = uuid();
+        }
+
+        $replacements[$replacementID] = true;
+        
+        $input = replace_once($match[0], $replacementID, $input);
         $data = array
         (
             'source' => $match[0],
@@ -88,15 +100,10 @@ function find_markup($input)
             'content' => ($match[3]) ? $match[3] : $match[5] 
         );
 
-        if(preg_match("/(?:$delimited|$regular)/is", $data['content']))
-        {
-            $data['content'] = find_markup($data['content']);
-        }
-
-        $output[] = $data;
+        $output[$replacementID] = $data;
     }
 
-    return $output;
+    return array('input' => $input, 'markup' => $output);
 }
 
 function filter_markup($input)
