@@ -71,22 +71,6 @@ function FishFormat($text, $action='markup')
 
             // Pasrse content for markup
             $parsed = parse_markup($output);
-
-            if($_SESSION['admin'] && $_SESSION['debug'])
-            {
-                echo "<pre style='background-color: #000;'>";
-                print_r($output);
-                echo "</pre>";
-
-                echo "<pre style='background-color: #000;'>";
-                print_r($parsed['input']);
-                echo "</pre>";
-
-                echo "<pre style='background-color: #000;'>";
-                print_r($parsed['markup']);
-                echo "</pre>";
-            }
-
             $output = view_markup($parsed['input'], $parsed['markup']);
 
 

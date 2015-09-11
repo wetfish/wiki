@@ -2,26 +2,6 @@
 
 function replace_once($search, $replacement, $string)
 {
-    if(!preg_match("/" . preg_quote($search, "/") . "/", $string))
-    {
-        if($_SESSION['admin'] && $_SESSION['debug'])
-        {
-            echo "WARNING: NOT MATCHED!<br>";
-
-            echo "<pre style='background-color: #000;'>";
-            print_r($search);
-            echo "</pre>";
-
-            echo "<pre style='background-color: #000;'>";
-            print_r($replacement);
-            echo "</pre>";
-
-            echo "<pre style='background-color: #000;'>";
-            print_r($string);
-            echo "</pre>";
-        }
-    }
-    
     // We have to use preg_replace instead of str_replace to ensure this match is only replaced once
     return preg_replace("/" . preg_quote($search, "/") . "/", $replacement, $string, 1);
 }
@@ -91,15 +71,16 @@ function parse_markup($input)
     // Match all tags, or tag groups
     $tags = "(?:(?:(?:$tags),$whitespace)+)?(?:$tags)";
 
-    // Regex for matching tags with delimiters
-    $delimited = "\b($tags)$whitespace([^ $braces])(?:$start)(.*)(?:$end)\\2";
-
     // Regex for matching regular tags
     $regular = "\b($tags)$whitespace(?:$start)($content)(?:$end)";
+
+    // Regex for matching tags with delimiters
+    $delimited = "\b($tags)$whitespace([^ $braces])(?:$start)(.*)(?:$end)\\4";
+
     $output = array();
     $replacements = array();
 
-    while(preg_match("/(?:$delimited|$regular)/is", $input, $match))
+    while(preg_match("/(?:$regular|$delimited)/ims", $input, $match))
     {
         // Generate a unique ID
         $replacementID = uuid();
@@ -116,8 +97,8 @@ function parse_markup($input)
         $data = array
         (
             'source' => $match[0],
-            'tag' => ($match[1]) ? $match[1] : $match[4],
-            'content' => ($match[3]) ? $match[3] : $match[5] 
+            'tag' => ($match[1]) ? $match[1] : $match[3],
+            'content' => ($match[2]) ? $match[2] : $match[5] 
         );
 
         $output[$replacementID] = $data;
