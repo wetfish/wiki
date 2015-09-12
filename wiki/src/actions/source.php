@@ -5,6 +5,10 @@ function source($path, $action, $title, $content)
     $Head = '<meta name="robots" content="noindex, nofollow" />';
     $content['PageNav']->Active("Page History");
 
+    $content['ExtraNav'] = new Navigation;
+    $content['ExtraNav']->Add("View Revision", FormatPath("/$path/")."?history/$action[1]");
+    $content['ExtraNav']->Add("View Diff", FormatPath("/$path/")."?diff/$action[1]");
+
     if(is_numeric($action[1]))
     {
         $PageQuery = mysql_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");

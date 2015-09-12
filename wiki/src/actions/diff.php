@@ -33,6 +33,10 @@ function diff($path, $action, $title, $content)
             $content['Title'] .= " <a href='$nextPath' title='Next Revision'>⟩</a>";
         }
 
+        $content['ExtraNav'] = new Navigation;
+        $content['ExtraNav']->Add("View Revision", FormatPath("/$path/")."?history/$action[1]");
+        $content['ExtraNav']->Add("View Source", FormatPath("/$path/")."?source/$action[1]");
+
         $content['Body'] .= <<<JavaScript
         
         <script>
