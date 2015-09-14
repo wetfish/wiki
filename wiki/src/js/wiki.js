@@ -74,22 +74,6 @@ function Wiki(Type)
     $('#Editbox').value(value + Output.start + Output.end);
 }
 
-function Jump(URL)
-{
-    if(URL == undefined)
-        URL = 'https://wiki.wetfish.net/';
-    
-    window.location.href = URL; 
-}
-
-function SuperJump(URL)
-{
-    if(URL == undefined)
-        URL = 'https://wiki.wetfish.net/';
-    
-    window.open(URL, '_blank'); 
-}
-
 function SelectAction(Type)
 {
     var Form = document.getElementById('TheInternet');
@@ -151,6 +135,26 @@ function buildQuery(input)
 
 $(document).ready(function()
 {
+    $('.navbox').on('click', function(event)
+    {
+        var src = $(this).find('a').attr('href');
+        var target = $(this).find('a').attr('target');
+
+        if(target == '_blank')
+        {
+            window.open(src, '_blank'); 
+        }
+        else
+        {
+            window.location = src;
+        }
+    });
+
+    $('.navbox a').on('click', function(event)
+    {
+        event.stopPropagation();
+    });
+    
     $('.navbox, .paginate').on('mouseenter', function()
     {
         var id = Math.random().toString(36).slice(2).replace(/^[0-9]+/, '');

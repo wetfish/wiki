@@ -33,27 +33,30 @@
                 </div>
 
                 <div class="navigation">
-                    <div class="navbox" onClick="Jump('/news')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/news">News</a>
                     </div>
 
-                    <div class='navbox' onClick="Jump('/popular')">
+                    <div class='navbox'>
                         <a class='nav exempt' href='/popular'>Popular</a>
                     </div>
                     
-                    <div class="navbox" onClick="Jump('/browse')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/browse">Browse</a>
                     </div>
                     
-                    <div class="navbox" onClick="Jump('/?random')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/?random">Random</a>
                     </div>
                     
-                    <div class="navbox" onClick="Jump('/search')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/search">Search</a>
                     </div>
-                    <div class='navbox' onClick="Jump('/tags')">
+                    <div class='navbox'>
                         <a class='nav exempt' href='/tags'>Tags</a>
+                    </div>
+                    <div class='navbox'>
+                        <a class='nav exempt' href='https://chat.wetfish.net' target="_blank">Contact</a>
                     </div>
                 </div>
 
