@@ -8,6 +8,7 @@
  */
 
 require "parser.php";
+require "comments.php";
 require "embed.php";
 require "view.php";
 require "edit.php";
@@ -44,9 +45,18 @@ function FishFormat($text, $action='markup')
             // Filter links
             $output = str_replace(array('[[', ']]', '{{', '}}'), array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), $output);
 
+            // Allow HTML comments
+            $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
+
+            // Remove HTML comments so they aren't parsed for markup
+            $output = remove_comments($output);
+
             // Rewrite specific tags (images, soundcloud, date)
             $parsed = parse_markup($output);
             $output = edit_markup($parsed['input'], $parsed['markup']);
+
+            // Put comments back in
+            $output = replace_comments($output);
             
             // Un-filter links
             $output = str_replace(array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), array('[[', ']]', '{{', '}}'), $output);
@@ -69,10 +79,18 @@ function FishFormat($text, $action='markup')
             // Replace semicolon tags with HTML entities (for writing documentation)
             $output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $output);
 
+            // Allow HTML comments
+            $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
+
+            // Remove HTML comments so they aren't parsed for markup
+            $output = remove_comments($output);
+
             // Pasrse content for markup
             $parsed = parse_markup($output);
             $output = view_markup($parsed['input'], $parsed['markup']);
 
+            // Put comments back in
+            $output = replace_comments($output);
 
             // Random replacements / emoticon type things
             $Search[':Z'] = "<span class='warning'>:Z</span>";
@@ -88,9 +106,6 @@ function FishFormat($text, $action='markup')
 
             // Ordered and unordered lists
             $output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)\s+[^\n]+(?:\n|$))+/m", 'replace_lists', $output);
-
-            // Allow HTML comments
-            $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
 
             // Strip newlines around comments
             $output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $output);            
