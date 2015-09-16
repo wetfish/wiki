@@ -57,6 +57,9 @@ function FishFormat($text, $action='markup')
 
             // Put comments back in
             $output = replace_comments($output);
+
+            // Re-filter HTML comments
+            $output = str_replace(array('<!--', '-->'), array('&lt;!--', '--&gt;'), $output);
             
             // Un-filter links
             $output = str_replace(array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), array('[[', ']]', '{{', '}}'), $output);
