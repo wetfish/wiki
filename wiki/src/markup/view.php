@@ -37,8 +37,8 @@ function view_markup($input, $markup)
     return $output;
 }
 function view_replacements($tag, $content)
-{    
-    if($content !== "")
+{
+    if($content !== NULL)
     {
         switch(strtolower($tag))
         {
