@@ -69,7 +69,7 @@ function FishFormat($text, $action='markup')
             $output = preg_replace('/(\w{14})/', "$1&#8203;", $text);
         break;
 
-        default:
+        default:            
             $output = $text;
             $output = str_replace("    ", "&emsp;&emsp;&emsp;", $output);
 

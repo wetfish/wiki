@@ -4,6 +4,7 @@ function replace_once($search, $replacement, $string)
 {
     // We have to use preg_replace instead of str_replace to ensure this match is only replaced once
     return preg_replace("/" . preg_quote($search, "/") . "/", $replacement, $string, 1);
+    //return str_replace($search, $replacement, $string);
 }
 
 function parse_markup($input)
@@ -80,7 +81,7 @@ function parse_markup($input)
     $output = array();
     $replacements = array();
 
-    while(preg_match("/(?:$regular|$delimited)/ims", $input, $match))
+    while(preg_match("/(?:$regular|$delimited)/is", $input, $match))
     {
         // Generate a unique ID
         $replacementID = uuid();

@@ -2,10 +2,14 @@
 
 function view($path, $action, $title, $content)
 {
+    global $benchmark;
+    $benchmark->start("Viewing: $path");
     $content['PageNav']->Active("View Page");
 
     $PageQuery = mysql_query("SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path`='$path'");
     list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime) = mysql_fetch_array($PageQuery);
+
+    $benchmark->log('Page Query');
     
     $tagQuery = mysql_query("Select tags.`tag`, stats.`count`
                                 from `Wiki_Tags` as tags,
@@ -13,6 +17,8 @@ function view($path, $action, $title, $content)
                                      
                                 where tags.`pageID` = '$PageID'
                                     and stats.`tag` = tags.`tag`");
+
+    $benchmark->log('Tag Query');
                                     
     while(list($tagName, $tagCount) = mysql_fetch_array($tagQuery))
     {
@@ -31,6 +37,8 @@ function view($path, $action, $title, $content)
         $tagLinks = implode(" | ", $tagLinks);    
         $tagLinks = "<hr />Tags: $tagLinks";
     }
+
+    $benchmark->log('Tags Processed');
     
     $PageTitle = PageTitler($PageTitle);
 
@@ -61,9 +69,13 @@ function view($path, $action, $title, $content)
         $content['ExtraNav']->Add("Rename This Page", FormatPath("/$path/")."?rename");
     }
 
+    $benchmark->log('Before Formatting');
     $title[] = FishFormat($PageTitle, "strip");
+    $benchmark->log('Title Stripped');
     $content['Title'] .= FishFormat($PageTitle);
+    $benchmark->log('Title Formatted');
     $content['Body'] .= FishFormat($PageContent);
+    $benchmark->log('Body Formatted');
 
     if($PageEdits)
     {
@@ -82,6 +94,13 @@ function view($path, $action, $title, $content)
         $content['Footer'] = "<b>".number_format($pageViews)."</b> page view{$viewPlural}. <b>$EditCount</b> edit{$Plural} &ensp;&mdash;&ensp; Last modified <b>$PageEditTime</b>.";
     }
 
+    $benchmark->save();
+
+    if($_SESSION['admin'])
+    {
+        $benchmark->display();
+    }
+    
     return array($title, $content);
 }
 

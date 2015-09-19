@@ -12,6 +12,9 @@ require('src/markup/fishformat.php');
 require('navigation.php');
 include('fun/paginate.php');
 
+include("src/benchmark.php");
+$benchmark = new Benchmark;
+
 function PageTitler($Page)
 {
     $Titles[] = "Not Titled";
