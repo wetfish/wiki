@@ -24,9 +24,9 @@ function LoadJpeg($imgname)
 
 function AllocateColorByHex($Image, $Hex)
 {
-	$Hex = str_replace('#', $Hex);
-	$Hex = split($Hex, 2);
-	return imagecolorallocate($Image, $Hex[0], $Hex[1], $Hex[2]);
+    $Hex = str_replace('#', $Hex);
+    $Hex = split($Hex, 2);
+    return imagecolorallocate($Image, $Hex[0], $Hex[1], $Hex[2]);
 }
 
 // Create a 300x100 image
@@ -44,11 +44,11 @@ $background = LoadJpeg('./rainbowsmoke.jpg');
 imagecopy($img, $background, 0, 0, rand(1, 600), rand(1, 300), 400, 25);
 
 if($_GET['text'])
-	$_GET['word'] = $_GET['text'];
+    $_GET['word'] = $_GET['text'];
 
 $Word = stripslashes($_GET['word']);
 if(empty($Word))
-	$Word = 'Rachel should learn how to program.';
+    $Word = 'Rachel should learn how to program.';
 
 imagefttext($img, 13, 0, 17, 17, $white, $fontbold, $Word);
 imagefttext($img, 13, 0, 16, 16, $black, $fontbold, $Word);
