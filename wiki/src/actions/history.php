@@ -77,7 +77,7 @@ function history($path, $action, $title, $content)
         $benchmark->log('Before Formatting');
         $title[] = FishFormat($PageTitle, "strip");
         $benchmark->log('Title Stripped');
-        $PageContent = FishFormat($PageContent);
+        $PageContent = OldFishFormat($PageContent);
         $benchmark->log('Body Formatted');
 
         $previousPath = FormatPath("/$path/?history/{$previous['ID']}");
