@@ -12,8 +12,11 @@ require('src/markup/fishformat.php');
 require('navigation.php');
 include('fun/paginate.php');
 
-include("src/benchmark.php");
-$benchmark = new Benchmark;
+if(!class_exists(Benchmark))
+{
+    include_once("src/benchmark.php");
+    $benchmark = new Benchmark;
+}
 
 function PageTitler($Page)
 {

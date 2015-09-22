@@ -13,6 +13,12 @@ require "embed.php";
 require "view.php";
 require "edit.php";
 
+if(!class_exists(Benchmark))
+{
+    include_once(__DIR__ . "/../benchmark.php");
+    $benchmark = new Benchmark;
+}
+
 function FishFormat($text, $action='markup')
 {
     global $benchmark;
