@@ -53,25 +53,53 @@ class Parser
         'date',
     );
 
-    private $replacements = array();
+    private $text;
+    private $tags = array();
 
     public function parse($input)
     {
+        $this->text = $input;
         $start = "\[|{";    // Opening brackets
         $end = "\]|}";      // Closing brackets
 
+        // Regex to match tags
+        // Match word characters, or (word characters followed by a comma and an optional space, followed by more word characters with an optional comma) repeating
+        $tags = "(?:\w+|(?:\w+(?:, *\w+,?)*))";
+
         // Regular tags ( big[Some text here!] )
-        $regular = "([\w, ]+) *(?:$start)(.*?)(?:$end)";
-
+        $regular = "($tags) *(?:$start)([^\[{]*?)(?:$end)";
+        
         // Delimited tags ( big x[Other text here!!]x )
-        $delimited = "([\w, ]+) *([\w\.)(?:$start)(.*)(?:$end)\\4";
+        $delimited = "($tags) *([\w\.])(?:$start)(.*)(?:$end)\\2";
 
-        return preg_replace_callback("/\b(?:$regular|$delimited)\b/is", array($this, 'replace'), $input);
+        while(preg_match("/$regular/s", $this->text) || preg_match("/$delimited/s", $this->text))
+        {
+            $this->text = preg_replace_callback("/$regular/s", array($this, 'replace'), $this->text);
+            $this->text = preg_replace_callback("/$delimited/s", array($this, 'replace'), $this->text);
+        }
+
+        return array('text' => $this->text, 'tags' => $this->tags);
     }
 
-    private function replace()
+    private function replace($match)
     {
-        print_r(func_get_args());
+        $replacementID = uuid();
+
+        // Ensure it is unique and doesn't exist in the document
+        while($this->markup[$replacementID] || strpos($this->text, $replacementID) !== false)
+        {
+            $replacementID = uuid();
+        }
+
+        $data = array
+        (
+            'source' => $match[0],
+            'tag' => $match[1],
+            'content' => ($match[3]) ? $match[3] : $match[2]
+        );
+
+        $this->tags[$replacementID] = $data;
+        return $replacementID;
     }
 }
 

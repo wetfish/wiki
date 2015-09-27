@@ -109,17 +109,20 @@ function FishFormat($text, $action='markup')
             {
                 $parser = new Parser();
                 $parsed = $parser->parse($output);
-
-                print_r($parsed);
+                $benchmark->log('Markup Parsed');
+                
+                $output = view_markup($parsed['text'], $parsed['tags']);
+//                $output = OldFishFormat($output);
+                $benchmark->log('Markup Formatted');
             }
             else
             {
                 $parsed = parse_markup($output);
+                $benchmark->log('Markup Parsed');
+                
+                $output = view_markup($parsed['input'], $parsed['markup']);
+                $benchmark->log('Markup Formatted');
             }
-            $benchmark->log('Markup Parsed');
-            
-            $output = view_markup($parsed['input'], $parsed['markup']);
-            $benchmark->log('Markup Formatted');
 
             // Put comments back in
             $output = replace_comments($output);
@@ -129,7 +132,7 @@ function FishFormat($text, $action='markup')
             $Search[':Z'] = "<span class='warning'>:Z</span>";
             $Search[':downy:'] = "<span class='warning medium' style='font-family:helvetica'>.'<u>/</u>)</span>";
             $Search[':dunno'] = "<span class='warning'>¯\(º_o)/¯</span>";
-            
+
             foreach($Search as $Key => $Value)
             {
                 $output = str_replace($Key, $Value, $output);
