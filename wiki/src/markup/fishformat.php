@@ -27,8 +27,9 @@ function FishFormat($text, $action='markup')
     switch($action)
     {
         case "strip":
-            $parsed = parse_markup($text);
-            $markup = filter_markup($parsed['markup']);
+            $parser = new Parser();
+            $parsed = $parser->parse($text);
+            $markup = filter_markup($parsed['tags']);
 
             foreach($markup as $filtered)
             {
@@ -61,8 +62,9 @@ function FishFormat($text, $action='markup')
             $output = remove_comments($output);
 
             // Rewrite specific tags (images, soundcloud, date)
-            $parsed = parse_markup($output);
-            $output = edit_markup($parsed['input'], $parsed['markup']);
+            $parser = new Parser();
+            $parsed = $parser->parse($output);
+            $output = edit_markup($parsed['text'], $parsed['tags']);
 
             // Put comments back in
             $output = replace_comments($output);
@@ -105,24 +107,12 @@ function FishFormat($text, $action='markup')
             $benchmark->log('Comments Removed');
 
             // Pasrse content for markup
-            if($_SESSION['admin'])
-            {
-                $parser = new Parser();
-                $parsed = $parser->parse($output);
-                $benchmark->log('Markup Parsed');
-                
-                $output = view_markup($parsed['text'], $parsed['tags']);
-//                $output = OldFishFormat($output);
-                $benchmark->log('Markup Formatted');
-            }
-            else
-            {
-                $parsed = parse_markup($output);
-                $benchmark->log('Markup Parsed');
-                
-                $output = view_markup($parsed['input'], $parsed['markup']);
-                $benchmark->log('Markup Formatted');
-            }
+            $parser = new Parser();
+            $parsed = $parser->parse($output);
+            $benchmark->log('Markup Parsed');
+            
+            $output = view_markup($parsed['text'], $parsed['tags']);
+            $benchmark->log('Markup Formatted');
 
             // Put comments back in
             $output = replace_comments($output);
