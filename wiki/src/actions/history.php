@@ -2,8 +2,6 @@
 
 function history($path, $action, $title, $content)
 {
-    global $benchmark;
-    $benchmark->start("Viewing History: $path");
     $Head = '<meta name="robots" content="noindex, nofollow" />';
     $content['PageNav']->Active("Page History");
 
@@ -29,8 +27,6 @@ function history($path, $action, $title, $content)
     $next = mysql_fetch_array($nextQuery);
     $previous = mysql_fetch_array($previousQuery);	
 
-    $benchmark->log('Page Queries');
-        
     if(is_numeric($action[1]))
     {
         $PreviousQuery = mysql_query("Select `Content` from `Wiki_Edits` where `ID` < '$action[1]' and `Archived` = 0 order by `ID` desc limit 1");
@@ -74,11 +70,8 @@ function history($path, $action, $title, $content)
             $content['ExtraNav']->Add("Archive This Edit", FormatPath("/$path/")."?archive/$action[1]");
         }
 
-        $benchmark->log('Before Formatting');
         $title[] = FishFormat($PageTitle, "strip");
-        $benchmark->log('Title Stripped');
         $PageContent = FishFormat($PageContent);
-        $benchmark->log('Body Formatted');
 
         $previousPath = FormatPath("/$path/?history/{$previous['ID']}");
         $nextPath = FormatPath("/$path/?history/{$next['ID']}");
@@ -170,14 +163,6 @@ function history($path, $action, $title, $content)
     </script>
     
 JavaScript;
-
-
-    $benchmark->save();
-
-    if($_SESSION['admin'])
-    {
-        $benchmark->display();
-    }
     
     return array($title, $content);
 }

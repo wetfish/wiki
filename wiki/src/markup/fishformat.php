@@ -3,7 +3,7 @@
 /*
  * Fish format!
  * 
- * Version 0.1
+ * Version 0.2
  * 
  */
 
@@ -14,16 +14,8 @@ require "embed.php";
 require "view.php";
 require "edit.php";
 
-if(!class_exists(Benchmark))
-{
-    include_once(__DIR__ . "/../benchmark.php");
-    $benchmark = new Benchmark;
-}
-
 function FishFormat($text, $action='markup')
 {
-    global $benchmark;
-
     switch($action)
     {
         case "strip":
@@ -83,40 +75,30 @@ function FishFormat($text, $action='markup')
         default:            
             $output = $text;
             $output = str_replace("    ", "&emsp;&emsp;&emsp;", $output);
-            $benchmark->log('Spaces Replaced');
-
 
             // Links with custom text
             $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "custom_link", $output);
-            $benchmark->log('Custom Links Replaced');
 
             // Basic links
             $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})(s)?/', "basic_link", $output);
-            $benchmark->log('Basic Links Replaced');
 
             // Replace semicolon tags with HTML entities (for writing documentation)
             $output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $output);
-            $benchmark->log('Braces Replaced');
-
+            
             // Allow HTML comments
             $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
-            $benchmark->log('Comments Replaced');
 
             // Remove HTML comments so they aren't parsed for markup
             $output = remove_comments($output);
-            $benchmark->log('Comments Removed');
 
             // Pasrse content for markup
             $parser = new Parser();
             $parsed = $parser->parse($output);
-            $benchmark->log('Markup Parsed');
-            
+
             $output = view_markup($parsed['text'], $parsed['tags']);
-            $benchmark->log('Markup Formatted');
 
             // Put comments back in
             $output = replace_comments($output);
-            $benchmark->log('Comments Returned');
 
             // Random replacements / emoticon type things
             $Search[':Z'] = "<span class='warning'>:Z</span>";
@@ -132,7 +114,6 @@ function FishFormat($text, $action='markup')
 
             // Ordered and unordered lists
             $output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)\s+[^\n]+(?:\n|$))+/m", 'replace_lists', $output);
-            $benchmark->log('Lists Replaced');
 
             // Strip newlines around comments
             $output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $output);            
