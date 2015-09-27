@@ -8,6 +8,7 @@
  */
 
 require "parser.php";
+require "parser2.php";
 require "comments.php";
 require "embed.php";
 require "view.php";
@@ -104,7 +105,17 @@ function FishFormat($text, $action='markup')
             $benchmark->log('Comments Removed');
 
             // Pasrse content for markup
-            $parsed = parse_markup($output);
+            if($_SESSION['admin'])
+            {
+                $parser = new Parser();
+                $parsed = $parser->parse($output);
+
+                print_r($parsed);
+            }
+            else
+            {
+                $parsed = parse_markup($output);
+            }
             $benchmark->log('Markup Parsed');
             
             $output = view_markup($parsed['input'], $parsed['markup']);
