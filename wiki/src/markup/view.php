@@ -40,6 +40,8 @@ function view_replacements($tag, $content)
 {
     if($content !== NULL)
     {
+        $tag = trim($tag);
+        
         switch(strtolower($tag))
         {
             case "total":
@@ -608,6 +610,10 @@ function view_replacements($tag, $content)
             case "snip":
             case "hide":
                 return "<div class='snip'><span class='message'>[ <a>Read More</a> ]</span> <div class='stuff'>{$content}</div></div>";
+            break;
+
+            default:
+                return "$tag, $content";
             break;
         }
     }
