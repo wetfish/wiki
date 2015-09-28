@@ -38,7 +38,7 @@ function view_markup($input, $markup)
 }
 function view_replacements($tag, $content)
 {
-    if($content !== NULL)
+    if($content !== "")
     {
         $tag = trim($tag);
         
