@@ -78,13 +78,31 @@ function SelectAction(Type)
 {
     var Form = document.getElementById('TheInternet');
     Form.action = Form.action + Type;
+
+    // Save current name in local storage
+    var name = $('#Name').value();
+    localStorage.setItem('name', name);
+    
     Form.submit();
 }
 
-window.onload = function(){
+window.onload = function()
+{
+    // Populate saved name from local storage
+    var name = localStorage.getItem('name');
+
+    if(name)
+    {
+        $('#Name').value(name);
+    }
+    
     $('#TheInternet').on('submit', function() {
         var Form = document.getElementById('TheInternet');
         Form.action = Form.action + 'edit';
+
+        // Save current name in local storage
+        var name = $('#Name').value();
+        localStorage.setItem('name', name);
     });
 }
 
