@@ -86,26 +86,6 @@ function SelectAction(Type)
     Form.submit();
 }
 
-window.onload = function()
-{
-    // Populate saved name from local storage
-    var name = localStorage.getItem('name');
-
-    if(name)
-    {
-        $('#Name').value(name);
-    }
-    
-    $('#TheInternet').on('submit', function() {
-        var Form = document.getElementById('TheInternet');
-        Form.action = Form.action + 'edit';
-
-        // Save current name in local storage
-        var name = $('#Name').value();
-        localStorage.setItem('name', name);
-    });
-}
-
 var RecaptchaOptions = {
     theme : 'blackglass'
 };
@@ -153,6 +133,23 @@ function buildQuery(input)
 
 $(document).ready(function()
 {
+    // Populate saved name from local storage
+    var name = localStorage.getItem('name');
+
+    if(name)
+    {
+        $('#Name').value(name);
+    }
+
+    $('#TheInternet').on('submit', function() {
+        var Form = document.getElementById('TheInternet');
+        Form.action = Form.action + 'edit';
+
+        // Save current name in local storage
+        var name = $('#Name').value();
+        localStorage.setItem('name', name);
+    });
+
     $('.navbox').on('click', function(event)
     {
         var src = $(this).find('a').attr('href');
