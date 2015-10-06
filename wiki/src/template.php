@@ -15,6 +15,7 @@
                 <link href="/styleie.css" rel="stylesheet" type="text/css" media="screen" />
         <![endif]-->
 
+        <script type="text/javascript" src="/src/js/vendor.js"></script>
         <script type="text/javascript" src="/src/js/basic.js"></script>
         <script type="text/javascript" src="/src/js/dragondrop.js"></script>
         <script type="text/javascript" src="/src/js/load.js"></script>
