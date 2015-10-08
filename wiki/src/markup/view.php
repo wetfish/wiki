@@ -429,12 +429,12 @@ function view_replacements($tag, $content)
                 
                 if(preg_match('/^.*\.?wetfish.net$/i', $URL['host']))
                 {
-                    $ID = preg_replace("/^[0-9]+/", "", uuid());
+                    // Prepend uuid with a string to ensure it's valid
+                    $ID = "embed-" . uuid();
                     
                     if($URL['host'] == 'danger.wetfish.net')
                     {
                         $URL['path'] = substr($URL['path'], 1);
-                    
                     
                         if(preg_match("/^[a-f0-9]+$/", $URL['path']))
                         {
