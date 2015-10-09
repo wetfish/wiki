@@ -270,7 +270,7 @@ function view_replacements($tag, $content)
                         'loop' => true
                     );
 
-                    return embed_html5($Link, $options);
+                    return embed_html5_video($Link, $options);
                 }
                 
 //				$args[1] = trim(str_replace('px', '', strtolower($args[1])));
@@ -380,7 +380,7 @@ function view_replacements($tag, $content)
                     return embed_ted($content);
 
                 // Otherwise, it must be a html5 video!
-                return embed_html5($content);
+                return embed_html5_video($content);
             break;
 
             case "youtube":
@@ -457,23 +457,16 @@ function view_replacements($tag, $content)
             break;
             
             case "music":
-                list($Derp, $Delay) = explode("|", $content, 2);
+                list($link, $autoplay, $loop) = explode("|", $content, 3);
 
-                $URL = parse_url($Derp);
-                parse_str($URL['query'], $Query);
+                // Output a special html5 player that behaves like a gif
+                $options = array
+                (
+                    'autoplay' => ($autoplay) ? true : false,
+                    'loop' => ($loop) ? true : false
+                );
 
-                if((strpos($Derp, 'http://') === false or strpos($Link, 'https://') === false) or ((strpos($Derp, 'http://') !== false) and (preg_match('/^.*\.?wetfish.net$/i', $URL['host']))))
-                {
-                    if($Delay)
-                    {
-                        $Unique = uuid();
-                        $Delay *= 1000;
-                        $Javascript = "<script>setTimeout(\"$('#$Unique').show()\", $Delay)</script>";
-                        return "$Javascript<embed id='$Unique' src='$Derp' width='0' height='0' autostart='true' loop='true' hidden='true' style='display:none;'></embed>";
-                    }
-                    else
-                        return "<embed src='$content' width='0' height='0' autostart='true' loop='true' hidden='true'></embed>";
-                }
+                return embed_html5_audio($link, $options);
             break;
             
             case "flash":

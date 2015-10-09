@@ -103,11 +103,58 @@ function edit_replacements($tag, $content)
                 }
                 else
                 {
-                    return "HACKER!!!!!!!!!!!!!!";
+                    return "Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
                 }
             }
 
             return array('tag' => strtolower($tag), 'content' => $content);
+        break;
+
+        case "music":
+            list($link, $autoplay, $loop) = explode("|", $content, 3);
+
+            $url = parse_url($link);
+            
+            // Automatically rehost content that isn't on wetfish
+            if(preg_match("{https?}", $url['scheme']) and
+                !preg_match("/^wiki\.wetfish\.net$/", $url['host']))
+            {
+                $path = pathinfo($url['path']);
+                $filename = uuid();
+                $extension = $path['extension'];
+
+                if(preg_match('/^(mp3|wav|ogg)$/i', $extension))
+                {
+                    while(file_exists("upload/$Filename.$extension"))
+                    {
+                        $filename = uuid();
+                    }
+                    
+                    file_put_contents("upload/$filename.$extension", file_get_contents($link));
+                    chmod("upload/$filename.$extension", 0644);
+
+                    $time = time();
+
+                    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+                        $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                    else
+                        $userIP = $_SERVER['REMOTE_ADDR'];
+
+                    // Make sure the user IP is sanitized
+                    $userIP = preg_replace('/[^0-9.]/', '', $userIP);
+
+                    mysql_query("Insert into `Images` values ('NULL', '$time', '', '$userIP', '$link', 'upload/$filename.$extension')");
+                    $text = trim("upload/$filename.$extension|$autoplay|$loop", '|');
+
+                    return array('tag' => strtolower($tag), 'content' => $text);
+                }
+                else
+                {
+                    return "Unsupported format! Please use: mp3, wav, or ogg";
+                }
+
+                return array('tag' => strtolower($tag), 'content' => $content);
+            }
         break;
         
         case "soundcloud":
@@ -136,7 +183,7 @@ function edit_replacements($tag, $content)
             
             return array('tag' => 'soundcloud', 'content' => "$content?id=$trackID");
         break;
-
+        
         case "date":
             list($time, $format) = explode('|', $content, 2);
 

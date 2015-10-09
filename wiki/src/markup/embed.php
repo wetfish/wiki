@@ -32,7 +32,7 @@ function embed_vine($input)
     return "<iframe src='https://vine.co/{$url['path']}/embed/simple?audio=1' width='600' height='600' frameborder='0'></iframe>";
 }
 
-function embed_html5($input, $options = array())
+function embed_html5_video($input, $options = array())
 {
     $default = array('controls' => true);
     $options = array_merge($default, $options);
@@ -52,6 +52,28 @@ function embed_html5($input, $options = array())
     $attributes = implode(' ', $attributes);
     return "<video $attributes><source src='/{$input}'></video>";
 }
+
+function embed_html5_audio($input, $options = array())
+{
+    $default = array('controls' => true);
+    $options = array_merge($default, $options);
+    $attributes = array();
+
+    foreach($options as $option => $value)
+    {
+        if($value)
+        {
+            if($value === true)
+                array_push($attributes, $option);
+            else
+                array_push($attributes, "$option='$value'");
+        }
+    }
+
+    $attributes = implode(' ', $attributes);
+    return "<audio $attributes><source src='/{$input}'></audio>";
+}
+
 
 function embed_ted($ted)
 {
