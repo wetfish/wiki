@@ -358,7 +358,7 @@ function view_replacements($tag, $content)
                 if($Text)
                     $Text = "<div class='small'>$Text</div>";
                 
-                return "<div style='margin:0px 8px; display:inline-block; max-width:100%; $Position $Border'>$ImageText $Text</div>";
+                return "<div class='image' style='$Position $Border'>$ImageText $Text</div>";
             break;
 
             case "video":
@@ -549,29 +549,7 @@ function view_replacements($tag, $content)
             break;
             
             case "glitch":
-                $Splitter = ' ';
-                $Words = preg_split("/$Splitter/", $content);
-                
-                if(count($Words) == 1)
-                {
-                    $Words = str_split($content);
-                    $Splitter = '';
-                }
-                
-                foreach($Words as $Word)
-                {
-                    $rainbowCounter++;
-
-                    $randomHue = rand(0, 360);
-                    $randomSaturation = rand(0, 5) + 95;
-                    $randomLuminosity = rand(0, 44) + 14;
-
-                    $invertedHue = ($randomHue + 180) % 360;
-
-                    $Stuff .= "<span style='font-size:110%; color:hsl($randomHue, $randomSaturation%, $randomLuminosity%); background-color:hsl($invertedHue, $randomSaturation%, $randomLuminosity%);'>$Word</span>$Splitter";
-                }
-                
-                return $Stuff;
+                return "<div class='image'><img class='glitchme' src='https://glitch.wetfish.net/image.php?url=$content'></div>";
             break;
 
             case "anchor":

@@ -327,6 +327,12 @@ pre {
     transition: transform 0s;
 }
 
+.image {
+    margin:0px 8px;
+    display:inline-block;
+    max-width:100%;
+}
+
 CSS;
 
 ?>
