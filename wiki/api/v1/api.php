@@ -114,7 +114,7 @@ class API
         }
     }
 
-    public function login()
+    public function auth()
     {
         // Check if post data was submitted
         if(!empty($_POST))
@@ -130,16 +130,25 @@ class API
                                     $_POST["recaptcha_response_field"]);
 
                 if(!$Resp->is_valid)
+                {
+                    header('Content-Type: application/json');
                     return json_encode(array('status' => 'error', 'message' => 'Invalid captcha! Please try again.'));
+                }
                 else
+                {
                     $_SESSION['bypass'] = true;
+                    $_SESSION['api'] = true;
+                }
             }
         }
 
         // Check if the user is now logged in
         if($_SESSION['bypass'])
-            return json_encode(array('status' => 'success', 'message' => 'You are logged in.'));
-
+        {
+            header('Content-Type: application/json');
+            return json_encode(array('status' => 'success', 'message' => 'You are now authenticated to make a post.'));
+        }
+        
         // Otherwise return a captcha
         $script = "<script>var RecaptchaOptions = {theme : 'blackglass'}</script>";
         $form = "<form method='post'>" . recaptcha_get_html(RECAPTCHA_PUBLIC, null, 1) . "</form>";

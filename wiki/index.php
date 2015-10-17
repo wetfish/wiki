@@ -2,6 +2,7 @@
 
 error_reporting(E_ALL ^ E_NOTICE);
 session_start();
+
 require_once('src/config.php');
 require('functions.php');
 include('src/libraries/simple_html_dom.php');
@@ -262,6 +263,13 @@ switch($Action[0])
             if($Time < $_SESSION['EditTime'] + 15)
                 $Form['_Erros']['_Global'] = "Please wait 15 seconds between edits.";
 
+            if($_GET['api'] && !empty($Form['_Errors']))
+            {
+                header('Content-Type: application/json');
+                echo json_encode(array('status' => 'error', 'message' => 'There was a problem saving your post.', 'data' => $Form['_Errors']));
+                exit;
+            }
+
             if(empty($Form['_Errors']) and $Action[0] != "preview")
             {
                 $_SESSION['username'] = $Name;
@@ -363,7 +371,25 @@ switch($Action[0])
                 if($SQLError)
                     $Content['Body'] .= "Holy SHIT there was a MySQL error.";
                 else
-                    $Content['Body'] .= "Page updated... <meta http-equiv='refresh' content='2;url=/$Path'>";
+                {
+                    // If the captcha bypass was set by the API
+                    if($_SESSION['api'])
+                    {
+                        unset($_SESSION['api']);
+                        unset($_SESSION['bypass']);
+                    }
+                    
+                    if($_GET['api'])
+                    {
+                        header('Content-Type: application/json');
+                        echo json_encode(array('status' => 'success', 'message' => 'Page updated!'));
+                        exit;
+                    }
+                    else
+                    {
+                        $Content['Body'] .= "Page updated... <meta http-equiv='refresh' content='2;url=/$Path'>";
+                    }
+                }
             }
         }
 
@@ -554,7 +580,7 @@ SuperNav;
                                 $_POST["recaptcha_response_field"]);
 
             if (!$Resp->is_valid)
-                $Form['_Errors']['Captcha'] = "You did it wrong! Please try again.";
+                $Form['_Errors']['Captcha'] = "Invalid captcha entered! Please try again.";
 
             if(empty($Form['_Errors']))
             {
