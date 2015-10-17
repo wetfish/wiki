@@ -70,8 +70,16 @@ class API
     public function json($path)
     {
         $path = implode('/', $path);
-        $result = $this->model->page->get(array('path' => $path));
-        $page = $result->fetch_object();
+        $page_result = $this->model->page->get(array('path' => $path));
+        $page = $page_result->fetch_object();
+
+        $tag_result = $this->model->tags->get(array('pageID' => $page->ID));
+        $tags = array();
+        
+        while($tag = $tag_result->fetch_object())
+        {
+            $tags[] = str_replace('-', ' ', $tag->tag);
+        }
 
         if(empty($page))
         {
@@ -106,7 +114,9 @@ class API
                 (
                     'formatted' => FishFormat($page->Content),
                     'source' => $page->Content
-                )
+                ),
+
+                'tags' => $tags
             );
 
             header('Content-Type: application/json');

@@ -32,7 +32,6 @@ list($Data, $Links) = Paginate($Query, 25, $_GET['page'], $_SERVER['QUERY_STRING
 </pre>
 
 <?php endif; ?>
-
 <?php
 
 ####################
