@@ -10,8 +10,9 @@
 //										edit.`PageID` = page.`ID`
                         
 
+include('../../functions.php');
 include('../mysql.php');
-include('../../fishformat.php');
+include('../markup/fishformat.php');
 include('../../fun/paginate.php');
 
 
