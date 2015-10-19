@@ -22,6 +22,7 @@ $lonelyQuery = "Select page.`ID`, page.`Views`, page.`Path`, page.`Title`, page.
                     from `Wiki_Pages` as page
                     left join `Wiki_Edits` as edit on page.`ID` = edit.`PageID`
                     left join `Wiki_Tags` as tag on page.`ID` = tag.`pageID`
+                    where page.`Content` NOT LIKE '%redirect%'
                     group by page.`ID`
                     order by tagCount, editCount,  page.`EditTime`, page.`Views`";
 
