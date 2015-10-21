@@ -333,6 +333,11 @@ pre {
     max-width:100%;
 }
 
+.spoiler {
+    color: #000;
+    background-color: #000;
+}
+
 CSS;
 
 ?>

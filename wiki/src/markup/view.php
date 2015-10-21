@@ -583,6 +583,11 @@ function view_replacements($tag, $content)
                 return "<div class='snip'><span class='message'>[ <a>Read More</a> ]</span> <div class='stuff'>{$content}</div></div>";
             break;
 
+            case "spoiler":
+            case "spoilers":
+                return "<span class='spoiler'>{$content}</span>";
+            break;
+
             default:
                 return "$tag, $content";
             break;
