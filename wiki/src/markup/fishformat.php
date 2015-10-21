@@ -7,7 +7,6 @@
  * 
  */
 
-require "parser.php";
 require "parser2.php";
 require "comments.php";
 require "embed.php";
@@ -21,7 +20,7 @@ function FishFormat($text, $action='markup')
         case "strip":
             $parser = new Parser();
             $parsed = $parser->parse($text);
-            $markup = filter_markup($parsed['tags']);
+            $markup = $parser->filter($parsed['tags']);
 
             foreach($markup as $filtered)
             {

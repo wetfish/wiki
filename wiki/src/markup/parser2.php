@@ -1,58 +1,13 @@
 <?php
 
+function replace_once($search, $replacement, $string)
+{
+    // We have to use preg_replace instead of str_replace to ensure this match is only replaced once
+    return preg_replace("/" . preg_quote($search, "/") . "/", $replacement, $string, 1);
+}
+
 class Parser
 {
-    private $markup = array
-    (
-        // Text formatting
-        'color',
-        'bold', 'b',
-        'italic', 'italcs', 'i',
-        'underline', 'u',
-        'strike', 's',
-        'big',
-        'medium', 'med',
-        'small', 'sml',
-        'rainbow', 'doublerainbow', 'dblrainbow', 'rainbow2',
-        'glitch',
-
-        // Section formatting
-        'heading', 'subheading',
-        'box',
-        'infobox',
-        'title',
-        'titlebox',
-
-        // Alignment
-        'center',
-        'right',
-        'left',
-
-        // Embedded content
-        'image', 'img',
-        'flash',
-        'video', 'youtube', 'vimeo', 'vine', 'ted',
-        'soundcloud',
-        'load', 'embed',
-        'music',
-        'playlist',
-        'Codepen',
-
-        // Miscellaneous
-        'ad', 'ads',
-        'pre',
-        'url',
-        'redirect',
-        'snow',
-        'style',
-        'total',
-        'anchor',
-        'fb', 'fishbux',
-        'nsfw',
-        'snip', 'hide',
-        'date',
-    );
-
     private $text;
     private $tags = array();
 
@@ -81,12 +36,43 @@ class Parser
         return array('text' => $this->text, 'tags' => $this->tags);
     }
 
+    public function filter($input)
+    {
+        $output = array();
+        
+        foreach($input as $object)
+        {
+            if(is_array($object['content']))
+            {
+                $filtered = filter_markup($object['content']);
+
+                foreach($filtered as $markup)
+                {
+                    $text .= $markup['text'];
+                }
+            }
+            else
+            {
+                $text = explode('|', $object['content']);
+                $text = array_pop($text);
+            }
+
+            $output[] = array
+            (
+                'source' => $object['source'],
+                'text' => $text
+            );
+        }
+
+        return $output;
+    }
+
     private function replace($match)
     {
         $replacementID = uuid();
 
         // Ensure it is unique and doesn't exist in the document
-        while($this->markup[$replacementID] || strpos($this->text, $replacementID) !== false)
+        while($this->tags[$replacementID] || strpos($this->text, $replacementID) !== false)
         {
             $replacementID = uuid();
         }
