@@ -8,10 +8,12 @@ function edit_markup($input, $markup)
     foreach($markup as $id => $object)
     {
         $tags = explode(",", $object['tag']);
-
+        $replacement = false;
+        
         foreach($tags as $tag)
         {
             // Check if any replacements need to be made
+            $tag = trim($tag);
             $replacement = edit_replacements($tag, $object['content']);
 
             if($replacement)
@@ -25,10 +27,13 @@ function edit_markup($input, $markup)
                     $output = replace_once($id, $replacement, $output);
                 }
             }
-            else
-            {
-                $output = replace_once($id, $object['source'], $output);
-            }
+        }
+
+        // If there was no replacement and all tags have been looped through
+        if(!$replacement)
+        {
+            // Restore original source
+            $output = replace_once($id, $object['source'], $output);
         }
     }
 
