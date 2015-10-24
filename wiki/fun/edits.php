@@ -7,17 +7,44 @@ include('../src/markup/fishformat.php');
 
 $Name = stripslashes(filter_input(INPUT_GET, 'name', FILTER_SANITIZE_SPECIAL_CHARS));
 
+if($_GET['type'] == 'pages')
+{
+    $all = "<a href='/edits?name={$_GET['name']}&type=all'>All Edits</a>";
+    $unique = "<a href='/edits?name={$_GET['name']}&type=pages' class='title'>Unique Pages</a>";
+}
+else
+{
+    $all = "<a href='/edits?name={$_GET['name']}&type=all' class='title'>All Edits</a>";
+    $unique = "<a href='/edits?name={$_GET['name']}&type=pages'>Unique Pages</a>";
+}
+
 ?>
 
+<div style='font-size:8pt; float:right;'>
+    Showing: <?php echo $all; ?>, <?php echo $unique; ?>
+</div>
+
 <form>
-	&emsp;&emsp;&emsp;&emsp;Editor: <input type='text' name='name' value='<?php echo $Name ?>' /> <input type='submit' value='Submit' />
+    &emsp;&emsp;&emsp;&emsp;Editor: <input type='text' name='name' value='<?php echo $Name ?>' /> <input type='submit' value='Submit' />
 </form>
 
 <?php
 
 if($Name)
 {
-	$Query = "Select `ID`,`PageID`,`AccountID`,`EditTime`,`Size`,`Name`,`Description`,`Title` from `Wiki_Edits` where `Name`='$Name' order by `ID` desc";
+    if($_GET['type'] == 'pages')
+    {
+        $Query = "Select `ID`,Edits.`PageID`,`AccountID`,`EditTime`,`Size`,`Name`,`Description`,`Title` from `Wiki_Edits` as Edits
+                    join ( Select `PageID`, MAX(`ID`) as `Max` from `Wiki_Edits` as Sub group by Sub.`PageID` ) as Sort
+                    on Sort.PageID = Edits.PageID and Sort.Max = Edits.ID
+                    where Edits.`Name` = '$Name'
+                    order by `ID` desc";
+    }
+    else
+    {
+        $Query = "Select `ID`,`PageID`,`AccountID`,`EditTime`,`Size`,`Name`,`Description`,`Title` from `Wiki_Edits` where `Name`='$Name' order by `ID` desc";
+    }
+    
 	list($QueryData, $Links) = Paginate($Query, 50, $_GET['page'], $_SERVER['QUERY_STRING']);
 
 	if($QueryData)
