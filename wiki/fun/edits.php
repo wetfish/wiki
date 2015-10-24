@@ -35,7 +35,7 @@ if($Name)
     if($_GET['type'] == 'pages')
     {
         $Query = "Select `ID`,Edits.`PageID`,`AccountID`,`EditTime`,`Size`,`Name`,`Description`,`Title` from `Wiki_Edits` as Edits
-                    join ( Select `PageID`, MAX(`ID`) as `Max` from `Wiki_Edits` as Sub group by Sub.`PageID` ) as Sort
+                    join ( Select `PageID`, MAX(`ID`) as `Max` from `Wiki_Edits` as Sub where Sub.`Name` = '$Name' group by Sub.`PageID` ) as Sort
                     on Sort.PageID = Edits.PageID and Sort.Max = Edits.ID
                     where Edits.`Name` = '$Name'
                     order by `ID` desc";
