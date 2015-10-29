@@ -90,6 +90,9 @@ function FishFormat($text, $action='markup')
             // Remove HTML comments so they aren't parsed for markup
             $output = remove_comments($output);
 
+            // Strip newlines after images
+            $output = preg_replace('/((?:img|image)\s*\[.*?\])\n/s', '\\1', $output);
+
             // Pasrse content for markup
             $parser = new Parser();
             $parsed = $parser->parse($output);
