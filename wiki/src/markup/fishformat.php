@@ -91,7 +91,7 @@ function FishFormat($text, $action='markup')
             $output = remove_comments($output);
 
             // Strip newlines after images
-            $output = preg_replace('/((?:img|image)\s*\[[^\]]*?\])\n/s', '\\1', $output);
+            $output = preg_replace('/((?:img|image)\s*\[[^\]]*?(?:right|left)[^\]]*?\])\n/s', '\\1', $output);
 
             // Pasrse content for markup
             $parser = new Parser();
