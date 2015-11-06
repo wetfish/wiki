@@ -129,9 +129,12 @@ class API
         // Check if post data was submitted
         if(!empty($_POST))
         {
-            if(preg_match("/^(fuck? you captcha?|fuck? captchas?|i hate captchas?|captchas?.*sucks?)$/i", $_POST["recaptcha_response_field"]))
-                $_SESSION['bypass'] = true;
-
+            if(defined('CAPTCHA_BYPASS') && CAPTCHA_BYPASS)
+            {
+                if(preg_match(CAPTCHA_BYPASS, $_POST["recaptcha_response_field"]))
+                    $_SESSION['bypass'] = true;
+            }
+            
             if(!isset($_SESSION['bypass']))
             {
                 $Resp = recaptcha_check_answer(RECAPTCHA_PRIVATE,

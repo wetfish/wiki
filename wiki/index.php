@@ -243,8 +243,11 @@ switch($Action[0])
             if(strlen($tags) > 255)
                 $Form['_Errors']['tags'] = "Error: Hey, c'mon now.";
 
-            if(preg_match("/^(fuck? you captcha?|fuck? captchas?|i hate captchas?|captchas?.*sucks?)$/i", $_POST["recaptcha_response_field"]))
-                $_SESSION['bypass'] = true;
+            if(defined('CAPTCHA_BYPASS') && CAPTCHA_BYPASS)
+            {
+                if(preg_match(CAPTCHA_BYPASS, $_POST["recaptcha_response_field"]))
+                    $_SESSION['bypass'] = true;
+            }
 
             if(!isset($_SESSION['bypass']))
             {

@@ -20,4 +20,7 @@ define("BAN_PASSWORD", "password");
 define("RECAPTCHA_PUBLIC", "public api key");
 define("RECAPTCHA_PRIVATE", "private api key");
 
+// Secret regex to bypass captchas
+define("CAPTCHA_BYPASS", false);
+
 ?>
