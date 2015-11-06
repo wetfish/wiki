@@ -204,6 +204,27 @@ class API
             return json_encode($pages);
         }
     }
+
+    // Function to list every tag on the wiki (requires auth)
+    public function tags()
+    {
+        if($this->authenticated())
+        {
+            unset($_SESSION['bypass']);
+            unset($_SESSION['api']);
+
+            $result = $this->model->tags->stats(['1' => 1], 'tag, count, views');
+            $tags = [];
+
+            while($tag = $result->fetch_object())
+            {
+                array_push($tags, (array)$tag);
+            }
+
+            header('Content-Type: application/json');
+            return json_encode($tags);
+        }
+    }
 }
 
 ?>

@@ -8,7 +8,7 @@ class Page extends Model
         $this->connection = $mysql;
     }
 
-    // Get information about a specific page
+    // Get information about pages
     public function get($select, $from = "*")
     {
         // Select statement must be an array!
