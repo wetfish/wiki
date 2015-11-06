@@ -159,13 +159,50 @@ class API
         if($_SESSION['bypass'])
         {
             header('Content-Type: application/json');
-            return json_encode(array('status' => 'success', 'message' => 'You are now authenticated to make a post.'));
+            return json_encode(array('status' => 'success', 'message' => 'You are now authenticated.'));
         }
         
         // Otherwise return a captcha
         $script = "<script>var RecaptchaOptions = {theme : 'blackglass'}</script>";
         $form = "<form method='post'>" . recaptcha_get_html(RECAPTCHA_PUBLIC, null, 1) . "</form>";
         return $script . $form;
+    }
+
+    private function authenticated()
+    {
+        if($_SESSION['bypass'])
+        {
+            return true;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => 'error', 'message' => 'You must be authenticated to perform this action.'));
+        exit;
+    }
+
+    // Function to list every page on the wiki (requires auth)
+    public function pages()
+    {
+        if($this->authenticated())
+        {
+            unset($_SESSION['bypass']);
+            unset($_SESSION['api']);
+
+            $result = $this->model->page->get(['1' => 1], 'Path, Title');
+            $pages = [];
+
+            while($page = $result->fetch_object())
+            {
+                array_push($pages, array
+                (
+                    'path' => '/' . $page->Path,
+                    'title' => $page->Title
+                ));
+            }
+
+            header('Content-Type: application/json');
+            return json_encode($pages);
+        }
     }
 }
 

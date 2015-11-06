@@ -7,8 +7,9 @@ class Page extends Model
     {
         $this->connection = $mysql;
     }
-    
-    public function get($select)
+
+    // Get information about a specific page
+    public function get($select, $from = "*")
     {
         // Select statement must be an array!
         if(!is_array($select))
@@ -18,7 +19,7 @@ class Page extends Model
         if(!isset($select['__glue']))
             $select['__glue'] = 'and';
         
-        return $this->query('Select * from `Wiki_Pages` where ?', $select);
+        return $this->query("Select $from from `Wiki_Pages` where ?", $select);
     }
 }
 
