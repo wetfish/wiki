@@ -11,8 +11,8 @@ function source($path, $action, $title, $content)
 
     if(is_numeric($action[1]))
     {
-        $PageQuery = mysql_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
-        list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent) = mysql_fetch_array($PageQuery);
+        $PageQuery = mysql_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content`,`TagList` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
+        list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent, $tagText) = mysql_fetch_array($PageQuery);
 
         $Form['_Options'] = "action:;";
 
@@ -27,6 +27,9 @@ function source($path, $action, $title, $content)
 
         $Form['Description']['Text'] = "Description:";
         $Form['Description']['Form'] = "name:Description; value:x{".$PageDescription."}x; size: 80; maxlength:255;";
+
+        $Form['tags']['Text'] = "Tags:";
+        $Form['tags']['Form'] = "name:tags; value:x{".$tagText."}x; size: 80; maxlength:255;";
 
         $content['Title'] = "Viewing Source of: $PageTitle";
         $content['Body'] .= Format($Form, Form);

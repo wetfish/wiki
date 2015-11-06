@@ -282,7 +282,7 @@ switch($Action[0])
                     mysql_query("UPDATE `Wiki_Pages` SET `Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
                     $SQLError .= mysql_error();
 
-                    mysql_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
+                    mysql_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$tagText', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
                     $SQLError .= mysql_error();
 
                     $EditID = mysql_insert_id();
@@ -294,7 +294,7 @@ switch($Action[0])
 
                     $PageID = mysql_insert_id();
 
-                    mysql_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
+                    mysql_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$tagText', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
                     $SQLError .= mysql_error();
 
                     $EditID = mysql_insert_id();

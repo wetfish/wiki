@@ -82,6 +82,7 @@ CREATE TABLE `Wiki_Edits` (
   `EditTime` int(10) NOT NULL,
   `Size` int(10) NOT NULL,
   `Tags` int(11) NOT NULL,
+  `TagList` varchar(255) NOT NULL,
   `Name` varchar(32) NOT NULL,
   `Description` varchar(255) NOT NULL,
   `Title` varchar(255) NOT NULL,
