@@ -169,7 +169,7 @@ class API
         return json_encode($_SESSION['status']);
     }
 
-    public function auth()
+    public function login()
     {
         // Check if post data was submitted
         if(!empty($_POST))
@@ -200,6 +200,11 @@ class API
         $script = "<script>var RecaptchaOptions = {theme : 'blackglass'}</script>";
         $form = "<form method='post'>" . recaptcha_get_html(RECAPTCHA_PUBLIC, null, 1) . "</form>";
         return $script . $form;
+    }
+
+    public function logout()
+    {
+        session_destroy();
     }
 
     // Function to list every page on the wiki (requires auth)
