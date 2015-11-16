@@ -62,6 +62,18 @@ class API
         exit;
     }
 
+    // Private function to use credits when making requests
+    private function useCredits($count)
+    {
+        $_SESSION['status']['credits'] -= (int)$count;
+
+        // Automatically deauth a user if their credits reach 0
+        if($_SESSION['status']['credits'] <= 0)
+        {
+            $this->setStatus(false, 0);
+        }
+    }
+
     // Function to process requests
     public function request($url)
     {

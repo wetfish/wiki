@@ -51,8 +51,7 @@ trait AuthorizedEndpoints
     {
         if($this->isAuthenticated())
         {
-            unset($_SESSION['bypass']);
-            unset($_SESSION['api']);
+            $this->useCredits(4);
 
             $result = $this->model->page->get(['1' => 1], 'Path, Title');
             $pages = [];
@@ -76,8 +75,7 @@ trait AuthorizedEndpoints
     {
         if($this->isAuthenticated())
         {
-            unset($_SESSION['bypass']);
-            unset($_SESSION['api']);
+            $this->useCredits(4);
 
             $result = $this->model->tags->stats(['1' => 1], 'tag, count, views');
             $tags = [];

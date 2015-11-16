@@ -378,6 +378,9 @@ switch($Action[0])
                     {
                         unset($_SESSION['api']);
                         unset($_SESSION['bypass']);
+
+                        $_SESSION['status']['authed'] = false;
+                        $_SESSION['status']['credits'] = 0;
                     }
                     
                     if($_GET['api'])
