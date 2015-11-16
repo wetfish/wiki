@@ -14,6 +14,45 @@ class API
     {
         $this->model = $model;
         session_start();
+
+        if(!isset($_SESSION['status']))
+        {
+            $_SESSION['status'] =
+            [
+                'authed' => false,
+                'credits' => 0
+            ];
+        }
+    }
+
+    // Private function to set the session data for a user
+    private function setStatus($status, $credits)
+    {
+        $status = (bool)$status;
+        $credits = (int)$credits;
+        
+        if($status)
+        {
+            // Set legacy session values (required for editing posts)
+            $_SESSION['bypass'] = true;
+            $_SESSION['api'] = true;
+        }
+        
+        $_SESSION['status']['authed'] = $status;
+        $_SESSION['status']['credits'] = $credits;
+    }
+
+    // Private function to check if requests are authenticated
+    private function isAuthenticated()
+    {
+        if($_SESSION['status']['authed'])
+        {
+            return true;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => 'error', 'message' => 'You must be authenticated to perform this action.'));
+        exit;
     }
 
     // Function to process requests
@@ -124,6 +163,12 @@ class API
         }
     }
 
+    public function status()
+    {
+        header('Content-Type: application/json');
+        return json_encode($_SESSION['status']);
+    }
+
     public function auth()
     {
         // Check if post data was submitted
@@ -132,34 +177,23 @@ class API
             if(defined('CAPTCHA_BYPASS') && CAPTCHA_BYPASS)
             {
                 if(preg_match(CAPTCHA_BYPASS, $_POST["recaptcha_response_field"]))
-                    $_SESSION['bypass'] = true;
+                {
+                    $this->setStatus(true, 10);
+                }
             }
             
             if(!isset($_SESSION['bypass']))
             {
                 $Resp = recaptcha_check_answer(RECAPTCHA_PRIVATE,
-                                    $_SERVER["REMOTE_ADDR"],
-                                    $_POST["recaptcha_challenge_field"],
-                                    $_POST["recaptcha_response_field"]);
+                                                $_SERVER["REMOTE_ADDR"],
+                                                $_POST["recaptcha_challenge_field"],
+                                                $_POST["recaptcha_response_field"]);
 
-                if(!$Resp->is_valid)
+                if($Resp->is_valid)
                 {
-                    header('Content-Type: application/json');
-                    return json_encode(array('status' => 'error', 'message' => 'Invalid captcha! Please try again.'));
-                }
-                else
-                {
-                    $_SESSION['bypass'] = true;
-                    $_SESSION['api'] = true;
+                    $this->setStatus(true, 10);
                 }
             }
-        }
-
-        // Check if the user is now logged in
-        if($_SESSION['bypass'])
-        {
-            header('Content-Type: application/json');
-            return json_encode(array('status' => 'success', 'message' => 'You are now authenticated.'));
         }
         
         // Otherwise return a captcha
@@ -168,22 +202,10 @@ class API
         return $script . $form;
     }
 
-    private function authenticated()
-    {
-        if($_SESSION['bypass'])
-        {
-            return true;
-        }
-
-        header('Content-Type: application/json');
-        echo json_encode(array('status' => 'error', 'message' => 'You must be authenticated to perform this action.'));
-        exit;
-    }
-
     // Function to list every page on the wiki (requires auth)
     public function pages()
     {
-        if($this->authenticated())
+        if($this->isAuthenticated())
         {
             unset($_SESSION['bypass']);
             unset($_SESSION['api']);
@@ -208,7 +230,7 @@ class API
     // Function to list every tag on the wiki (requires auth)
     public function tags()
     {
-        if($this->authenticated())
+        if($this->isAuthenticated())
         {
             unset($_SESSION['bypass']);
             unset($_SESSION['api']);
