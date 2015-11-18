@@ -134,8 +134,24 @@ function history($path, $action, $title, $content)
 
             $HistoryURL = str_replace("//", "/", "/$path/?history/$HistoryID");
             $DiffURL = str_replace("//", "/", "/$path/?diff/$HistoryID");
+            $SourceURL = str_replace("//", "/", "/$path/?source/$HistoryID");
             
-            $content['Body'] .= "<tr $Class><td style='min-width:$minWidth;'>$HistoryTime</td><td>$HistorySize</td><td>$historyTags</td><td><b><a href='/edits?name=$HistoryName'>$HistoryName</a></b></td><td style='max-width:400px;'><span style='float:right;'><a href='$DiffURL' rel='nofollow'>d</a></span><b><a href='$HistoryURL' rel='nofollow'>$HistoryTitle</a></b></td><td>$HistoryDescription</td></tr>";
+            $content['Body'] .= "<tr $Class>
+                                    <td style='min-width:$minWidth;'>$HistoryTime</td>
+                                    <td>$HistorySize</td>
+                                    <td>$historyTags</td>
+                                    <td>
+                                        <b><a href='/edits?name=$HistoryName'>$HistoryName</a></b>
+                                    </td>
+                                    <td style='max-width:400px;'>
+                                        <span style='float:right;'>
+                                            <a href='$DiffURL' rel='nofollow'>d</a>
+                                            <a href='$SourceURL' rel='nofollow'>s</a>
+                                        </span>
+
+                                        <b><a href='$HistoryURL' rel='nofollow'>$HistoryTitle</a></b></td><td>$HistoryDescription
+                                    </td>
+                                </tr>";
         }
 
         $content['Body'] .= "</table>";

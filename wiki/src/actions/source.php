@@ -23,7 +23,8 @@ function source($path, $action, $title, $content)
         $Form['Title']['Form'] = "name:Title; value:x{".$PageTitle."}x; maxlength:255;";
 
         $Form['Content']['Text'] = "Content:";
-        $Form['Content']['Form'] = "name:Content; value:x{".$PageContent."}x; type:textarea; cols:80; rows:12;";
+        $Form['Content']['Form'] = "name:Content; value:x{".$PageContent."}x; type:textarea;";
+        $Form['Content']['Style'] = "width:100%; height:400px";
 
         $Form['Description']['Text'] = "Description:";
         $Form['Description']['Form'] = "name:Description; value:x{".$PageDescription."}x; size: 80; maxlength:255;";
