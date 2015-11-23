@@ -42,7 +42,6 @@ trait PublicEndpoints
             $response = array
             (
                 'status' => 'error',
-                'code' => 404,
                 'message' => 'Page does not exist.'
             );
 
@@ -54,7 +53,6 @@ trait PublicEndpoints
             $response = array
             (
                 'status' => 'success',
-                'code' => 200,
                 'path' => $page->Path,
                 'views' => $page->Views,
                 'edits' => count(explode(',', $page->Edits)),

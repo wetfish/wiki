@@ -267,7 +267,7 @@ switch($Action[0])
             if($_GET['api'] && !empty($Form['_Errors']))
             {
                 header('Content-Type: application/json');
-                echo json_encode(array('status' => 'error', 'message' => 'There was a problem saving your post.', 'data' => $Form['_Errors']));
+                echo json_encode(array('status' => 'error', 'session' => $_SESSION['status'], 'message' => 'There was a problem saving your post.', 'data' => $Form['_Errors']));
                 exit;
             }
 
@@ -386,7 +386,7 @@ switch($Action[0])
                     if($_GET['api'])
                     {
                         header('Content-Type: application/json');
-                        echo json_encode(array('status' => 'success', 'message' => 'Page updated!'));
+                        echo json_encode(array('status' => 'success', 'session' => $_SESSION['status'], 'message' => 'Page updated!'));
                         exit;
                     }
                     else

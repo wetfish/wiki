@@ -5,7 +5,7 @@ trait AuthorizedEndpoints
     public function status()
     {
         header('Content-Type: application/json');
-        return json_encode($_SESSION['status']);
+        return json_encode(['status' => 'success', 'session' => $_SESSION['status']]);
     }
 
     public function login()
@@ -66,7 +66,7 @@ trait AuthorizedEndpoints
             }
 
             header('Content-Type: application/json');
-            return json_encode($pages);
+            return json_encode(['status' => 'success', 'session' => $_SESSION['status'], 'data' => $pages]);
         }
     }
 
@@ -86,7 +86,7 @@ trait AuthorizedEndpoints
             }
 
             header('Content-Type: application/json');
-            return json_encode($tags);
+            return json_encode(['status' => 'success', 'session' => $_SESSION['status'], 'data' => $tags]);
         }
     }
 }

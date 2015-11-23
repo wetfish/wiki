@@ -58,7 +58,7 @@ class API
         }
 
         header('Content-Type: application/json');
-        echo json_encode(array('status' => 'error', 'message' => 'You must be authenticated to perform this action.'));
+        echo json_encode(array('status' => 'error', 'session' => $_SESSION['status'], 'message' => 'You must be authenticated to perform this action.'));
         exit;
     }
 
@@ -95,7 +95,6 @@ class API
             $response = array
             (
                 'status' => 'error',
-                'code' => 400,
                 'message' => 'Invalid method.'
             );
 
