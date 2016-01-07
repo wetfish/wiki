@@ -421,9 +421,10 @@ SuperNav;
         
             $Form['_Options'] = "action:".str_replace("//", "/", "/$Path/?")."; id:TheInternet;";
 
-            $Form['Name']['Text'] = "Name:";
+            $Form['Name']['Text'] = "Editor:";
             $Form['Name']['Form'] = "id:Name; name:Name; value:{".$Name."}; maxlength:32;";
-
+            $Form['Name']['SubText'] = "Your name which will appear in the page history.";
+            
             if($LoggedIn)
             {
                 if($Account == "on")
