@@ -55,15 +55,25 @@ function edit_replacements($tag, $content)
             $Border = trim($Border);
             $Text = trim($Text);
             $URL = parse_url($Link);
-            
+
             // Automatically rehost content that isn't on wetfish or certain embedded sites
             if(preg_match("{https?}", $URL['scheme']) and
-                (!preg_match("/^wiki\.wetfish\.net$/", $URL['host']) and
-                 !preg_match("/(^|\.)youtube\.com$/", $URL['host']) and
-                 !preg_match("/(^|\.)youtu\.be$/", $URL['host']) and
-                 !preg_match("/(^|\.)vimeo\.com$/", $URL['host']) and
-                 !preg_match("/(^|\.)vine\.co$/", $URL['host']) and
-                 !preg_match("/(^|\.)ted\.com$/", $URL['host'])
+                (
+                    // Negative matches, if the content isn't hosted on the following sites:
+                    (
+                        !preg_match("/^wiki\.wetfish\.net$/", $URL['host']) and
+                        !preg_match("/(^|\.)youtube\.com$/", $URL['host']) and
+                        !preg_match("/(^|\.)youtu\.be$/", $URL['host']) and
+                        !preg_match("/(^|\.)vimeo\.com$/", $URL['host']) and
+                        !preg_match("/(^|\.)vine\.co$/", $URL['host']) and
+                        !preg_match("/(^|\.)ted\.com$/", $URL['host'])
+                    )
+
+                    // Positive matches, if the content is on the following sites: 
+                    or
+                    (
+                        preg_match("/cdn\.vine\.co$/", $URL['host'])
+                    )
                 ))
             {
                 $Path = pathinfo($URL['path']);
