@@ -274,6 +274,7 @@ pre {
 .nsfw {
     display: inline-block;
     position: relative;
+    max-width: 100%;
 }
 
 .nsfw .message {
