@@ -225,7 +225,7 @@ function view_replacements($tag, $content)
                         if(empty($text))
                             $text = $link;
 
-                        return "<a href='{$link}' target='_blank'>{$text}</a>";
+                        return "<a href='{$link}'>{$text}</a>";
                     break;
 
                     case "fish":
@@ -241,7 +241,7 @@ function view_replacements($tag, $content)
                         if(empty($text))
                             $text = $link;
 
-                        return "<a href='http://{$link}' target='_blank'>{$text}</a>";
+                        return "<a href='http://{$link}'>{$text}</a>";
                     break;
                 }
             break;
