@@ -10,7 +10,7 @@ $mode = $_GET['mode'];
 if($mode == "year")
 {
     $title = "Edits This Year";
-    $display = "365 days ago";
+    $display = "333 days ago";
     $width = 1800;
     $height = 768;
 }
