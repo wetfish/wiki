@@ -11,7 +11,7 @@ if($mode == "year")
 {
     $title = "Edits This Year";
     $display = "333 days ago";
-    $width = 1800;
+    $width = 1825;
     $height = 768;
 }
 else
@@ -31,12 +31,15 @@ while(list($time) = mysql_fetch_array($query))
     {
         $when = date('M n/d', $time);
         $month = date('M', $time);
+        $day = date('d', $time);
 
+        // Save the first day for this month
         if(!isset($months[$month]))
         {
-            $months[$month] = true;
+            $months[$month] = $day;
         }
-        else
+        // Use a custom date format for all days that aren't the first of the month
+        elseif($months[$month] != $day)
         {
             $when = date('n/d', $time);
         }
