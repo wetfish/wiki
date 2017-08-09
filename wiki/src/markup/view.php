@@ -89,7 +89,7 @@ function view_replacements($tag, $content)
             break;
             
             case "pre":
-                $content = trim(str_replace(array("{", "}", '[', ']'), array("&#123;", "&#125;", '&#91;', '&#93;'), $content));
+                $content = trim(str_replace(array("{", "}", '[', ']', ' '), array("&#123;", "&#125;", '&#91;', '&#93;', '&nbsp;'), $content));
                 return "<pre>$content</pre>";
             break;
 

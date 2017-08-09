@@ -73,7 +73,6 @@ function FishFormat($text, $action='markup')
 
         default:            
             $output = $text;
-            $output = str_replace("    ", "&emsp;&emsp;&emsp;", $output);
 
             // Links with custom text
             $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)\|([\w -@\/~]+?)(?:\]\]|}})/', "custom_link", $output);
@@ -111,11 +110,12 @@ function FishFormat($text, $action='markup')
             {
                 $output = str_replace($Key, $Value, $output);
             }
-            
+
             $output = str_replace("&lt;3", "<span class='error'>&lt;3</span>", $output);
 
             // Ordered and unordered lists
             $output = preg_replace_callback("/(?:(?:^|\n)\s*(\*|\-|\#)\s+[^\n]+(?:\n|$))+/m", 'replace_lists', $output);
+            $output = str_replace("    ", "&emsp;&emsp;&emsp;", $output);
 
             // Strip newlines around comments
             $output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $output);            
