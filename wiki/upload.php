@@ -50,6 +50,12 @@ if($_FILES)
 
             mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
 
+            if(!empty($_GET['api']))
+            {
+                header("Location: /upload/{$Filename}.{$Extension}");
+                exit;
+            }
+
             echo "<meta http-equiv='refresh' content='2;url=upload/$Filename.$Extension'>Image added!";
         }
         else
