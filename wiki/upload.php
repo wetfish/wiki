@@ -17,7 +17,7 @@ function uuid($prefix = '')
 if($_FILES)
 {
     $Image = $_FILES['Image'];
-            
+
     if($Image['error'])
     {
         echo "There was an error!";
@@ -28,13 +28,13 @@ if($_FILES)
         $Filename = uuid();
         $Extension = $ImageInfo['extension'];
 
-        if(preg_match('/^(jpe?g|gif|png|txt|mp3|mid)$/i', $Extension))
+        if(preg_match('/^(jpe?g|gif|png|txt|mp3|webm|mp4|mid)$/i', $Extension))
         {
             while(file_exists("upload/$Filename.$Extension"))
             {
                 $Filename = uuid();
             }
-                        
+
             move_uploaded_file($Image['tmp_name'], "upload/$Filename.$Extension");
             chmod("upload/$Filename.$Extension", 0644);
 
@@ -49,7 +49,7 @@ if($_FILES)
             $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 
             mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
-                
+
             echo "<meta http-equiv='refresh' content='2;url=upload/$Filename.$Extension'>Image added!";
         }
         else
