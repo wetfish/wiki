@@ -56,7 +56,7 @@ $Path = $_SERVER['DOCUMENT_ROOT'];
 if(the($Directory) == 'Empty')
     $Directory = str_replace($Path, '', getcwd());
 
-$Files = scandir("$Path/$Directory");
+$Files = scandirByDate("$Path/$Directory");
 
 echo "<center>";
 
