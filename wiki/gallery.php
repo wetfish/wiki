@@ -124,9 +124,6 @@ if($Pagination['is'] == 'On')
     }
 }
 
-if($Colorbox == 'Yes!')
-    echo "<script>$(\"a[rel='Gallery']\").colorbox();</script>";
-
 echo "</center>";
 
 ?>
