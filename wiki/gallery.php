@@ -32,7 +32,7 @@ $Thumbnail['Directory'] = 'upload/thumb';
 $Thumbnail['Size'] = '150';
 
 $Pagination['is'] = 'On';
-$Pagination['Count'] = '25';
+$Pagination['Count'] = '30';
 
     # How many images per page?
 
