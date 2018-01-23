@@ -22,12 +22,12 @@ class PHPGraphLib
 	var $data_value_text_width=6;
 	var $data_value_text_height=12;
 	//PADDING BETWEEN AXIS AND VALUE DISPLAYED
-	var $axis_value_padding=5;
+	var $axis_value_padding=1;
 	//SPACE B/T TOP OF BAR OR CENTER OF POINT AND DATA VALUE
-	var $data_value_padding=5; 
+	var $data_value_padding=1; 
 	//DEFAULT MARGIN % OF WIDTH / HEIGHT
 	var $x_axis_default_percent=12; 
-	var $y_axis_default_percent=8;
+	var $y_axis_default_percent=4;
 	//DATA POINT DIAMETER IN PX
 	var $data_point_width=6;
 	//USER CHANGEABLE DEFAULT BOOLEANS (SHOW ELEMENT BY DEFAULT?)

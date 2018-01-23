@@ -9,26 +9,20 @@
         <meta name="google-site-verification" content="lj_UCeIzlK8MDZyzJ-73XUUZHgroWS_1kQ6kkNar0Vg" />
         <link href='https://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
         <link href="/style.php" rel="stylesheet" type="text/css" />
-        <link href="/colorbox.css" rel="stylesheet" type="text/css" />
         <link href="/src/css/diff.css" rel="stylesheet" type="text/css" />
+        <link href="/window.css" rel="stylesheet" type="text/css" />
         <!--[if IE]>
                 <link href="/styleie.css" rel="stylesheet" type="text/css" media="screen" />
         <![endif]-->
 
-        <script type="text/javascript" src="/js/jquery.min.js"></script>
-        <script type="text/javascript" src="/js/jquery-ui.min.js"></script>
-        <script type="text/javascript" src="/jquery.colorbox.js"></script>
-        <script type="text/javascript" src="/jquery.json-2.2.min.js"></script>
-        <!-- <script type="text/javascript" src="https://www.cornify.com/js/cornify.js"></script>  -->
-        
-        <script type="text/javascript" src="/jquery-fieldselection.js"></script>
-        <script type="text/javascript" src="/js/window.js"></script>
-        <script src='/src/js/wetki.js'></script>
-        <!-- <script src='/src/js/jquery.transit.js'></script> -->
-        <link href="/window.css" rel="stylesheet" type="text/css" />
-        
-        <script type="text/javascript" src="/js/wiki.js"></script>
-        <script type="text/javascript" src="/js/swim.js"></script>
+        <script type="text/javascript" src="/src/js/vendor.js"></script>
+        <script type="text/javascript" src="/src/js/basic.js"></script>
+        <script type="text/javascript" src="/src/js/dragondrop.js"></script>
+        <script type="text/javascript" src="/src/js/load.js"></script>
+        <script type="text/javascript" src="/src/js/wiki.js"></script>
+        <script type="text/javascript" src="/src/js/wiki2.js"></script>
+        <script type="text/javascript" src="/src/js/window.js"></script>
+        <script type="text/javascript" src="/src/js/swim.js"></script>
         
         <link rel="icon" type="image/png" href="/favzz.png"/>
     </head>
@@ -40,27 +34,30 @@
                 </div>
 
                 <div class="navigation">
-                    <div class="navbox" onClick="Jump('/news')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/news">News</a>
                     </div>
 
-                    <div class='navbox' onClick="Jump('/popular')">
+                    <div class='navbox'>
                         <a class='nav exempt' href='/popular'>Popular</a>
                     </div>
                     
-                    <div class="navbox" onClick="Jump('/browse')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/browse">Browse</a>
                     </div>
                     
-                    <div class="navbox" onClick="Jump('/?random')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/?random">Random</a>
                     </div>
                     
-                    <div class="navbox" onClick="Jump('/search')">
+                    <div class="navbox">
                         <a class="nav exempt" href="/search">Search</a>
                     </div>
-                    <div class='navbox' onClick="Jump('/tags')">
+                    <div class='navbox'>
                         <a class='nav exempt' href='/tags'>Tags</a>
+                    </div>
+                    <div class='navbox'>
+                        <a class='nav exempt' href='https://chat.wetfish.net' target="_blank">Contact</a>
                     </div>
                 </div>
 

@@ -13,7 +13,7 @@ function view($path, $action, $title, $content)
                                      
                                 where tags.`pageID` = '$PageID'
                                     and stats.`tag` = tags.`tag`");
-                                    
+
     while(list($tagName, $tagCount) = mysql_fetch_array($tagQuery))
     {
         $plural = 's';
@@ -31,7 +31,7 @@ function view($path, $action, $title, $content)
         $tagLinks = implode(" | ", $tagLinks);    
         $tagLinks = "<hr />Tags: $tagLinks";
     }
-    
+
     $PageTitle = PageTitler($PageTitle);
 
     if(empty($PageContent))
@@ -64,7 +64,7 @@ function view($path, $action, $title, $content)
     $title[] = FishFormat($PageTitle, "strip");
     $content['Title'] .= FishFormat($PageTitle);
     $content['Body'] .= FishFormat($PageContent);
-
+    
     if($PageEdits)
     {
         $EditCount = count(explode(",", $PageEdits));
@@ -81,7 +81,7 @@ function view($path, $action, $title, $content)
         $content['Tags'] = $tagLinks;
         $content['Footer'] = "<b>".number_format($pageViews)."</b> page view{$viewPlural}. <b>$EditCount</b> edit{$Plural} &ensp;&mdash;&ensp; Last modified <b>$PageEditTime</b>.";
     }
-
+    
     return array($title, $content);
 }
 

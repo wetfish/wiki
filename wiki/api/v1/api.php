@@ -2,14 +2,76 @@
 
 // Required functions for displaying wiki markup
 require "../../functions.php";
-require "../../fishformat.php";
+require "../../src/markup/fishformat.php";
+
+// Recaptcha library for logging in
+require "../../recaptchalib.php";
+
+// Traits for loading endpoints
+require "endpoints/public.php";
+require "endpoints/authorized.php";
 
 class API
 {
+    use PublicEndpoints;
+    use AuthorizedEndpoints;
+    
     // The model must be passed when the API is constructed
     function __construct($model)
     {
         $this->model = $model;
+        session_start();
+
+        if(!isset($_SESSION['status']))
+        {
+            $_SESSION['status'] =
+            [
+                'authed' => false,
+                'credits' => 0
+            ];
+        }
+    }
+
+    // Private function to set the session data for a user
+    private function setStatus($status, $credits)
+    {
+        $status = (bool)$status;
+        $credits = (int)$credits;
+        
+        if($status)
+        {
+            // Set legacy session values (required for editing posts)
+            $_SESSION['bypass'] = true;
+            $_SESSION['api'] = true;
+        }
+        
+        $_SESSION['status']['authed'] = $status;
+        $_SESSION['status']['credits'] = $credits;
+    }
+
+    // Private function to check if requests are authenticated
+    private function isAuthenticated()
+    {
+        if($_SESSION['status']['authed'])
+        {
+            return true;
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode(array('status' => 'error', 'session' => $_SESSION['status'], 'message' => 'You must be authenticated to perform this action.'));
+        exit;
+    }
+
+    // Private function to use credits when making requests
+    private function useCredits($count)
+    {
+        $_SESSION['status']['credits'] -= (int)$count;
+
+        // Automatically deauth a user if their credits reach 0
+        if($_SESSION['status']['credits'] <= 0)
+        {
+            $this->setStatus(false, 0);
+        }
     }
 
     // Function to process requests
@@ -33,76 +95,7 @@ class API
             $response = array
             (
                 'status' => 'error',
-                'code' => 400,
                 'message' => 'Invalid method.'
-            );
-
-            header('Content-Type: application/json');
-            return json_encode($response);
-        }
-    }
-
-    // Function to display a page's content
-    public function content($path)
-    {
-        $path = implode('/', $path);
-        $result = $this->model->page->get(array('path' => $path));
-        $page = $result->fetch_object();
-
-        return FishFormat($page->Content);
-    }
-
-    // Function to display a page's source
-    public function source($path)
-    {
-        $path = implode('/', $path);
-        $result = $this->model->page->get(array('path' => $path));
-        $page = $result->fetch_object();
-
-        return $page->Content;
-    }
-
-    // Function to display JSON containing a page's content
-    public function json($path)
-    {
-        $path = implode('/', $path);
-        $result = $this->model->page->get(array('path' => $path));
-        $page = $result->fetch_object();
-
-        if(empty($page))
-        {
-            $response = array
-            (
-                'status' => 'error',
-                'code' => 404,
-                'message' => 'Page does not exist.'
-            );
-
-            header('Content-Type: application/json');
-            return json_encode($response);
-        }
-        else
-        {
-            $response = array
-            (
-                'status' => 'success',
-                'code' => 200,
-                'path' => $page->Path,
-                'views' => $page->Views,
-                'edits' => count(explode(',', $page->Edits)),
-                'modified' => $page->EditTime,
-
-                'title' => array
-                (
-                    'formatted' => FishFormat($page->Title),
-                    'source' => $page->Title
-                ),
-
-                'content' => array
-                (
-                    'formatted' => FishFormat($page->Content),
-                    'source' => $page->Content
-                )
             );
 
             header('Content-Type: application/json');

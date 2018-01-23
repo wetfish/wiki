@@ -32,6 +32,7 @@ while(list($path, $title, $views) = mysql_fetch_array($viewsQuery))
 
 $peopleQuery = mysql_query("Select Name,count(*) as n
                             from Wiki_Edits
+                            where Archived != 1
                             group by Name
                             order by n desc
                             limit 40");
@@ -64,6 +65,7 @@ while(list($name, $count) = mysql_fetch_array($peopleQuery))
 
 $pageQuery = mysql_query("Select PageID,count(*) as n
                             from Wiki_Edits
+                            where Archived != 1
                             group by PageID
                             order by n desc
                             limit 40");

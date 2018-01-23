@@ -1,6 +1,7 @@
 <?php
 
-require_once "page.php";
+require_once __DIR__ . "/page.php";
+require_once __DIR__ . "/tags.php";
 
 class Model
 {
@@ -9,6 +10,7 @@ class Model
     {
         $this->connection = $mysql;
         $this->page = new Page($mysql);
+        $this->tags = new Tags($mysql);
     }
 
     // Private function to do string replacements on queries
