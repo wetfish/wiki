@@ -28,7 +28,7 @@ if($_FILES)
 		$Filename = uuid();
 		$Extension = $ImageInfo['extension'];
 
-		if(preg_match('/^(jpe?g|gif|png|txt|mp3|mid)$/i', $Extension))
+		if(preg_match('/^(jpe?g|gif|png|txt|mp3|mid|svg)$/i', $Extension))
 		{
 			while(file_exists("upload/$Filename.$Extension"))
 			{
