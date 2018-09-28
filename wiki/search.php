@@ -36,7 +36,7 @@ if($Search)
         {
             list($Path, $Title, $Content) = $Result;
             
-            echo "<a href='/$Path' style='font-weight:bold'>$Title</a><br />";
+            echo "<a href='/$Path' rel='nofollow' style='font-weight:bold'>$Title</a><br />";
             echo substr($Content, 0, 255);
             echo "<hr />";
             $Count++;
