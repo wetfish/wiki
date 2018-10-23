@@ -114,7 +114,7 @@ function scandirByDate($dir)
 
     foreach (scandir($dir) as $file)
 	{
-        if(in_array($file, $ignored)) continue;
+        if(in_array($file, $ignore)) continue;
         $files[$file] = filemtime($dir . '/' . $file);
     }
 
