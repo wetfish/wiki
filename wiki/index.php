@@ -7,7 +7,7 @@ require_once('src/config.php');
 require('functions.php');
 include('src/libraries/simple_html_dom.php');
 
-require('recaptchalib.php');
+//require('recaptchalib.php');
 require('src/markup/fishformat.php');
 require('navigation.php');
 include('fun/paginate.php');
@@ -245,18 +245,13 @@ switch($Action[0])
 
             if(defined('CAPTCHA_BYPASS') && CAPTCHA_BYPASS)
             {
-                if(preg_match(CAPTCHA_BYPASS, $_POST["recaptcha_response_field"]))
+                if(preg_match(CAPTCHA_BYPASS, $_POST["captcha"]))
                     $_SESSION['bypass'] = true;
             }
 
             if(!isset($_SESSION['bypass']))
             {
-                $Resp = recaptcha_check_answer (RECAPTCHA_PRIVATE,
-                                    $_SERVER["REMOTE_ADDR"],
-                                    $_POST["recaptcha_challenge_field"],
-                                    $_POST["recaptcha_response_field"]);
-
-                if (!$Resp->is_valid and !$_SESSION['bypass'] and $Action[0] != "preview")
+                if (!$_SESSION['bypass'] and $Action[0] != "preview")
                     $Form['_Errors']['Captcha'] = "You did it wrong! Please try again.";
             }
 
@@ -451,7 +446,11 @@ SuperNav;
             $Form['tags']['SubText'] = "Optional; used for grouping similar pages. Separate tags by commas.";
 
             if(!$_SESSION['bypass'])
-                $Form['Captcha']['Form'] = "type:plaintext; value:".recaptcha_get_html(RECAPTCHA_PUBLIC, null, 1);
+            {
+                  $Form['Captcha']['Text'] = "Captcha:";
+                  $Form['Captcha']['Form'] = "name:captcha;";
+                  $Form['Captcha']['SubText'] = "Ask Rachel if you don't know the secret password";
+            }
 
             $Form['Submit']['Form'] = "type:plaintext; value:{<input type='submit' value='Submit' /> <input type='button' value='Preview' onClick='SelectAction(\"preview\")' />};";
             
@@ -579,14 +578,6 @@ SuperNav;
             if($Confirm != $Password)
                 $Form['_Errors']['Password'] = "Error: Your passwords do not match.";
             
-            $Resp = recaptcha_check_answer (RECAPTCHA_PRIVATE,
-                                $_SERVER["REMOTE_ADDR"],
-                                $_POST["recaptcha_challenge_field"],
-                                $_POST["recaptcha_response_field"]);
-
-            if (!$Resp->is_valid)
-                $Form['_Errors']['Captcha'] = "Invalid captcha entered! Please try again.";
-
             if(empty($Form['_Errors']))
             {
                 $Penis = mysql_query("Select `Name` from `Wiki_Accounts` where `Name`='$Name'");
@@ -622,8 +613,6 @@ SuperNav;
             $Form['Confirm']['Form'] = "name:Confirm; type:password;";
             $Form['Confirm']['SubText'] = "Retype password to make sure you did it right!";
             
-            $Form['Captcha']['Form'] = "type:plaintext; value:".recaptcha_get_html(RECAPTCHA_PUBLIC, null, 1);
-
             $Form['Submit']['Form'] = "type:submit; value:Submit;";
 
             $Content['Body'] .= "<br />";
