@@ -243,10 +243,9 @@ switch($Action[0])
             if(strlen($tags) > 255)
                 $Form['_Errors']['tags'] = "Error: Hey, c'mon now.";
 
-            if(defined('CAPTCHA_BYPASS') && CAPTCHA_BYPASS)
+            if(isset($_SESSION['captchaSuccess']))
             {
-                if(preg_match(CAPTCHA_BYPASS, $_POST["captcha"]))
-                    $_SESSION['bypass'] = true;
+                $_SESSION['bypass'] = true;
             }
 
             if(!isset($_SESSION['bypass']))
@@ -254,7 +253,6 @@ switch($Action[0])
                 if (!$_SESSION['bypass'] and $Action[0] != "preview")
                     $Form['_Errors']['Captcha'] = "You did it wrong! Please try again.";
             }
-
 
             if($Time < $_SESSION['EditTime'] + 15)
                 $Form['_Erros']['_Global'] = "Please wait 15 seconds between edits.";
@@ -448,8 +446,7 @@ SuperNav;
             if(!$_SESSION['bypass'])
             {
                   $Form['Captcha']['Text'] = "Captcha:";
-                  $Form['Captcha']['Form'] = "name:captcha;";
-                  $Form['Captcha']['SubText'] = "Ask Rachel if you don't know the secret password";
+                  $Form['Captcha']['Form'] = "type:plaintext; name:captcha; value: {<div id='captcha'></div><script type='text/javascript'>captcha();</script>};";
             }
 
             $Form['Submit']['Form'] = "type:plaintext; value:{<input type='submit' value='Submit' /> <input type='button' value='Preview' onClick='SelectAction(\"preview\")' />};";

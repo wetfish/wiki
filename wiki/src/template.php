@@ -23,6 +23,7 @@
         <script type="text/javascript" src="/src/js/wiki2.js"></script>
         <script type="text/javascript" src="/src/js/window.js"></script>
         <script type="text/javascript" src="/src/js/swim.js"></script>
+        <script type="text/javascript" src="/src/js/captcha.js"></script>
         
         <link rel="icon" type="image/png" href="/favzz.png"/>
     </head>
