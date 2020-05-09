@@ -2,9 +2,9 @@
 
 /*
  * Fish format!
- * 
+ *
  * Version 0.2
- * 
+ *
  */
 
 require "parser2.php";
@@ -62,16 +62,16 @@ function FishFormat($text, $action='markup')
 
             // Re-filter HTML comments
             $output = str_replace(array('<!--', '-->'), array('&lt;!--', '--&gt;'), $output);
-            
+
             // Un-filter links
             $output = str_replace(array('&91;&91;', '&93;&93;', '&123;&123;', '&125;&125;'), array('[[', ']]', '{{', '}}'), $output);
         break;
-        
+
         case "format":
             $output = preg_replace('/(\w{14})/', "$1&#8203;", $text);
         break;
 
-        default:            
+        default:
             $output = $text;
 
             // Links with custom text
@@ -82,7 +82,7 @@ function FishFormat($text, $action='markup')
 
             // Replace semicolon tags with HTML entities (for writing documentation)
             $output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $output);
-            
+
             // Allow HTML comments
             $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
 
@@ -118,21 +118,26 @@ function FishFormat($text, $action='markup')
             $output = str_replace("    ", "&emsp;&emsp;&emsp;", $output);
 
             // Strip newlines around comments
-            $output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $output);            
-            
+            $output = preg_replace('{\n*(<!--|-->)\n*}', "\\1", $output);
+
             // Strip newlines between images.
             $output = preg_replace('{div>\n+<div}', "div><div", $output);
-            
+
             // Strip newlines after titles and headings
             $output = preg_replace('{header>\n+}', "header>", $output);
             $output = preg_replace('{<hr /></span>\n+}', '<hr /></span>', $output);
             $output = str_replace("<hr />\n", "<hr />", $output);
 
+            // Strip newlines in tables
+            $output = str_replace("</table>\n", "</table>", $output);
+            $output = str_replace("</tr>\n", "</tr>", $output);
+            $output = str_replace("</td>\n", "</td>", $output);
+
             // Replace newlines with line breaks
             $output = str_replace("\n", "<br />", $output);
         break;
     }
-    
+
     return $output;
 }
 

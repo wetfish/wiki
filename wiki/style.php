@@ -14,7 +14,7 @@ td { color: #FFFFFF; font-family: Tahoma,Helvetica,Sans-serif; font-size:10pt; p
 a { color:#E87EE1; text-decoration: none; }
 a:hover { text-decoration: underline; }
 
-a.nav { color:#98b3cd; font-size:12pt; font-weight:bold; 
+a.nav { color:#98b3cd; font-size:12pt; font-weight:bold;
     text-shadow: 4px 4px 4px #0A002F;
  }
 a.nav:hover { text-decoration:none; }
@@ -86,9 +86,9 @@ div.navbox:hover { background-image:url('mostlytransparent.png'); margin:0px; bo
 border-top-left-radius: 8px;
 border-top-right-radius: 8px;
  }
- 
+
  .navbox a { z-index:1; }
- 
+
 div.subnav { clear:both; }
 div.usernav { float:right; padding-right:23px; }
 div.pagenav { padding-left:23px; }
@@ -338,6 +338,17 @@ pre {
     color: #000;
     background-color: #000;
 }
+
+table.gibberish,
+table.gibberish th,
+table.gibberish td {
+  border: 1px solid #98b3cd;
+}
+
+table.gibberish td {
+    padding: 0.5em;
+}
+
 
 CSS;
 

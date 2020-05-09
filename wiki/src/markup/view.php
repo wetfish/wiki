@@ -4,7 +4,7 @@ function view_markup($input, $markup)
 {
     $output = $input;
     $markup = array_reverse($markup);
-    
+
     foreach($markup as $id => $object)
     {
         $tags = explode(",", $object['tag']);
@@ -41,7 +41,7 @@ function view_replacements($tag, $content)
     if($content !== "")
     {
         $tag = trim($tag);
-        
+
         switch(strtolower($tag))
         {
             case "total":
@@ -50,7 +50,7 @@ function view_replacements($tag, $content)
                     case "pages":
                         $pageTotal = mysql_query("Select `ID` from `Wiki_Pages`");
                         $totalPages = mysql_num_rows($pageTotal);
-                        
+
                         return number_format($totalPages);
                     break;
 
@@ -62,32 +62,32 @@ function view_replacements($tag, $content)
                     }
                     else
                         return $content;
-                    
+
                     return "<span style='color:{$args[0]}; {$args[1]}'>{$args[2]}</span>";
-                }                
+                }
             break;
-            
+
             case "ad":
                 $position = strtolower($content);
-                
+
                 if($position == 'right')
                     $class = 'right';
-                
+
                 elseif($position == 'left')
                     $class = 'left';
-            
+
                 $ID = uuid();
                 return "<div id='$ID' class='$class'><iframe id='scraper-friend' src='https://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>";
-            break; 
-            
+            break;
+
             case "ads":
                 $ID = uuid();
                 $ID2 = uuid();
                 return "<div id='$ID' class='left'><iframe id='scraper-friend' src='https://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>"
                         ."<div id='$ID2' class='right'><iframe id='scraper-friend' src='https://ads.wetfish.net/friendship/scraper.html' style='width:175px; height:640px; border:0; outline:0; overflow:hidden;' scrolling='no'></iframe></div>";
- 
+
             break;
-            
+
             case "pre":
                 $content = trim(str_replace(array("{", "}", '[', ']', ' '), array("&#123;", "&#125;", '&#91;', '&#93;', '&nbsp;'), $content));
                 return "<pre>$content</pre>";
@@ -96,7 +96,7 @@ function view_replacements($tag, $content)
             case "center":
                 return "<center>$content</center>";
             break;
-            
+
             case "color":
                 $args = explode("|", $content, 3);
 
@@ -104,8 +104,8 @@ function view_replacements($tag, $content)
                 {
                     if($args[1])
                         $args[1] = "background-color:{$args[1]}";
-                    
-                    return "<span style='color:{$args[0]}; {$args[1]}'>{$args[2]}</span>";					
+
+                    return "<span style='color:{$args[0]}; {$args[1]}'>{$args[2]}</span>";
                 }
                 elseif(count($args) == 2)
                 {
@@ -113,9 +113,9 @@ function view_replacements($tag, $content)
                 }
                 else
                     return $content;
-                
+
             break;
-            
+
             case "infobox":
                 $args = explode("|", $content, 3);
 
@@ -138,7 +138,7 @@ function view_replacements($tag, $content)
                 else
                     return "<div class='wiki-box'>{$args[0]}</div>";
             break;
-            
+
             case "title":
                 return "<div class='wiki-box-title'>$content</div>";
             break;
@@ -152,7 +152,7 @@ function view_replacements($tag, $content)
             case "right":
                 return "<div class='right'>$content</div>";
             break;
-            
+
             case "left":
                 return "<div class='left'>$content</div>";
             break;
@@ -198,17 +198,17 @@ function view_replacements($tag, $content)
                 else
                     return "<meta http-equiv='refresh' content='1;url=/$content'>You're being brought to '$content'...";
             break;
-            
+
             case "heading":
                 //return "<a name='".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;", " "), "", $content)."'></a>$content<hr />";
                 return "<div class='clear'>$content</div><hr />";
             break;
-            
+
             case "subheading":
                 //return "<a name='".str_replace(array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;", " "), "", $content)."'></a>$content<hr />";
                 return "$content<hr />";
             break;
-            
+
             case "url":
                 list($link, $text) = explode("|", $content, 2);
 
@@ -249,7 +249,7 @@ function view_replacements($tag, $content)
             case "image":
             case "img":
                 //list($Link, $Size, $Position, $Border, $Text) = explode("|", $content, 5);
-        
+
                 $args = explode('|', $content, 6);
                 $Link = trim($args[0]);
                 $Border = trim($args[3]);
@@ -272,16 +272,16 @@ function view_replacements($tag, $content)
 
                     return embed_html5_video($Link, $options);
                 }
-                
+
 //				$args[1] = trim(str_replace('px', '', strtolower($args[1])));
 //				$args[2] = trim(str_replace('px', '', strtolower($args[2])));
-                
+
                 $args[1] = trim($args[1]);
                 $args[2] = trim($args[2]);
-                
+
                 if(empty($args[1]))
                     $args[1] = 0;
-                
+
                 if(is_numeric($args[1]) and (is_string($args[2]) or empty($args[2])))
                 {
                     $Size = $args[1];
@@ -292,7 +292,7 @@ function view_replacements($tag, $content)
                     $Size = $args[2];
                     $Position = $args[1];
                 }
-                
+
                 if(strtolower($Position) == "right" or strtolower($Position) == "left")
                     $Position = "float:$Position;";
                 elseif(strtolower($Position) == "border")
@@ -304,7 +304,7 @@ function view_replacements($tag, $content)
                     $Border = "border: 4px solid #C17EE8; padding:4px; margin-bottom:16px; border-radius:8px; -moz-border-radius:8px; -webkit-border-radius:8px;";
                 else
                     unset($Border);
-                
+
                 if(is_numeric($Size) and $Size < 1600 and $Size > 0 and strpos($Link, 'http://') === false)
                 {
                     $Info = pathinfo($Link);
@@ -319,7 +319,7 @@ function view_replacements($tag, $content)
                     {
                         if(!file_exists(__DIR__ . "/../../upload/{$Size}_{$Info['basename']}"))
                             ResizeImage($Link, __DIR__ . "/../../upload/{$Size}_{$Info['basename']}", $Size);
-                            
+
                         $ImageText = "<a href='/$Link' class='exempt'><img src='/upload/{$Size}_{$Info['basename']}' border='0' /></a>";
                     }
                 }
@@ -327,9 +327,9 @@ function view_replacements($tag, $content)
                 {
                     if(strpos($Link, 'http://') === false && strpos($Link, 'https://') === false)
                         $Link = "/$Link";
-                
+
                     unset($Size);
-                
+
                     $URL = parse_url($Link);
 
                     // Make sure wiki images exist
@@ -342,22 +342,22 @@ function view_replacements($tag, $content)
                     {
                         if($URL['host'] == "glitch.wetfish.net")
                             $class = "class='glitchme'";
-                        
+
                         // This is a terrible hack and really should be expanded to parse and reconstruct the url
                         if($rand)
                             $rand = "&rand=".mt_rand();
-                        
+
                         // Lol I should finish this some time
                         if(is_numeric($Size) and $Size < 1600 and $Size > 0)
                             $size = "style=''";
-                        
+
                         $ImageText = "<img src='$Link$rand' $class />";
                     }
                 }
-                
+
                 if($Text)
                     $Text = "<div class='small'>$Text</div>";
-                
+
                 return "<div class='image' style='$Position $Border'>$ImageText $Text</div>";
             break;
 
@@ -394,17 +394,17 @@ function view_replacements($tag, $content)
                 $url = parse_url($content);
                 parse_str($url['query'], $query);
 
-                return "<iframe width='640' height='360' src='https://www.youtube.com/embed/videoseries?list={$query['list']}&index={$query['index']}' frameborder='0' allowfullscreen></iframe>";			
+                return "<iframe width='640' height='360' src='https://www.youtube.com/embed/videoseries?list={$query['list']}&index={$query['index']}' frameborder='0' allowfullscreen></iframe>";
             break;
-            
+
             case "soundcloud":
                 return embed_soundcloud($content);
             break;
-            
+
             case "load":
             case "embed":
                 $URL = parse_url($content);
-                
+
                 if(empty($URL['scheme']))
                     $URL['scheme'] = "http";
 
@@ -413,40 +413,40 @@ function view_replacements($tag, $content)
 
                 if($URL['path'] == 'index.php' or empty($URL['path']) or $URL['path'] == $_GET['SUPERdickPAGE'] or !empty($_GET['load']))
                     $URL['path'] = 'yousosilly.php';
-                    
+
                 if(empty($URL['query']))
                 {
                     $Query = array();
-                
+
                     foreach($_GET as $Key => $Value)
                     {
                         if($Key != 'SUPERdickPAGE')
                             $Query[] = "$Key=".urlencode($Value);
                     }
-                    
+
                     $URL['query'] = implode('&', $Query);
                 }
-                
+
                 if(preg_match('/^.*\.?wetfish.net$/i', $URL['host']))
                 {
                     // Prepend uuid with a string to ensure it's valid
                     $ID = "embed-" . uuid();
-                    
+
                     if($URL['host'] == 'danger.wetfish.net')
                     {
                         $URL['path'] = substr($URL['path'], 1);
-                    
+
                         if(preg_match("/^[a-f0-9]+$/", $URL['path']))
                         {
                             $URL['query'] = "hash={$URL['path']}";
                             $URL['path'] = "view.php";
-                            
+
                         }
                     }
-                    
+
                     //return "<iframe src='{$URL['scheme']}://{$URL['host']}/{$URL['path']}?{$URL['query']}' style='height:0px; width:0px; display:none;'></iframe>
-                    
-                    
+
+
                     /**/if($URL['host'] != "wiki.wetfish.net")
                         return "<div id='$ID'><script>$('#$ID').load('/load.php?id=$ID&url={$URL['scheme']}://{$URL['host']}/{$URL['path']}?".urlencode($URL['query'])."');</script></div>";
                     else
@@ -455,7 +455,7 @@ function view_replacements($tag, $content)
                     //return "LOL GOOGLE HACKED WETFISH";
                 }
             break;
-            
+
             case "music":
                 list($link, $autoplay, $loop) = explode("|", $content, 3);
 
@@ -468,7 +468,7 @@ function view_replacements($tag, $content)
 
                 return embed_html5_audio($link, $options);
             break;
-            
+
             case "flash":
                 list($url, $width, $height) = explode("|", $content);
 
@@ -481,14 +481,14 @@ function view_replacements($tag, $content)
             case "rainbow2":
                 $Words = str_split_unicode(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
                 $Splitter = '';
-                            
+
                 foreach($Words as $Word)
                 {
                     /*
                     $RandomRed = rand(0, 255);
                     $RandomGreen = rand(0, 255);
                     $RandomBlue  = rand(0, 255);
-                    
+
                     $InvertedRed = 255 - $RandomRed;
                     $InvertedGreen = 255 - $RandomGreen;
                     $InvertedBlue = 255 - $RandomBlue;
@@ -507,25 +507,25 @@ function view_replacements($tag, $content)
 
                     $Stuff .= "<span style='font-size:110%; color:hsla($randomHue, $randomSaturation%, $randomLuminosity%, 0.8); text-shadow:1px 1px #000; background-color:hsla($invertedHue, $randomSaturation%, $randomLuminosity%, 0.6);'>".$Word."</span>$Splitter";
                 }
-                            
+
                 return $Stuff;
             break;
 
             case "snow":
                 return '<script type="text/javascript" src="/snowstorm.js"></script>';
             break;
-                    
+
             case "rainbow":
                 $Words = str_split_unicode(html_entity_decode($content, ENT_QUOTES, 'UTF-8'));
                 $Splitter = '';
-                            
+
                 foreach($Words as $Word)
                 {
                     /*
                     $RandomRed = rand(0, 255);
                     $RandomGreen = rand(0, 255);
                     $RandomBlue  = rand(0, 255);
-                    
+
                     $InvertedRed = 255 - $RandomRed;
                     $InvertedGreen = 255 - $RandomGreen;
                     $InvertedBlue = 255 - $RandomBlue;
@@ -544,10 +544,10 @@ function view_replacements($tag, $content)
 
                     $Stuff .= "<span style='font-size:110%; color:hsla($randomHue, $randomSaturation%, $randomLuminosity%, 0.8); text-shadow:1px 1px #000;'>".$Word."</span>$Splitter";
                 }
-                            
+
                 return $Stuff;
             break;
-            
+
             case "glitch":
                 return "<div class='image'><img class='glitchme' src='https://glitch.wetfish.net/image.php?url=$content'></div>";
             break;
@@ -570,7 +570,7 @@ function view_replacements($tag, $content)
                 // If none is set, generate a random image
                 if(!$image)
                     $image = mt_rand(2, 4);
-                
+
                 return "<div class='fishbux'> {$amount}  <div class='wrap'><img src='/upload/fishbux/bux{$image}.gif'></div></div>";
             break;
 
@@ -586,6 +586,24 @@ function view_replacements($tag, $content)
             case "spoiler":
             case "spoilers":
                 return "<span class='spoiler'>{$content}</span>";
+            break;
+
+            case "table":
+                $content = trim($content);
+                return "<table class='gibberish'>{$content}</table>";
+            break;
+
+            case "row":
+                $content = trim($content);
+                $columns = explode('|', $content);
+                $output = "";
+
+                foreach($columns as $column)
+                {
+                    $output .= "<td>{$column}</td>";
+                }
+
+                return "<tr>{$output}</tr>";
             break;
 
             default:
@@ -615,7 +633,7 @@ function replace_links($matches, $mode)
 {
     // Replace spaces with hyphens
     $page = str_replace(" ", "-", $matches[1]);
-    
+
     // Remove invalid characters from URLs
     $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
     $page = str_replace($invalid, "", $page);
@@ -633,7 +651,7 @@ function replace_links($matches, $mode)
             $class = "broken";
         }
     }
-    
+
     if(isset($_GET['random']))
         $random = "/?random";
 
