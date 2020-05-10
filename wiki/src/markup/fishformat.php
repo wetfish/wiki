@@ -80,8 +80,8 @@ function FishFormat($text, $action='markup')
             // Basic links
             $output = preg_replace_callback('/(?:{{|\[\[)([\w -@\/~]+?)(?:\]\]|}})(s)?/', "basic_link", $output);
 
-            // Replace semicolon tags with HTML entities (for writing documentation)
-            $output = str_replace(array(":{", "}:", ':[', ']:'), array("&#123;", "&#125;", "&#91;", "&#93;"), $output);
+            // Replace colon delimited tags with HTML entities (for writing documentation)
+            $output = str_replace(array(":{", "}:", ':[', ']:', ':|:'), array("&#123;", "&#125;", "&#91;", "&#93;", "&#124;"), $output);
 
             // Allow HTML comments
             $output = str_replace(array('&lt;!--', '--&gt;'), array('<!--', '-->'), $output);
