@@ -456,6 +456,7 @@ function view_replacements($tag, $content)
                 }
             break;
 
+            case "audio":
             case "music":
                 list($link, $autoplay, $loop) = explode("|", $content, 3);
 

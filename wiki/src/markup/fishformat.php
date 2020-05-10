@@ -104,7 +104,7 @@ function FishFormat($text, $action='markup')
             // Random replacements / emoticon type things
             $Search[':Z'] = "<span class='warning'>:Z</span>";
             $Search[':downy:'] = "<span class='warning medium' style='font-family:helvetica'>.'<u>/</u>)</span>";
-            $Search[':dunno'] = "<span class='warning'>¯\(º_o)/¯</span>";
+            $Search[':dunno:'] = "<span class='warning'>¯\(º_o)/¯</span>";
 
             foreach($Search as $Key => $Value)
             {
