@@ -94,6 +94,7 @@ trait PublicEndpoints
             $output[] = $row;
         }
 
+        header('Content-Type: application/json');
         return json_encode($output);
     }
 }
