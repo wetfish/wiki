@@ -2,6 +2,7 @@
 
 require_once __DIR__ . "/page.php";
 require_once __DIR__ . "/tags.php";
+require_once __DIR__ . "/edits.php";
 
 class Model
 {
@@ -11,6 +12,7 @@ class Model
         $this->connection = $mysql;
         $this->page = new Page($mysql);
         $this->tags = new Tags($mysql);
+        $this->edits = new Edits($mysql);
     }
 
     // Private function to do string replacements on queries

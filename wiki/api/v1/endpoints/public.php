@@ -81,17 +81,12 @@ trait PublicEndpoints
     // Function to return recent edits
     public function recent($path)
     {
-        $ActivityQuery = "
-        SELECT `ID`,`PageID`,`AccountID`,`EditTime`,`Size`,`Tags`,`TagList`, `Name`,`Description`,`Title` 
-        FROM `Wiki_Edits` 
-        WHERE `Archived` = 0 
-        ORDER BY `ID` DESC LIMIT 50";
+        $edits = $this->model->edits->get(array('archived' => 0), "`ID`,`PageID`,`AccountID`,`EditTime`,`Size`,`Tags`,`TagList`, `Name`,`Description`,`Title`");
 
-        $query = mysql_query($ActivityQuery);
         $output = array();
-        while ($row = mysql_fetch_assoc($query))
+        while ($edit = $edits->fetch_assoc())
         {
-            $output[] = $row;
+            $output[] = $edit;
         }
 
         header('Content-Type: application/json');
