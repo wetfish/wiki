@@ -77,4 +77,23 @@ trait PublicEndpoints
             return json_encode($response);
         }
     }
+
+    // Function to return recent edits
+    public function recent($path)
+    {
+        $ActivityQuery = "
+        SELECT `ID`,`PageID`,`AccountID`,`EditTime`,`Size`,`Tags`,`TagList`, `Name`,`Description`,`Title` 
+        FROM `Wiki_Edits` 
+        WHERE `Archived` = 0 
+        ORDER BY `ID` DESC LIMIT 50";
+
+        $query = mysql_query($ActivityQuery);
+        $output = array();
+        while ($row = mysql_fetch_assoc($query))
+        {
+            $output[] = $row;
+        }
+
+        return json_encode($output);
+    }
 }
