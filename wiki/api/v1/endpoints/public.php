@@ -77,4 +77,19 @@ trait PublicEndpoints
             return json_encode($response);
         }
     }
+
+    // Function to return recent edits
+    public function recent($path)
+    {
+        $edits = $this->model->edits->get(array('archived' => 0), "`ID`,`PageID`,`AccountID`,`EditTime`,`Size`,`Tags`,`TagList`, `Name`,`Description`,`Title`");
+
+        $output = array();
+        while ($edit = $edits->fetch_assoc())
+        {
+            $output[] = $edit;
+        }
+
+        header('Content-Type: application/json');
+        return json_encode($output);
+    }
 }
