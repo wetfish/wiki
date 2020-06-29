@@ -86,6 +86,8 @@ trait PublicEndpoints
         $output = array();
         while ($edit = $edits->fetch_assoc())
         {
+            $page = $this->model->page->get(array('ID' => $edit['PageID']), "`Path`");
+            $edit['Path'] = $page->fetch_object()->Path;
             $output[] = $edit;
         }
 
