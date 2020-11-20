@@ -3,7 +3,7 @@
 function replace_once($search, $replacement, $string)
 {
     // We have to use preg_replace instead of str_replace to ensure this match is only replaced once
-    return preg_replace("/" . preg_quote($search, "/") . "/", $replacement, $string, 1);
+    return preg_replace("/" . preg_quote($search, "/") . "/", addcslashes($replacement, '$'), $string, 1);
 }
 
 class Parser
