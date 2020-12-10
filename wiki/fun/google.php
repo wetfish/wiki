@@ -8,7 +8,7 @@ $Filter = filter_var(trim(stripslashes(stripslashes($_GET['filter']))), FILTER_S
 <br /><br /><br />
 
 <center>
-	<img src='http://wiki.wetfish.net/upload/300_8b057e45-97ce-7b72-e500-9724fb894b59.png' />
+	<img src='../src/img/google.png'/>
 	<h1 style='margin:4px;'>Search Scraper</h1>
 	
 	<form>

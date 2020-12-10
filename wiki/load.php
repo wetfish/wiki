@@ -15,7 +15,10 @@ function uuid($prefix = '')
     return $prefix . $uuid;
 }
 
-if(preg_match('/^.*\.?wetfish.net$/i', $URL['host']))
+$site_url = getenv('SITE_URL');
+$match = '/' . preg_quote($site_url) . '$/i'
+	
+if(preg_match($match, $URL['host']))
 {
     echo file_get_contents($_GET['url']);
     return false; 

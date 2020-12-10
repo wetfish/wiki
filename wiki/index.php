@@ -90,6 +90,7 @@ if($Path == "home")
     $Path = "";
 
 $Title[] = "wetfish.net";
+$Site = getenv('SITE_URL');
 
 $Content = array();
 $Content['UserNav'] = new Navigation;
@@ -363,8 +364,8 @@ switch($Action[0])
                 $SQLError .= mysql_error();
 
                 if($SQLError)
-                    $Content['Body'] .= "Holy SHIT there was a MySQL error.";
-                else
+                    $Content['Body'] .= "Holy SHIT there was a MySQL error";
+		else
                 {
                     // If the captcha bypass was set by the API
                     if($_SESSION['api'])
@@ -491,7 +492,7 @@ SuperNav;
 
                 $Time = Time();
                 $Size = strlen($PageContent);
-
+	
                 mysql_query("UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
                 $SQLError .= mysql_error();
 
@@ -657,7 +658,6 @@ SuperNav;
         list($Title, $Content) = call_user_func($function, $Path, $Action, $Title, $Content);
     break;
 }
-
 
 $Titles = array('THE BEST INTERENT ON THE INTERNET',
                 'Super internet website',
