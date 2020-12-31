@@ -69,7 +69,7 @@ function resize()
 
 $(document).ready(function()
 {
-    $('.fishwrap').append("<img src='https://wiki.wetfish.net/src/img/ghostfish.png' id='kristyfish'>");
+    $('.fishwrap').append("<img src='/src/img/ghostfish.png' id='kristyfish'>");
 
     $('#kristyfish').on('load', function()
     {
