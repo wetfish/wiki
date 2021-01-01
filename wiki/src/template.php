@@ -31,7 +31,7 @@
         <div class="bodyborder">
             <div class="body">
                 <div class="header">
-                    <a class='header' href='https://wiki.wetfish.net/' onclick='cornify_add(); setTimeout("Jump()", 5000); return false;'><img src='/thisiswetfish.png' border='0'></a>
+		<a class='header' href="https://<?php echo $Site?>" onclick='cornify_add(); setTimeout("Jump()", 5000); return false;'><img src='/thisiswetfish.png' border='0'></a>
                 </div>
 
                 <div class="navigation">

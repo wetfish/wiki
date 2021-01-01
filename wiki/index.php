@@ -76,7 +76,7 @@ foreach($_GET as $action => $value)
 {
     $actionText = strtolower($action);
     $action = explode('/', $actionText);
-        
+
     if(in_array($action[0], $actions))
         $Action = $action;
 }
@@ -90,6 +90,7 @@ if($Path == "home")
     $Path = "";
 
 $Title[] = "wetfish.net";
+$Site = getenv('SITE_URL');
 
 $Content = array();
 $Content['UserNav'] = new Navigation;
@@ -153,16 +154,16 @@ switch($Action[0])
         {
             $fixTags[$tag]++;
         }
-        
+
         foreach($fixTags as $tag => $count)
         {
             mysql_query("Insert into `Wiki_Tag_Statistics`
                             values ('', '$tag', '1', '0', NOW(), NOW())
-                            
+
                             on duplicate key update `count` = '$count'");
         }
     break;
-    
+
     case "edit":
     case "preview":
         $Head = '<meta name="robots" content="noindex, nofollow" />';
@@ -268,8 +269,8 @@ switch($Action[0])
             {
                 $_SESSION['username'] = $Name;
                 $newTags = array_filter(array_unique(explode(",", $tagText)));
-                $tagCount = count($newTags);				
-                
+                $tagCount = count($newTags);
+
                 if($PageID)
                 {
                     mysql_query("UPDATE `Wiki_Pages` SET `Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
@@ -292,35 +293,35 @@ switch($Action[0])
 
                     $EditID = mysql_insert_id();
                 }
-                
+
                 mysql_query("Delete from `Wiki_Tags` where `pageID`='$PageID'");
-                
+
                 foreach($newTags as $tag)
                 {
                     $tag = trim($tag);
-                    
+
                     if($tag)
                     {
                         $tag = str_replace(" ", "-", $tag);
                         mysql_query("Insert into `Wiki_Tags` values('', '$PageID', '$tag')");
-                        
+
                         $tagKey = array_search($tag, $originalTags);
-                        
+
                     /*	echo "New tag: ";
                         var_dump($tag);
-                        
+
                         echo "<br />Tag key: ";
                         var_dump($tagKey);
                         */
                         if($tagKey === false)
                         {
                             //echo "<br />Tag update called<hr />";
-                            
+
                             // If the current tag doesn't exist in the original tag array, insert/update it
                             mysql_query("Insert into `Wiki_Tag_Statistics`
                                             values ('', '$tag', '1', '0', NOW(), NOW())
-                                            
-                                            on duplicate key update `count` = `count` + 1, `modified` = NOW()");											
+
+                                            on duplicate key update `count` = `count` + 1, `modified` = NOW()");
                         }
                         else
                         {
@@ -329,7 +330,7 @@ switch($Action[0])
                         }
                     }
                 }
-                
+
                 // Take all the remaining original tags and subtract one from the count
                 foreach($originalTags as $tag)
                 {
@@ -363,8 +364,8 @@ switch($Action[0])
                 $SQLError .= mysql_error();
 
                 if($SQLError)
-                    $Content['Body'] .= "Holy SHIT there was a MySQL error.";
-                else
+                    $Content['Body'] .= "Holy SHIT there was a MySQL error";
+		else
                 {
                     // If the captcha bypass was set by the API
                     if($_SESSION['api'])
@@ -375,7 +376,7 @@ switch($Action[0])
                         $_SESSION['status']['authed'] = false;
                         $_SESSION['status']['credits'] = 0;
                     }
-                    
+
                     if($_GET['api'])
                     {
                         header('Content-Type: application/json');
@@ -399,7 +400,7 @@ $Content['Body'] .= <<<SuperNav
 <script>
     $(document).ready(function ()
     {
-        
+
         Window(	"<span class='medium'>Super Edit 3.3 !!!</span><hr />"+
                 "<table><tr><td>"+
                 "<a href='javascript:Wiki(\"Bold\")'>Bold</a> &emsp; <a href='javascript:Wiki(\"Italics\")'>Italics</a> &emsp; <a href='javascript:Wiki(\"Underline\")'>Underline</a> &emsp; <a href='javascript:Wiki(\"Strike\")'>Strike</a><br />"+
@@ -409,15 +410,15 @@ $Content['Body'] .= <<<SuperNav
                 "<a href='javascript:Wiki(\"Image\")'>Image</a> &emsp; <a href='javascript:Wiki(\"Video\")'>Video</a> &emsp; <a href='javascript:Wiki(\"Music\")'>Music</a>"+
                 "</td></tr></table>");
     });
-</script>		
+</script>
 SuperNav;
-        
+
             $Form['_Options'] = "action:".str_replace("//", "/", "/$Path/?")."; id:TheInternet;";
 
             $Form['Name']['Text'] = "Editor:";
             $Form['Name']['Form'] = "id:Name; name:Name; value:{".$Name."}; maxlength:32;";
             $Form['Name']['SubText'] = "Your name which will appear in the page history.";
-            
+
             if($LoggedIn)
             {
                 if($Account == "on")
@@ -450,7 +451,7 @@ SuperNav;
             }
 
             $Form['Submit']['Form'] = "type:plaintext; value:{<input type='submit' value='Submit' /> <input type='button' value='Preview' onClick='SelectAction(\"preview\")' />};";
-            
+
             if($Action[0] == "preview")
             {
                 $Content['Title'] = 'Preview: '.FishFormat($PageTitle);
@@ -462,7 +463,7 @@ SuperNav;
         if($PageEdits)
         {
             $EditCount = count(explode(",", $PageEdits));
-            
+
             date_default_timezone_set('America/New_York');
             $PageEditTime = formatTime($PageEditTime);
 
@@ -475,12 +476,12 @@ SuperNav;
             $Content['Footer'] = "<b>".number_format($pageViews)."</b> page view{$viewPlural}. <b>$EditCount</b> edit{$Plural}. &mdash; Last modified <b>$PageEditTime</b>.";
         }
     break;
-    
+
     case "Massrevert":
         $Reverted = array();
 
         $BadAccount = 27713;
-        
+
         $PageQuery = mysql_query("SELECT `PageID` FROM `Wiki_Edits` WHERE `AccountID`='$BadAccount'");
         while(list($PageID) = mysql_fetch_array($PageQuery))
         {
@@ -570,21 +571,21 @@ SuperNav;
             if(empty($Password))
                 $Form['_Errors']['Password'] = "Error: You must enter a password!";
             elseif(strlen($Password) > 32)
-                $Form['_Errors']['Password'] = "Error: Your password is too long.";				
-            
+                $Form['_Errors']['Password'] = "Error: Your password is too long.";
+
             if($Confirm != $Password)
                 $Form['_Errors']['Password'] = "Error: Your passwords do not match.";
-            
+
             if(empty($Form['_Errors']))
             {
                 $Penis = mysql_query("Select `Name` from `Wiki_Accounts` where `Name`='$Name'");
                 list($OldName) = mysql_fetch_array($Penis);
-                
+
                 if($Name == $OldName)
                     $Form['_Errors']['Name'] = "Someone already has this name! :(";
-                
+
                 list($EmailName, $EmailURL) = explode('@', $Email);
-                
+
                 if($SQLError)
                     $Content['Body'] .= "Holy SHIT there was a MySQL error.";
                 else
@@ -602,14 +603,14 @@ SuperNav;
             $Form['Email']['Text'] = "Email:";
             $Form['Email']['Form'] = "name:Email; value:$Email;";
             $Form['Email']['SubText'] = "&nbsp;";
-            
+
             $Form['Password']['Text'] = "Password:";
             $Form['Password']['Form'] = "name:Password; type:password;";
 
             $Form['Confirm']['Text'] = "&nbsp;";
             $Form['Confirm']['Form'] = "name:Confirm; type:password;";
             $Form['Confirm']['SubText'] = "Retype password to make sure you did it right!";
-            
+
             $Form['Submit']['Form'] = "type:submit; value:Submit;";
 
             $Content['Body'] .= "<br />";
@@ -624,7 +625,7 @@ SuperNav;
         if($_SESSION['Name'])
         {
             session_unset();
-            setcookie("sid", "", time() - 2629743, "/", ".wetfish.net");
+            setcookie("sid", "", time() - 2629743, "/", $Site);
             $Content['Body'] = "<b>Logging out...</b> <meta http-equiv='refresh' content='2;url=/$Path'>";
         }
         else
@@ -658,7 +659,6 @@ SuperNav;
     break;
 }
 
-
 $Titles = array('THE BEST INTERENT ON THE INTERNET',
                 'Super internet website',
                 'Bringing People Together~~',
@@ -674,7 +674,7 @@ $Titles = array('THE BEST INTERENT ON THE INTERNET',
                 "Wetfish touches you.");
 
 shuffle($Titles);
-                
+
 $Title[] = $Titles[0];
 $Title = implode(" &mdash; ", $Title);
 

@@ -229,7 +229,8 @@ function view_replacements($tag, $content)
                     break;
 
                     case "fish":
-                        $link = "https://wiki.wetfish.net/{$url['host']}{$url['path']}";
+                        $site = getenv('SITE_URL');
+                        $link = "https://$site/{$url['host']}{$url['path']}";
 
                         if(empty($text))
                             $text = $url['host'];
@@ -404,12 +405,13 @@ function view_replacements($tag, $content)
             case "load":
             case "embed":
                 $URL = parse_url($content);
+                $site = getenv('SITE_URL');
 
                 if(empty($URL['scheme']))
                     $URL['scheme'] = "http";
 
                 if(empty($URL['host']))
-                    $URL['host'] = "wiki.wetfish.net";
+                    $URL['host'] = $site;
 
                 if($URL['path'] == 'index.php' or empty($URL['path']) or $URL['path'] == $_GET['SUPERdickPAGE'] or !empty($_GET['load']))
                     $URL['path'] = 'yousosilly.php';
@@ -447,7 +449,7 @@ function view_replacements($tag, $content)
                     //return "<iframe src='{$URL['scheme']}://{$URL['host']}/{$URL['path']}?{$URL['query']}' style='height:0px; width:0px; display:none;'></iframe>
 
 
-                    /**/if($URL['host'] != "wiki.wetfish.net")
+                    /**/if($URL['host'] != $site)
                         return "<div id='$ID'><script>$('#$ID').load('/load.php?id=$ID&url={$URL['scheme']}://{$URL['host']}/{$URL['path']}?".urlencode($URL['query'])."');</script></div>";
                     else
                         return "<div id='$ID'><script>$('#$ID').load('/{$URL['path']}?{$URL['query']}&load=true');</script></div>";
@@ -656,13 +658,15 @@ function replace_links($matches, $mode)
     if(isset($_GET['random']))
         $random = "/?random";
 
+    $site = getenv('SITE_URL');
+
     if($mode == "custom")
     {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[2]}</a>";
+        return "<a href='https://$site/{$page}{$random}' class='$class'>{$matches[2]}</a>";
     }
     else
     {
-        return "<a href='https://wiki.wetfish.net/{$page}{$random}' class='$class'>{$matches[1]}{$matches[2]}</a>";
+        return "<a href='https://$site/{$page}{$random}' class='$class'>{$matches[1]}{$matches[2]}</a>";
     }
 }
 
