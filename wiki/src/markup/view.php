@@ -405,7 +405,7 @@ function view_replacements($tag, $content)
             case "load":
             case "embed":
                 $URL = parse_url($content);
-		$site = getenv('SITE_URL');
+                $site = getenv('SITE_URL');
 
                 if(empty($URL['scheme']))
                     $URL['scheme'] = "http";

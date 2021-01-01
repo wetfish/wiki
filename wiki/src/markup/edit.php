@@ -4,12 +4,12 @@ function edit_markup($input, $markup)
 {
     $output = $input;
     $markup = array_reverse($markup);
-    
+
     foreach($markup as $id => $object)
     {
         $tags = explode(",", $object['tag']);
         $replacement = false;
-        
+
         foreach($tags as $tag)
         {
             // Check if any replacements need to be made
@@ -55,13 +55,15 @@ function edit_replacements($tag, $content)
             $Border = trim($Border);
             $Text = trim($Text);
             $URL = parse_url($Link);
+            $site_url = getenv('SITE_URL');
+            $site_regex = '/^' . preg_quote($site_url) . '$/i'
 
             // Automatically rehost content that isn't on wetfish or certain embedded sites
             if(preg_match("{https?}", $URL['scheme']) and
                 (
                     // Negative matches, if the content isn't hosted on the following sites:
                     (
-                        !preg_match("/^wiki\.wetfish\.net$/", $URL['host']) and
+                        !preg_match($site_regex, $URL['host']) and
                         !preg_match("/(^|\.)youtube\.com$/", $URL['host']) and
                         !preg_match("/(^|\.)youtu\.be$/", $URL['host']) and
                         !preg_match("/(^|\.)vimeo\.com$/", $URL['host']) and
@@ -69,7 +71,7 @@ function edit_replacements($tag, $content)
                         !preg_match("/(^|\.)ted\.com$/", $URL['host'])
                     )
 
-                    // Positive matches, if the content is on the following sites: 
+                    // Positive matches, if the content is on the following sites:
                     or
                     (
                         preg_match("/cdn\.vine\.co$/", $URL['host'])
@@ -79,10 +81,10 @@ function edit_replacements($tag, $content)
                 $Path = pathinfo($URL['path']);
                 $Filename = uuid();
                 $Extension = $Path['extension'];
-                
+
                 if(strpos($Extension, '?') !== FALSE)
                     $Extension = substr($Extension, 0, strpos($Extension, '?'));
-                
+
                 if(preg_match('/^(jpe?g|gif|png|webm|gifv|mp4|ogv)$/i', $Extension))
                 {
                     // Automatically convert gifv urls to webm
@@ -91,12 +93,12 @@ function edit_replacements($tag, $content)
                         $Extension = "webm";
                         $Link = str_replace(".gifv", ".webm", $Link);
                     }
-                    
+
                     while(file_exists("upload/$Filename.$Extension"))
                     {
                         $Filename = uuid();
                     }
-                        
+
                     file_put_contents("upload/$Filename.$Extension", file_get_contents($Link));
                     chmod("upload/$Filename.$Extension", 0644);
 
@@ -111,7 +113,7 @@ function edit_replacements($tag, $content)
                     $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 
                     mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
-    
+
                     $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
 
                     return array('tag' => strtolower($tag), 'content' => $Text);
@@ -129,10 +131,12 @@ function edit_replacements($tag, $content)
             list($link, $autoplay, $loop) = explode("|", $content, 3);
 
             $url = parse_url($link);
-            
+            $site_url = getenv('SITE_URL');
+            $site_regex = '/^' . preg_quote($site_url) . '$/i'
+
             // Automatically rehost content that isn't on wetfish
             if(preg_match("{https?}", $url['scheme']) and
-                !preg_match("/^wiki\.wetfish\.net$/", $url['host']))
+                !preg_match($site_regex, $url['host']))
             {
                 $path = pathinfo($url['path']);
                 $filename = uuid();
@@ -144,7 +148,7 @@ function edit_replacements($tag, $content)
                     {
                         $filename = uuid();
                     }
-                    
+
                     file_put_contents("upload/$filename.$extension", file_get_contents($link));
                     chmod("upload/$filename.$extension", 0644);
 
@@ -171,7 +175,7 @@ function edit_replacements($tag, $content)
                 return array('tag' => strtolower($tag), 'content' => $content);
             }
         break;
-        
+
         case "soundcloud":
             $URL = parse_url($content);
             parse_str($URL['query'], $Query);
@@ -186,7 +190,7 @@ function edit_replacements($tag, $content)
                     (
                         'method'=>"GET",
                         'header'=>"Accept-language: en\r\n" .
-                                  "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0\r\n" 
+                                  "User-Agent: Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:38.0) Gecko/20100101 Firefox/38.0\r\n"
                     )
                 );
 
@@ -195,10 +199,10 @@ function edit_replacements($tag, $content)
                 $androidHack = $html->find("meta[property='al:android:url']", 0)->getAttribute('content');
                 $trackID = preg_replace("/[^0-9]/", "", $androidHack);
             }
-            
+
             return array('tag' => 'soundcloud', 'content' => "$content?id=$trackID");
         break;
-        
+
         case "date":
             list($time, $format) = explode('|', $content, 2);
 
@@ -211,7 +215,7 @@ function edit_replacements($tag, $content)
             {
                 $time = strtotime($time);
             }
-            
+
             if(empty($format))
             {
                 $format = 'l, F j, Y';
