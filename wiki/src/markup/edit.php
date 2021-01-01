@@ -56,7 +56,7 @@ function edit_replacements($tag, $content)
             $Text = trim($Text);
             $URL = parse_url($Link);
             $site_url = getenv('SITE_URL');
-            $site_regex = '/^' . preg_quote($site_url) . '$/i'
+            $site_regex = '/^' . preg_quote($site_url) . '$/i';
 
             // Automatically rehost content that isn't on wetfish or certain embedded sites
             if(preg_match("{https?}", $URL['scheme']) and
@@ -132,7 +132,7 @@ function edit_replacements($tag, $content)
 
             $url = parse_url($link);
             $site_url = getenv('SITE_URL');
-            $site_regex = '/^' . preg_quote($site_url) . '$/i'
+            $site_regex = '/^' . preg_quote($site_url) . '$/i';
 
             // Automatically rehost content that isn't on wetfish
             if(preg_match("{https?}", $url['scheme']) and
