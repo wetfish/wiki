@@ -6,6 +6,6 @@
   "dependencies": {
     "dragondrop": "^0.5.2",
     "load": "git://github.com/itsrachelfish/load",
-    "wetfish-basic": "^0.7.7"
+    "wetfish-basic": "0.7.7"
   }
 }
