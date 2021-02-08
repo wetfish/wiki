@@ -35,7 +35,6 @@ $Pagination['is'] = 'On';
 $Pagination['Count'] = '30';
 
     # How many images per page?
-
     #
     # Friendship files
     ####################
@@ -105,7 +104,8 @@ foreach($Files as $File)
         if($Generate == 'Thumbnails')
         {
             if(!file_exists("$Path/{$Thumbnail['Directory']}/{$Thumbnail['Size']}_$File"))
-                ResizeImage("$Path/$Directory/$File", "$Path/{$Thumbnail['Directory']}/{$Thumbnail['Size']}_$File", $Thumbnail['Size']);
+		    if(!ResizeImage("$Path/$Directory/$File", "$Path/{$Thumbnail['Directory']}/{$Thumbnail['Size']}_$File", $Thumbnail['Size']))
+			    continue;
         }
 
         echo	"<div class='GalleryContainer'>

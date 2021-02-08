@@ -28,6 +28,8 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 	$Extension = $Path['extension'];
 
 	$ImageData = @GetImageSize($Filename);
+	if ($ImageData == false)
+		return false;
 	$Width = $ImageData[0];
 	$Height = $ImageData[1];
 
@@ -49,12 +51,18 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 
 	$NewImage = @ImageCreateTrueColor($NewWidth, $NewHeight);
 
-	if(preg_match('/^gif$/i', $Extension))
-		$Image = @ImageCreateFromGif($Filename);
-	elseif(preg_match('/^png$/i', $Extension))
-		$Image = @ImageCreateFromPng($Filename);
-	else
-		$Image = @ImageCreateFromJpeg($Filename);
+	$Mime = mime_content_type($Filename);
+	switch ($Mime) {
+		case "image/gif":
+			$Image = @ImageCreateFromGif($Filename);
+			break;
+		case "image/png":
+			$Image = @ImageCreateFromPng($Filename);
+			break;
+		case "image/jpeg":
+			$Image = @ImageCreateFromJpeg($Filename);
+			break;
+	}
 
 	if($ImageData[2] == IMAGETYPE_GIF or $ImageData[2]  == IMAGETYPE_PNG)
 	{
@@ -92,19 +100,24 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 			// Restore transparency blending
 			imagesavealpha($NewImage, true);
 		}
-    }
+	}
 
 	@ImageCopyResampled($NewImage, $Image, 0, 0, 0, 0, $NewWidth, $NewHeight, $Width, $Height);
 
-	if(preg_match('/^gif$/i', $Extension))
-		@ImageGif($NewImage, $Thumbnail);
-	elseif(preg_match('/^png$/i', $Extension))
-		@ImagePng($NewImage, $Thumbnail);
-	else
-		@ImageJpeg($NewImage, $Thumbnail);
-
+	switch ($Mime) {
+		case "image/gif":
+			@ImageGif($NewImage, $Thumbnail);
+			break;
+		case "image/png":
+			@ImagePng($NewImage, $Thumbnail);
+			break;
+		case "image/jpeg":
+			@ImageJpeg($NewImage, $Thumbnail);
+			break;
+	}
 
 	@chmod($Thumbnail, 0644);
+	return true;
 }
 
 function scandirByDate($dir)
