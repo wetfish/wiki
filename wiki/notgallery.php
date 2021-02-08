@@ -29,7 +29,7 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 
 	$ImageData = @GetImageSize($Filename);
 	if ($ImageData == false)
-		return;
+		return false;
 	$Width = $ImageData[0];
 	$Height = $ImageData[1];
 
@@ -117,6 +117,7 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 	}
 
 	@chmod($Thumbnail, 0644);
+	return true;
 }
 
 function scandirByDate($dir)
