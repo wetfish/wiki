@@ -5,7 +5,7 @@
   "author": "Rachel Fish <rachel@wetfish.net> (https://wetfish.net)",
   "dependencies": {
     "dragondrop": "^0.5.2",
-    "load": "git://github.com/itsrachelfish/load",
+    "load": "git://github.com/itsrachelfish/load#ba69cda08d9bd08a2f4b866f09dc6738dd29b06f",
     "wetfish-basic": "0.7.7"
   }
 }

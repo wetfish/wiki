@@ -71,15 +71,18 @@ else
     list($Data, $Links) = Paginate($Query, 25, $_GET['page']);
 
     echo "<center class='page-navigation'>$Links</center>";
-    
-    foreach($Data as $Result)
-    {
-        list($Time, $Results, $Search) = $Result;
-        
-        date_default_timezone_set('America/New_York');
-        $Time = date("F j\, Y G:i:s", $Time)." EST";
 
-        $TableContents .= "<tr><td><a href='search?q=$Search'>$Search</a></td><td>$Results</td><td>$Time</td></tr>\n";
+    if(is_array($Data) || is_object($Data)) 
+    {
+        foreach($Data as $Result)
+        {
+            list($Time, $Results, $Search) = $Result;
+        
+            date_default_timezone_set('America/New_York');
+            $Time = date("F j\, Y G:i:s", $Time)." EST";
+
+            $TableContents .= "<tr><td><a href='search?q=$Search'>$Search</a></td><td>$Results</td><td>$Time</td></tr>\n";
+        }
     }
         
     echo "	<table>

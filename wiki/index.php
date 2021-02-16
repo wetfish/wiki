@@ -90,7 +90,6 @@ if($Path == "home")
     $Path = "";
 
 $Title[] = "wetfish.net";
-$Site = getenv('SITE_URL');
 
 $Content = array();
 $Content['UserNav'] = new Navigation;
@@ -677,6 +676,7 @@ shuffle($Titles);
 
 $Title[] = $Titles[0];
 $Title = implode(" &mdash; ", $Title);
+$Site = getenv('SITE_URL');
 
 if(empty($Content['Footer']))
     $Content['Footer'] = '(´ﾟ∀ﾟ)つ Oops! Feet not found. ';

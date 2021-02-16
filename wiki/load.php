@@ -16,7 +16,7 @@ function uuid($prefix = '')
 }
 
 $site_url = getenv('SITE_URL');
-$match = '/' . preg_quote($site_url) . '$/i'
+$match = '/' . preg_quote($site_url) . '$/i';
 	
 if(preg_match($match, $URL['host']))
 {

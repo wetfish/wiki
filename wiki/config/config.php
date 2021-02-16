@@ -2,9 +2,9 @@
 
 // Copy this file to "config.php" and change the following values
 
-define("MYSQL_USER", "wiki");
-define("MYSQL_PASSWORD", "password");
-define("MYSQL_DATABASE", "wiki");
+define("MYSQL_USER", getenv("DB_USERNAME"));
+define("MYSQL_PASSWORD", getenv("DB_PASSWORD"));
+define("MYSQL_DATABASE", getenv("DB_DATABASE"));
 
 // Password used to avoid captchas via the login page
 define("LOGIN_PASSWORD", "password"); 
