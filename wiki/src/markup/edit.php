@@ -84,6 +84,7 @@ function edit_replacements($tag, $content)
                 // PHP's mime_content_type won't work on partial files it seems
                 $Data = tmpfile();
                 fwrite($Data, file_get_contents($Link));
+                fflush($Data);
 
                 $Mime = mime_content_type($Data);
                 switch($Mime){
@@ -128,8 +129,11 @@ function edit_replacements($tag, $content)
 
                 // We have to loop through with file ops
                 // copy() doesn't seem to be able to handle tmpfile() data
-                fseek($Data, 0);
                 $Disk = fopen("upload/$Filename.$Extension", "wb");
+
+		// Make sure we're back at the start
+                fseek($Data, 0);
+
                 while(! feof($Data))
                 {
                         $block = fread($Data, 32768);
