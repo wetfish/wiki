@@ -80,48 +80,74 @@ function edit_replacements($tag, $content)
             {
                 $Path = pathinfo($URL['path']);
                 $Filename = uuid();
-                $Extension = $Path['extension'];
-
-                if(strpos($Extension, '?') !== FALSE)
-                    $Extension = substr($Extension, 0, strpos($Extension, '?'));
-
-                if(preg_match('/^(jpe?g|gif|png|webm|gifv|mp4|ogv)$/i', $Extension))
-                {
-                    // Automatically convert gifv urls to webm
-                    if($Extension == "gifv")
-                    {
+                $Mime = get_headers($Link, 1)["Content-Type"];
+                // TODO: Break this out to a function, and if it fails, fetch + try again	
+                switch($Mime){
+                    case "image/jpg":
+                        $Extension = "jpg";
+                        break;
+                    case "image/jpeg":
+                        $Extension = "jpeg";
+                        break;
+                    case "image/gif":
+                        $Extension = "gif";
+                        break;
+                    case "image/png":
+                        $Extension = "png";
+                        break;
+                    case "audio/mp3":
+                        $Extension = "mp3";
+                        break;
+                    case "audio/webm":
+                    case "video/webm":
                         $Extension = "webm";
-                        $Link = str_replace(".gifv", ".webm", $Link);
-                    }
-
-                    while(file_exists("upload/$Filename.$Extension"))
-                    {
-                        $Filename = uuid();
-                    }
-
-                    file_put_contents("upload/$Filename.$Extension", file_get_contents($Link));
-                    chmod("upload/$Filename.$Extension", 0644);
-
-                    $Time = time();
-
-                    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-                        $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                    else
-                        $userIP = $_SERVER['REMOTE_ADDR'];
-
-                    // Make sure the user IP is sanitized
-                    $userIP = preg_replace('/[^0-9.]/', '', $userIP);
-
-                    mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
-
-                    $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
-
-                    return array('tag' => strtolower($tag), 'content' => $Text);
+                        break;
+                    case "video/mp4":
+                        $Extension = "mp4";
+                        break;
+                    case "audio/midi":
+                    case "audio/xmidi":
+                        $Extension = "mid";
+                        break;
+                    case "image/svg+xml":
+                        $Extension = "svg";
+                        break;
+                    default:
+                        return "Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
                 }
-                else
+
+                while(file_exists("upload/$Filename.$Extension"))
                 {
-                    return "Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
+                    $Filename = uuid();
                 }
+
+                $Maxsize = 100000000; // 100mb of chars, give or take
+                file_put_contents("upload/$Filename.$Extension", file_get_contents($Link, false, null, 0, $Maxsize));
+
+                // Don't keep the file around if it's too large
+                if(filesize("upload/$Filename.$Extension") >= $Maxsize) 
+                {
+                    unlink("upload/$Filename.$Extension");
+                    return "Requested file was too large!";
+                }
+
+                chmod("upload/$Filename.$Extension", 0644);
+
+                $Time = time();
+
+                if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+                    $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                else
+                    $userIP = $_SERVER['REMOTE_ADDR'];
+
+                // Make sure the user IP is sanitized
+                $userIP = preg_replace('/[^0-9.]/', '', $userIP);
+
+                mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
+
+                $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
+
+                return array('tag' => strtolower($tag), 'content' => $Text);
             }
 
             return array('tag' => strtolower($tag), 'content' => $content);
