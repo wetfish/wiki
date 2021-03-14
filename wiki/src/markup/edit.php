@@ -87,6 +87,13 @@ function edit_replacements($tag, $content)
                 fflush($Data);
 
                 $Mime = mime_content_type($Data);
+
+                // Try to recover if mime misses
+                if($Mime == "application/octet-stream")
+                {
+                    $Mime = get_headers($Link, 1)["Content-Type"];
+                }
+
                 switch($Mime){
                     case "image/jpg":
                         $Extension = "jpg";
@@ -100,9 +107,6 @@ function edit_replacements($tag, $content)
                     case "image/png":
                         $Extension = "png";
                         break;
-                    case "audio/mp3":
-                        $Extension = "mp3";
-                        break;
                     case "audio/webm":
                     case "video/webm":
                         $Extension = "webm";
@@ -110,9 +114,8 @@ function edit_replacements($tag, $content)
                     case "video/mp4":
                         $Extension = "mp4";
                         break;
-                    case "audio/midi":
-                    case "audio/xmidi":
-                        $Extension = "mid";
+		    case "video/ogg":
+                        $Extension = "ogv";
                         break;
                     case "image/svg+xml":
                         $Extension = "svg";
