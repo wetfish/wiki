@@ -80,8 +80,12 @@ function edit_replacements($tag, $content)
             {
                 $Path = pathinfo($URL['path']);
                 $Filename = uuid();
-                $Mime = get_headers($Link, 1)["Content-Type"];
-                // TODO: Break this out to a function, and if it fails, fetch + try again	
+
+                // PHP's mime_content_type won't work on partial files it seems
+                $Data = tmpfile();
+                fwrite($Data, file_get_contents($Link));
+
+                $Mime = mime_content_type($Data);
                 switch($Mime){
                     case "image/jpg":
                         $Extension = "jpg";
@@ -113,7 +117,7 @@ function edit_replacements($tag, $content)
                         $Extension = "svg";
                         break;
                     default:
-                        return "Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
+                        return "$Mime: Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
                 }
 
                 while(file_exists("upload/$Filename.$Extension"))
@@ -121,16 +125,18 @@ function edit_replacements($tag, $content)
                     $Filename = uuid();
                 }
 
-                $Maxsize = 100000000; // 100mb of chars, give or take
-                file_put_contents("upload/$Filename.$Extension", file_get_contents($Link, false, null, 0, $Maxsize));
 
-                // Don't keep the file around if it's too large
-                if(filesize("upload/$Filename.$Extension") >= $Maxsize) 
+                // We have to loop through with file ops
+                // copy() doesn't seem to be able to handle tmpfile() data
+                fseek($Data, 0);
+                $Disk = fopen("upload/$Filename.$Extension", "wb");
+                while(! feof($Data))
                 {
-                    unlink("upload/$Filename.$Extension");
-                    return "Requested file was too large!";
+                        $block = fread($Data, 32768);
+                        fwrite($Disk, $block);
                 }
 
+                fclose($Disk);
                 chmod("upload/$Filename.$Extension", 0644);
 
                 $Time = time();
@@ -146,7 +152,6 @@ function edit_replacements($tag, $content)
                 mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
 
                 $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
-
                 return array('tag' => strtolower($tag), 'content' => $Text);
             }
 
