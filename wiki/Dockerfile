@@ -1,5 +1,6 @@
 FROM php:5.6-fpm-stretch
 
+# Small note, make sure to create upload/thumbs prior to running this! 
 WORKDIR /var/www/src
 COPY ./src/package.json .
 RUN apt-get update && apt-get install -y \
@@ -8,7 +9,7 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     libpng-dev \
     libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/freetype2/ --with-freetype-dir=/usr/include/libjpeg \ 
+    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/freetype2/ --with-jpeg-dir=/usr/include/libjpeg \ 
     && docker-php-ext-install mysqli mysql exif gd \
     && apt-get clean
 
