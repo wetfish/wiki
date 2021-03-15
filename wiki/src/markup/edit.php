@@ -80,48 +80,85 @@ function edit_replacements($tag, $content)
             {
                 $Path = pathinfo($URL['path']);
                 $Filename = uuid();
-                $Extension = $Path['extension'];
 
-                if(strpos($Extension, '?') !== FALSE)
-                    $Extension = substr($Extension, 0, strpos($Extension, '?'));
+                // PHP's mime_content_type won't work on partial files it seems
+                $Data = tmpfile();
+                fwrite($Data, file_get_contents($Link));
+                fflush($Data);
 
-                if(preg_match('/^(jpe?g|gif|png|webm|gifv|mp4|ogv)$/i', $Extension))
+                $Mime = mime_content_type($Data);
+
+                // Try to recover if mime misses
+                if($Mime == "application/octet-stream")
                 {
-                    // Automatically convert gifv urls to webm
-                    if($Extension == "gifv")
-                    {
+                    $Mime = get_headers($Link, 1)["Content-Type"];
+                }
+
+                switch($Mime){
+                    case "image/jpg":
+                        $Extension = "jpg";
+                        break;
+                    case "image/jpeg":
+                        $Extension = "jpeg";
+                        break;
+                    case "image/gif":
+                        $Extension = "gif";
+                        break;
+                    case "image/png":
+                        $Extension = "png";
+                        break;
+                    case "video/webm":
                         $Extension = "webm";
-                        $Link = str_replace(".gifv", ".webm", $Link);
-                    }
-
-                    while(file_exists("upload/$Filename.$Extension"))
-                    {
-                        $Filename = uuid();
-                    }
-
-                    file_put_contents("upload/$Filename.$Extension", file_get_contents($Link));
-                    chmod("upload/$Filename.$Extension", 0644);
-
-                    $Time = time();
-
-                    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-                        $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                    else
-                        $userIP = $_SERVER['REMOTE_ADDR'];
-
-                    // Make sure the user IP is sanitized
-                    $userIP = preg_replace('/[^0-9.]/', '', $userIP);
-
-                    mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
-
-                    $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
-
-                    return array('tag' => strtolower($tag), 'content' => $Text);
+                        break;
+                    case "video/mp4":
+                        $Extension = "mp4";
+                        break;
+                    case "video/ogg":
+                        $Extension = "ogv";
+                        break;
+                    case "image/svg+xml":
+                        $Extension = "svg";
+                        break;
+                    default:
+                        return "$Mime: Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
                 }
-                else
+
+                while(file_exists("upload/$Filename.$Extension"))
                 {
-                    return "Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
+                    $Filename = uuid();
                 }
+
+
+                // We have to loop through with file ops
+                // copy() doesn't seem to be able to handle tmpfile() data
+                $Disk = fopen("upload/$Filename.$Extension", "wb");
+
+                // Make sure we're back at the start
+                fseek($Data, 0);
+
+                while(! feof($Data))
+                {
+                        $block = fread($Data, 32768);
+                        fwrite($Disk, $block);
+                }
+
+                fclose($Disk);
+                chmod("upload/$Filename.$Extension", 0644);
+
+                $Time = time();
+
+                if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+                    $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                else
+                    $userIP = $_SERVER['REMOTE_ADDR'];
+
+                // Make sure the user IP is sanitized
+                $userIP = preg_replace('/[^0-9.]/', '', $userIP);
+
+                mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
+
+                $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
+                return array('tag' => strtolower($tag), 'content' => $Text);
             }
 
             return array('tag' => strtolower($tag), 'content' => $content);
@@ -139,41 +176,74 @@ function edit_replacements($tag, $content)
                 !preg_match($site_regex, $url['host']))
             {
                 $path = pathinfo($url['path']);
-                $filename = uuid();
-                $extension = $path['extension'];
+                $Filename = uuid();
 
-                if(preg_match('/^(mp3|wav|ogg)$/i', $extension))
+                $Data = tmpfile();
+                fwrite($Data, file_get_contents($link));
+                fflush($Data);
+
+                $Mime = mime_content_type($Data);
+                if($Mime == "application/octet-stream")
                 {
-                    while(file_exists("upload/$Filename.$extension"))
-                    {
-                        $filename = uuid();
-                    }
-
-                    file_put_contents("upload/$filename.$extension", file_get_contents($link));
-                    chmod("upload/$filename.$extension", 0644);
-
-                    $time = time();
-
-                    if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-                        $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                    else
-                        $userIP = $_SERVER['REMOTE_ADDR'];
-
-                    // Make sure the user IP is sanitized
-                    $userIP = preg_replace('/[^0-9.]/', '', $userIP);
-
-                    mysql_query("Insert into `Images` values ('NULL', '$time', '', '$userIP', '$link', 'upload/$filename.$extension')");
-                    $text = trim("upload/$filename.$extension|$autoplay|$loop", '|');
-
-                    return array('tag' => strtolower($tag), 'content' => $text);
+                    $Mime = get_headers($link, 1)["Content-Type"];
                 }
+
+                switch($Mime){
+                    case "application/ogg":
+                        $Extension = "ogg";
+                        break;
+                    case "audio/ogg":
+                        $Extension = "oga";
+                        break;
+                    case "audio/webm":
+                        $Extension = "weba";
+                        break;
+                    case "audio/mpeg":
+                        $Extension = "mp3";
+                        break;
+                    case "audio/wav":
+                        $Extension = "wav";
+                        break;
+                    default:
+                        return "$Mime: Unsupported format! Please use: mp3, wav, weba, or ogg";
+                }
+
+                while(file_exists("upload/$Filename.$Extension"))
+                {
+                    $Filename = uuid();
+                }
+
+
+                $Disk = fopen("upload/$Filename.$Extension", "wb");
+                fseek($Data, 0);
+
+                while(! feof($Data))
+                {
+                        $block = fread($Data, 32768);
+                        fwrite($Disk, $block);
+                }
+
+                fclose($Disk);
+ 
+                chmod("upload/$Filename.$Extension", 0644);
+
+                $time = time();
+
+                if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
+                    $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
                 else
-                {
-                    return "Unsupported format! Please use: mp3, wav, or ogg";
-                }
+                    $userIP = $_SERVER['REMOTE_ADDR'];
 
-                return array('tag' => strtolower($tag), 'content' => $content);
+                // Make sure the user IP is sanitized
+                $userIP = preg_replace('/[^0-9.]/', '', $userIP);
+
+                mysql_query("Insert into `Images` values ('NULL', '$time', '', '$userIP', '$link', 'upload/$Filename.$Extension')");
+                $text = trim("upload/$Filename.$Extension|$autoplay|$loop", '|');
+
+                return array('tag' => strtolower($tag), 'content' => $text);
             }
+
+            return array('tag' => strtolower($tag), 'content' => $content);
         break;
 
         case "soundcloud":
