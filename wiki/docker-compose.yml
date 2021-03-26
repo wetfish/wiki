@@ -83,6 +83,8 @@ services:
     volumes:
       - ./src/schema.sql:/docker-entrypoint-initdb.d/setup.sql
       - dbdata:/var/lib/mysql
+    ports:
+      - "127.0.0.1:3306:3306"
     networks:
       - app-network
 
