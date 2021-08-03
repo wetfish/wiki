@@ -69,7 +69,7 @@ else
     }
 }
 
-$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive', 'replace', 'rename');
+$actions = array('fixtags', 'edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive', 'replace', 'rename');
 $get = array_change_key_case($_GET);
 
 foreach($_GET as $action => $value)
@@ -476,17 +476,20 @@ SuperNav;
         }
     break;
 
-    case "Massrevert":
+    case "massrevert":
         $Reverted = array();
 
-        $BadAccount = 27713;
+        //$BadAccount = 250437;
+        //$BadAccount = 250481;
+        $BadAccount = 250534;
 
-        $PageQuery = mysql_query("SELECT `PageID` FROM `Wiki_Edits` WHERE `AccountID`='$BadAccount'");
-        while(list($PageID) = mysql_fetch_array($PageQuery))
+        $PageQuery = mysql_query("SELECT `ID`, `PageID` FROM `Wiki_Edits` WHERE `AccountID`='$BadAccount'");
+        while(list($BadEditID, $PageID) = mysql_fetch_array($PageQuery))
         {
+
             if(empty($Reverted[$PageID]))
             {
-                $DataQuery = mysql_query("SELECT `Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `PageID`='$PageID' AND `AccountID`!='$BadAccount' ORDER BY `ID` DESC LIMIT 1");
+                $DataQuery = mysql_query("SELECT `Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `PageID`='$PageID' AND `AccountID`!='$BadAccount' AND `Archived` = '0' ORDER BY `ID` DESC LIMIT 1");
                 list($PageName, $PageDescription, $PageTitle, $PageContent) = mysql_fetch_array($DataQuery);
 
                 $Time = Time();
@@ -495,13 +498,21 @@ SuperNav;
                 mysql_query("UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
                 $SQLError .= mysql_error();
 
-                mysql_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Rachel&#39;s Super Revert: $PageDescription', '$PageTitle', '$PageContent', '')");
-                $SQLError .= mysql_error();
+                //mysql_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Rachel&#39;s Super Revert: $PageDescription', '$PageTitle', '$PageContent', '')");
+                //$SQLError .= mysql_error();
 
-                mysql_query("UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
+                //mysql_query("UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
+                //$SQLError .= mysql_error();
+
+                mysql_query("UPDATE `Wiki_Edits` SET `Archived` = 1 where `ID` = '$BadEditID'");
                 $SQLError .= mysql_error();
 
                 $Reverted[$PageID] = TRUE;
+            }
+            else
+            {
+                mysql_query("UPDATE `Wiki_Edits` SET `Archived` = 1 where `ID` = '$BadEditID'");
+                $SQLError .= mysql_error();
             }
         }
 
