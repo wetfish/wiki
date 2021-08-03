@@ -28,7 +28,7 @@ services:
     image: nginx:alpine
     restart: unless-stopped
     ports: 
-      - "80:80"
+      - "8888:80"
     volumes:
       - .:/var/www
       - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
@@ -84,7 +84,7 @@ services:
       - ./src/schema.sql:/docker-entrypoint-initdb.d/setup.sql
       - dbdata:/var/lib/mysql
     ports:
-      - "127.0.0.1:3306:3306"
+      - "127.0.0.1:3307:3306"
     networks:
       - app-network
 
