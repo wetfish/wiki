@@ -209,7 +209,7 @@ switch($Action[0])
             {
                 if(user_banned($banlist, $userIP))
                 {
-                    $Form['_Errors']['Content'] = "Error: Your subnet is currently blocked from editing. Please <a href='https://login.wetfish.net/'>register an account</a>!";
+                    $Form['_Errors']['Content'] = "Error: Your subnet is currently blocked from editing. Please <a href='https://chat.wetfish.net/'>get on IRC</a> for more information!";
                 }
             }
 
