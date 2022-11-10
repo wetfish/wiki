@@ -38,6 +38,7 @@ if($_FILES)
             case "image/png":
                 $Extension = "png";
                 break;
+            case "audio/mpeg":
             case "audio/mp3":
                 $Extension = "mp3";
                 break;
