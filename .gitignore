@@ -13,3 +13,6 @@ mariadb.env
 db/data
 
 wwwroot/src/node_modules
+
+config/ban.php
+config/config.php
