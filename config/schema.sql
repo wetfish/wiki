@@ -1,0 +1,1 @@
+../wwwroot/src/schema.sql

@@ -23,6 +23,6 @@ define("RECAPTCHA_PRIVATE", "private api key");
 define("CAPTCHA_BYPASS", false);
 
 // Leave this as is so the docker containers integrate correctly
-define("MYSQL_HOST", "db");
+define("MYSQL_HOST", getenv("DB_HOSTNAME"));
 
 ?>
