@@ -1,0 +1,15 @@
+upload/*
+!upload/apple.gif
+!upload/fishbux/
+qpalz
+glitchcity
+ban.php
+_*
+
+php.env
+mariadb.env
+*.env
+
+db/data
+
+wwwroot/src/node_modules
