@@ -40,6 +40,14 @@ RUN set -exu \
 # runtime container
 FROM docker.io/php:5.6-fpm-stretch
 
+# install some packages
+RUN set -exu \
+  && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
+  && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
+    libjpeg-dev \
+    libpng-dev \
+    libfreetype6-dev
+
 # copy populated wwwroot from build container
 COPY --from=npm /var/www /var/www
 
