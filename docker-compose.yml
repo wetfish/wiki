@@ -1,0 +1,78 @@
+# version 3+ does different things re: networking from 2.x
+# mainly things to support swarms
+# aka things we don't need/want
+version: '2.4'
+services:
+  # httpd
+  wiki-web:
+    # production: track "prod" tag on ghcr.io
+    # image: ghcr.io/wetfish/wiki:prod-nginx
+    # for development, build the image
+    # TODO: once ghcr.io autobuilds in place, change this
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    container_name: wiki-web
+    restart: unless-stopped
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./upload:/var/www/upload
+    # uncomment to expose port directly
+    # normally behind centeral traefik defined in production-manifests/services/traefik
+    # ports:
+    #   - "80:80"
+
+    # join wiki-internal and traefik-backend networks
+    # comment out the traefik lines here and in the networks: stanza below
+    # if you uncomment the port exposure above
+    networks:
+      wiki-internal: {}
+      traefik-backend: {}
+
+  # php-fpm
+  wiki-php:
+    # production: track "prod" tag on ghcr.io
+    # image: ghcr.io/wetfish/wiki:prod
+    # for development, build the image
+    # TODO: once ghcr.io autobuilds in place, change this
+    build:
+      context: .
+      dockerfile: Dockerfile.php
+    container_name: wiki-php
+    restart: unless-stopped
+    # db connection info
+    env_file:
+      - ./php.env
+    volumes:
+      - ./config/php.ini:/usr/local/etc/php/conf.d/settings.ini
+      - ./config/php.conf:/usr/local/etc/php-fpm.d/zz-php.conf
+      - ./config/config.php:/var/www/src/config.php
+    networks:
+      wiki-internal: {}
+
+  # database
+  wiki-db:
+    image: docker.io/mariadb:10.10
+    container_name: wiki-db
+    restart: unless-stopped
+    env_file:
+      - ./mariadb.env
+    # built-in healthcheck script
+    healthcheck:
+      test: ["healthcheck.sh", "--su=mysql", "--connect", "--innodb_initialized"]
+      interval: 60s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./config/schema.sql:/docker-entrypoint-initdb.d/setup.sql
+      - ./db/data:/var/lib/mysql
+    networks:
+      wiki-internal: {}
+
+networks:
+  # ephemeral, created for us by compose
+  wiki-internal:
+    driver: bridge
+  # persistent, externally created
+  traefik-backend:
+    external: true
