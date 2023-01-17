@@ -6,9 +6,6 @@
 # builder container
 FROM docker.io/debian:stretch-slim AS npm
 
-# copy in wwwroot
-COPY ./wwwroot /var/www
-
 # install some packages
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
@@ -30,6 +27,9 @@ RUN set -exu \
   
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq clean
+
+# copy in wwwroot
+COPY ./wwwroot /var/www
 
 # run npm install
 RUN set -exu \
