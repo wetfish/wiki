@@ -155,7 +155,7 @@ function edit_replacements($tag, $content)
                 // Make sure the user IP is sanitized
                 $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 
-                mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
+                mysql_query("Insert into `Images` values (NULL, '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
 
                 $Text = trim("upload/$Filename.$Extension|$Size|$Position|$Border|$Text", '|');
                 return array('tag' => strtolower($tag), 'content' => $Text);
@@ -224,7 +224,7 @@ function edit_replacements($tag, $content)
                 }
 
                 fclose($Disk);
- 
+
                 chmod("upload/$Filename.$Extension", 0644);
 
                 $time = time();
@@ -237,7 +237,7 @@ function edit_replacements($tag, $content)
                 // Make sure the user IP is sanitized
                 $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 
-                mysql_query("Insert into `Images` values ('NULL', '$time', '', '$userIP', '$link', 'upload/$Filename.$Extension')");
+                mysql_query("Insert into `Images` values (NULL, '$time', '', '$userIP', '$link', 'upload/$Filename.$Extension')");
                 $text = trim("upload/$Filename.$Extension|$autoplay|$loop", '|');
 
                 return array('tag' => strtolower($tag), 'content' => $text);

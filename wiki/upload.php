@@ -65,7 +65,7 @@ if($_FILES)
                     return;
 		}
         }
-    
+
         $Filename = uuid();
         while(file_exists("upload/$Filename.$Extension"))
             {
@@ -85,7 +85,7 @@ if($_FILES)
         // Make sure the user IP is sanitized
         $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 
-        mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
+        mysql_query("Insert into `Images` values (NULL, '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
 
         if(!empty($_GET['api']))
         {
