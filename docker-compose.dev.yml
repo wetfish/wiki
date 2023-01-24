@@ -52,6 +52,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./mariadb.env
+    command: --sql-mode=""
     # built-in healthcheck script
     healthcheck:
       test: ["healthcheck.sh", "--su=mysql", "--connect", "--innodb_initialized"]
