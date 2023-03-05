@@ -5,13 +5,8 @@ version: '2.4'
 services:
   # httpd
   wiki-web:
-    # production: track "prod" tag on ghcr.io
-    # image: ghcr.io/wetfish/wiki:prod-nginx
-    # for development, build the image
-    # TODO: once ghcr.io autobuilds in place, change this
-    build:
-      context: .
-      dockerfile: Dockerfile.nginx
+    # production: track "prod-nginx" tag on ghcr.io
+    image: ghcr.io/wetfish/wiki:prod-nginx
     container_name: wiki-web
     restart: unless-stopped
     volumes:
@@ -19,27 +14,15 @@ services:
       - ./config/config.php:/var/www/src/config.php
       - ./config/ban.php:/var/www/src/ban.php:ro
       - ./upload:/var/www/upload
-    # uncomment to expose port directly
-    # normally behind centeral traefik defined in production-manifests/services/traefik
-    # ports:
-    #   - "80:80"
-
     # join wiki-internal and traefik-backend networks
-    # comment out the traefik lines here and in the networks: stanza below
-    # if you uncomment the port exposure above
     networks:
       wiki-internal: {}
       traefik-backend: {}
 
   # php-fpm
   wiki-php:
-    # production: track "prod" tag on ghcr.io
-    # image: ghcr.io/wetfish/wiki:prod
-    # for development, build the image
-    # TODO: once ghcr.io autobuilds in place, change this
-    build:
-      context: .
-      dockerfile: Dockerfile.php
+    # production: track "prod-php" tag on ghcr.io
+    image: ghcr.io/wetfish/wiki:prod-php
     container_name: wiki-php
     restart: unless-stopped
     # db connection info

@@ -5,9 +5,8 @@ version: '2.4'
 services:
   # httpd
   wiki-web:
-    # production: track "prod" tag on ghcr.io
-    # image: ghcr.io/wetfish/wiki:prod-nginx
     # for development, build the image
+    image: ghcr.io/wetfish/wiki:dev-nginx
     build:
       context: .
       dockerfile: Dockerfile.nginx
@@ -16,7 +15,6 @@ services:
     volumes:
       - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./upload:/var/www/upload
-    # uncomment to expose port directly
     # normally behind centeral traefik defined in production-manifests/services/traefik
     ports:
       - "127.0.0.1:80:80"
@@ -27,9 +25,8 @@ services:
 
   # php-fpm
   wiki-php:
-    # production: track "prod" tag on ghcr.io
-    # image: ghcr.io/wetfish/wiki:prod-nginx
     # for development, build the image
+    image: ghcr.io/wetfish/wiki:dev-nginx
     build:
       context: .
       dockerfile: Dockerfile.php
