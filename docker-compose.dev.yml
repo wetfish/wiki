@@ -26,7 +26,7 @@ services:
   # php-fpm
   wiki-php:
     # for development, build the image
-    image: ghcr.io/wetfish/wiki:dev-nginx
+    image: ghcr.io/wetfish/wiki:dev-php
     build:
       context: .
       dockerfile: Dockerfile.php
