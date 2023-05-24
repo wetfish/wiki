@@ -17,8 +17,7 @@ services:
       - ./upload:/var/www/upload
     # normally behind centeral traefik defined in production-manifests/services/traefik
     ports:
-      - "127.0.0.1:80:80"
-
+      - "127.0.0.1:2405:80"
     # join wiki-internal network
     networks:
       wiki-internal: {}
@@ -66,6 +65,3 @@ networks:
   # ephemeral, created for us by compose
   wiki-internal:
     driver: bridge
-  # persistent, externally created
-  traefik-backend:
-    external: true
