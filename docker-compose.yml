@@ -9,6 +9,8 @@ services:
     image: ghcr.io/wetfish/wiki:prod-nginx
     container_name: wiki-web
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     volumes:
       - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./config/config.php:/var/www/src/config.php:ro
@@ -25,6 +27,8 @@ services:
     image: ghcr.io/wetfish/wiki:prod-php
     container_name: wiki-php
     restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
     # db connection info
     env_file:
       - ./php.env
@@ -51,6 +55,20 @@ services:
       - ./db/data:/var/lib/mysql:rw
     networks:
       wiki-internal: {}
+
+  # watchtower - automatically pull new container images
+  # note: this does not update the repo
+  # if deployment files have changed you will need to git pull && docker compose up -d manually
+  wiki-watchtower:
+    image: ghcr.io/containrrr/watchtower:1.5.3
+    container_name: wiki-watchtower
+    environment:
+      - "WATCHTOWER_CLEANUP=true"
+      - "WATCHTOWER_POLL_INTERVAL=30"
+      - "WATCHTOWER_LABEL_ENABLE=true"
+      - "NO_COLOR=true"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
 
 networks:
   # ephemeral, created for us by compose
