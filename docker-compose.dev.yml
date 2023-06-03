@@ -22,7 +22,7 @@ services:
       # - ./wwwroot:/var/www:rw
     # normally behind centeral traefik defined in production-manifests/services/traefik
     ports:
-      - "2405:80"
+      - "127.0.0.1:2405:80"
     # join wiki-internal network
     networks:
       wiki-internal: {}
