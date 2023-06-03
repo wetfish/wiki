@@ -3,45 +3,88 @@
 #
 # Small note, make sure to create upload/thumbs prior to running this! 
 
+#
 # builder container
-FROM docker.io/debian:stretch-slim AS npm
+FROM docker.io/debian:bookworm-slim AS builder
 
 # install some packages
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-    curl \
-    apt-utils \
-    git \
     libjpeg-dev \
     libpng-dev \
-    libfreetype6-dev
+    libfreetype6-dev \
+    software-properties-common \
+    ca-certificates \
+    lsb-release \
+    apt-transport-https \
+    curl
 
 # setup nodejs repo
-RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash -
+RUN set -exu \
+  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add - \
+  && echo "deb https://deb.nodesource.com/node_14.x bookworm main" | tee /etc/apt/sources.list.d/nodesource.list
 
+# acquire install-php-extensions script
+RUN set -exu \
+  && curl -fsSL https://github.com/mlocati/docker-php-extension-installer/releases/download/2.1.28/install-php-extensions \
+    -o /usr/local/bin/install-php-extensions \
+  && chmod +x /usr/local/bin/install-php-extensions
+
+# setup php5.6 repo
+RUN set -exu \
+  && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
+  && curl -fsSL https://packages.sury.org/php/apt.gpg | apt-key add -
+
+# install php5.6, some extensions, and nodejs
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-    nodejs
-  
+    php5.6 \
+    php5.6-fpm \
+    php5.6-mysqli \
+    php5.6-mysql \
+    php5.6-exif \
+    php5.6-gd \
+    nodejs \
+    npm
+
+# clean apt caches
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq clean
 
-# copy in wwwroot
+# create our user
+RUN set -exu \
+  && addgroup --gid 1101 fishy \
+  && adduser \
+      --uid 1101 \
+      --ingroup fishy \
+      --shell /sbin/nologin \
+      --disabled-password \
+      fishy
+
+# copy in sources
 COPY ./wwwroot /var/www
+
+# make sure our user owns the wwwroot
+RUN set -exu \
+  && chown -R fishy:fishy /var/www
+
+# switch to our nonroot user
+USER fishy
 
 # run npm install
 RUN set -exu \
-  && npm install --silent --prefix /var/www/src
-
+  && npm install --prefix /var/www/src
 
 #
 # runtime container
 FROM docker.io/nginx:1.22.1-alpine
 
-# copy populated wwwroot from build container
-COPY --from=npm /var/www /var/www
+USER root
+
+# copy npm install'ed wwwroot from npm build container
+COPY --from=builder /var/www /var/www
 
 RUN set -exu \
   && chown -R nginx:nginx /var/www

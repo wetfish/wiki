@@ -1,13 +1,21 @@
-name: Docker Image Build
+name: Docker Image Build - Laravel nginx
 
 on:
+  # build when push to main or release happens
   push:
-    branches: [ "main" ]
+    branches:
+      - main
+
+  # allow manual execution
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  COMPONENT: nginx
 
 jobs:
   build-and-push-image:
@@ -25,16 +33,28 @@ jobs:
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
-        uses: docker/metadata-action@v2
+        uses: docker/metadata-action@v3
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ github.repository }}
+          # tag with latest-${{ env.COMPONENT }} (only on default branch)
+          #          <branch>-${{ env.COMPONENT }}
+          #          <pr #>-${{ env.COMPONENT }}
+          #          <hash>-${{ env.COMPONENT }}
+          #          <git tag>-${{ env.COMPONENT }}
+          #          prod-${{ env.COMPONENT }}    IF branch == main
+          tags: |
+            type=ref,event=branch,suffix=-${{ env.COMPONENT }}
+            type=ref,event=tag,suffix=-${{ env.COMPONENT }}
+            type=ref,event=pr,suffix=-${{ env.COMPONENT }}
+            type=sha,format=long,suffix=-${{ env.COMPONENT }}
+            type=raw,value=latest,suffix=-${{ env.COMPONENT }},priority=900,enable={{is_default_branch}}
+            type=raw,value=prod,suffix=-${{ env.COMPONENT }},priority=1000,enable=${{ github.ref == format('refs/heads/{0}', 'main') }}
 
       - name: Build and push Docker image
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         with:
           context: .
-          dockerfile: Dockerfile.nginx
+          file: "docker/Dockerfile.nginx"
           push: true
-          # tag with "latest", commit sha, commit tag, and anything else the previous step provides (typically just the branch name)
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest-nginx , ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-nginx , ${{ steps.meta.outputs.tags }}-nginx
+          tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
