@@ -1,5 +1,4 @@
-name: Docker Image Build - Laravel nginx
-
+name: Docker Image Build - PHP-FPM
 on:
   # build when push to main or release happens
   push:
