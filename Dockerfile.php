@@ -25,12 +25,6 @@ RUN set -exu \
   && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add - \
   && echo "deb https://deb.nodesource.com/node_14.x bookworm main" | tee /etc/apt/sources.list.d/nodesource.list
 
-# acquire install-php-extensions script
-RUN set -exu \
-  && curl -fsSL https://github.com/mlocati/docker-php-extension-installer/releases/download/2.1.28/install-php-extensions \
-    -o /usr/local/bin/install-php-extensions \
-  && chmod +x /usr/local/bin/install-php-extensions
-
 # setup php5.6 repo
 RUN set -exu \
   && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \

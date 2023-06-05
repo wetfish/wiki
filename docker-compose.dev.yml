@@ -17,9 +17,8 @@ services:
       - ./config/config.php:/var/www/src/config.php:ro
       - ./config/ban.php:/var/www/src/ban.php:ro
       - ./upload:/var/www/upload:rw
-      # optional, bind mount in wwwroot for live editing
-      # don't forget to uncomment the similar line below
-      # - ./wwwroot:/var/www:rw
+      # bind mount in wwwroot for live editing
+      - ./wwwroot:/var/www:rw
     # normally behind centeral traefik defined in production-manifests/services/traefik
     ports:
       - "127.0.0.1:2405:80"
@@ -46,9 +45,8 @@ services:
       - ./config/php-fpm.conf:/etc/php/5.6/fpm/php-fpm.conf:ro
       - ./config/php-fpm-pool.conf:/etc/php/5.6/fpm/pool.d/www.conf:ro
       - ./config/php.ini:/etc/php/5.6/fpm/php.ini:ro
-      # optional, bind mount in wwwroot for live editing
-      # don't forget to uncomment the similar line above
-      # - ./wwwroot:/var/www:rw
+      # bind mount in wwwroot for live editing
+      - ./wwwroot:/var/www:rw
     networks:
       wiki-internal: {}
 
@@ -63,6 +61,9 @@ services:
     volumes:
       - ./config/schema.sql:/docker-entrypoint-initdb.d/setup.sql:ro
       - ./db/data:/var/lib/mysql:rw
+    # dev env: expose mariadb on 127.0.0.1:3405
+    ports:
+      - "127.0.0.1:3405:3306"
     networks:
       wiki-internal: {}
 
