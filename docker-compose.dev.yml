@@ -13,12 +13,12 @@ services:
     container_name: wiki-web
     restart: unless-stopped
     volumes:
+      # nginx config
       - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./config/config.php:/var/www/src/config.php:ro
-      - ./config/ban.php:/var/www/src/ban.php:ro
-      - ./upload:/var/www/upload:rw
       # bind mount in wwwroot for live editing
       - ./wwwroot:/var/www:rw
+      # user uploads
+      - ./upload:/var/www/upload:rw
     # normally behind centeral traefik defined in production-manifests/services/traefik
     ports:
       - "127.0.0.1:2405:80"
@@ -39,14 +39,17 @@ services:
     env_file:
       - ./php.env
     volumes:
+      # bind mount in wwwroot for live editing
+      - ./wwwroot:/var/www:rw
+      # user uploads
+      - ./upload:/var/www/upload:rw
+      # app config
       - ./config/config.php:/var/www/src/config.php:ro
       - ./config/ban.php:/var/www/src/ban.php:ro
-      - ./upload:/var/www/upload:rw
+      # php-fpm configs
       - ./config/php-fpm.conf:/etc/php/5.6/fpm/php-fpm.conf:ro
       - ./config/php-fpm-pool.conf:/etc/php/5.6/fpm/pool.d/www.conf:ro
       - ./config/php.ini:/etc/php/5.6/fpm/php.ini:ro
-      # bind mount in wwwroot for live editing
-      - ./wwwroot:/var/www:rw
     networks:
       wiki-internal: {}
 

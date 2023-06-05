@@ -25,12 +25,6 @@ RUN set -exu \
   && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add - \
   && echo "deb https://deb.nodesource.com/node_14.x bookworm main" | tee /etc/apt/sources.list.d/nodesource.list
 
-# acquire install-php-extensions script
-RUN set -exu \
-  && curl -fsSL https://github.com/mlocati/docker-php-extension-installer/releases/download/2.1.28/install-php-extensions \
-    -o /usr/local/bin/install-php-extensions \
-  && chmod +x /usr/local/bin/install-php-extensions
-
 # setup php5.6 repo
 RUN set -exu \
   && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
@@ -55,23 +49,23 @@ RUN set -exu \
 
 # create our user
 RUN set -exu \
-  && addgroup --gid 1101 fishy \
+  && addgroup --gid 1101 builder \
   && adduser \
       --uid 1101 \
-      --ingroup fishy \
+      --ingroup builder \
       --shell /sbin/nologin \
       --disabled-password \
-      fishy
+      builder
 
 # copy in sources
 COPY ./wwwroot /var/www
 
 # make sure our user owns the wwwroot
 RUN set -exu \
-  && chown -R fishy:fishy /var/www
+  && chown -R builder:builder /var/www
 
 # switch to our nonroot user
-USER fishy
+USER builder
 
 # run npm install
 RUN set -exu \
