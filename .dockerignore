@@ -5,7 +5,6 @@ upload/*
 !upload/fishbux/
 qpalz
 glitchcity
-ban.php
 _*
 
 php.env
@@ -15,8 +14,5 @@ mariadb.env
 db/data
 
 wwwroot/src/node_modules
-
-config/ban.php
-config/config.php
 
 log/*
