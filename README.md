@@ -8,12 +8,7 @@ For development, to run just this stack, do
 cp mariadb.env.example mariadb.env
 # -> edit, change passwords and other info as needed
 cp php.env.example php.env
-# -> edit, change passwords to match
-cp config/ban.php.example config/ban.php
-# -> add ipbans
-cp config/config.php.example config/config.php
-# -> admin password, api keys, etc
-
+# -> edit, change db info to match mariadb, other passwords as needed
 
 docker compose \
   -f docker-compose.dev.yml \
