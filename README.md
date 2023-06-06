@@ -10,6 +10,9 @@ cp mariadb.env.example mariadb.env
 cp php.env.example php.env
 # -> edit, change db info to match mariadb, other passwords as needed
 
+# in dev env, run npm install manually
+cd wwwroot/src && npm install
+
 docker compose \
   -f docker-compose.dev.yml \
   up -d \

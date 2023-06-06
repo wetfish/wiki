@@ -47,24 +47,39 @@ RUN set -exu \
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq clean
 
+# create a builder user
+RUN set -exu \
+  && addgroup --gid 1101 builder \
+  && adduser \
+      --uid 1101 \
+      --ingroup builder \
+      --shell /sbin/nologin \
+      --disabled-password \
+      builder
+
 # copy in sources
 COPY ./wwwroot /var/www
 
 # make sure our user owns the wwwroot
 RUN set -exu \
-  && chown -R www-data:www-data /var/www
+  && chown -R builder:builder /var/www
 
 # switch to our nonroot user
-USER www-data
+USER builder
 
 # run npm install
+WORKDIR /var/www/src
 RUN set -exu \
-  && npm install --prefix /var/www/src
+  && cd /var/www/src \
+  && npm install
 
 # back to root
 USER root
 
 WORKDIR /var/www
+
+RUN set -exu \
+  && chown -R www-data:www-data /var/www
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000

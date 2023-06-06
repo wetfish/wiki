@@ -47,7 +47,7 @@ RUN set -exu \
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq clean
 
-# create our user
+# create a builder user
 RUN set -exu \
   && addgroup --gid 1101 builder \
   && adduser \
@@ -68,8 +68,10 @@ RUN set -exu \
 USER builder
 
 # run npm install
+WORKDIR /var/www/src
 RUN set -exu \
-  && npm install --prefix /var/www/src
+  && cd /var/www/src \
+  && npm install
 
 #
 # runtime container
