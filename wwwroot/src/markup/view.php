@@ -405,13 +405,11 @@ function view_replacements($tag, $content)
             case "load":
             case "embed":
                 $URL = parse_url($content);
-                $site = getenv('SITE_URL');
+                $internal = getenv('INTERNAL_HOSTNAME');
+                $allowed = getenv('ALLOWED_EMBEDS');
 
                 if(empty($URL['scheme']))
                     $URL['scheme'] = "http";
-
-                if(empty($URL['host']))
-                    $URL['host'] = $site;
 
                 if($URL['path'] == 'index.php' or empty($URL['path']) or $URL['path'] == $_GET['SUPERdickPAGE'] or !empty($_GET['load']))
                     $URL['path'] = 'yousosilly.php';
@@ -429,33 +427,37 @@ function view_replacements($tag, $content)
                     $URL['query'] = implode('&', $Query);
                 }
 
-                if(preg_match('/^.*\.?wetfish.net$/i', $URL['host']))
+                // If we're loading content from another host
+                if(!empty($URL['host']))
                 {
-                    // Prepend uuid with a string to ensure it's valid
-                    $ID = "embed-" . uuid();
-
-                    if($URL['host'] == 'danger.wetfish.net')
+                    // Make sure that hostname is allowed
+                    if(!preg_match($allowed, $URL['host']))
                     {
-                        $URL['path'] = substr($URL['path'], 1);
-
-                        if(preg_match("/^[a-f0-9]+$/", $URL['path']))
-                        {
-                            $URL['query'] = "hash={$URL['path']}";
-                            $URL['path'] = "view.php";
-
-                        }
+                        return "Error: Attempting to load content from an unsupported domain.";
                     }
-
-                    //return "<iframe src='{$URL['scheme']}://{$URL['host']}/{$URL['path']}?{$URL['query']}' style='height:0px; width:0px; display:none;'></iframe>
-
-
-                    /**/if($URL['host'] != $site)
-                        return "<div id='$ID'><script>$('#$ID').load('/load.php?id=$ID&url={$URL['scheme']}://{$URL['host']}/{$URL['path']}?".urlencode($URL['query'])."');</script></div>";
-                    else
-                        return "<div id='$ID'><script>$('#$ID').load('/{$URL['path']}?{$URL['query']}&load=true');</script></div>";
-                    /**/
-                    //return "LOL GOOGLE HACKED WETFISH";
                 }
+                else
+                {
+                    // Default to making internal requests to the wiki
+                    $URL['host'] = $internal;
+                }
+
+                // Prepend uuid with a string to ensure it's valid
+                $ID = "embed-" . uuid();
+
+                if($URL['host'] == 'danger.wetfish.net')
+                {
+                    $URL['path'] = substr($URL['path'], 1);
+
+                    if(preg_match("/^[a-f0-9]+$/", $URL['path']))
+                    {
+                        $URL['query'] = "hash={$URL['path']}";
+                        $URL['path'] = "view.php";
+
+                    }
+                }
+
+                return "<div id='$ID'><script>$('#$ID').load('/load.php?id=$ID&url={$URL['scheme']}://{$URL['host']}/{$URL['path']}?".urlencode($URL['query'])."');</script></div>";
             break;
 
             case "audio":
