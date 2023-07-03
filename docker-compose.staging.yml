@@ -1,0 +1,75 @@
+# version 3+ does different things re: networking from 2.x
+# mainly things to support swarms
+# aka things we don't need/want
+version: '2.4'
+services:
+  # httpd
+  wiki-staging-web:
+    # staging: track "staging-nginx" tag on ghcr.io
+    image: ghcr.io/wetfish/wiki:staging-nginx
+    container_name: wiki-staging-web
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    volumes:
+      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./upload:/var/www/upload:rw
+    # join wiki-internal and traefik-backend networks
+    networks:
+      wiki-staging-internal: {}
+      traefik-backend: {}
+
+  # php-fpm
+  wiki-staging-php:
+    # staging: track "staging-php" tag on ghcr.io
+    image: ghcr.io/wetfish/wiki:staging-php
+    container_name: wiki-staging-php
+    restart: unless-stopped
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+    # db connection info
+    env_file:
+      - ./php.env
+    volumes:
+      - ./upload:/var/www/upload:rw
+      - ./config/php-fpm.conf:/etc/php/5.6/fpm/php-fpm.conf:ro
+      - ./config/php-fpm-pool.conf:/etc/php/5.6/fpm/pool.d/www.conf:ro
+      - ./config/php.ini:/etc/php/5.6/fpm/php.ini:ro
+    networks:
+      wiki-staging-internal: {}
+
+  # database
+  wiki-staging-db:
+    image: docker.io/mariadb:10.10
+    container_name: wiki-staging-db
+    restart: unless-stopped
+    env_file:
+      - ./mariadb.env
+    command: --sql-mode=""
+    volumes:
+      - ./config/schema.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+      - ./db/data:/var/lib/mysql:rw
+    networks:
+      wiki-staging-internal: {}
+
+  # watchtower - automatically pull new container images
+  # note: this does not update the repo
+  # if deployment files have changed you will need to git pull && docker compose up -d manually
+  wiki-staging-watchtower:
+    image: ghcr.io/containrrr/watchtower:1.5.3
+    container_name: wiki-staging-watchtower
+    environment:
+      - "WATCHTOWER_CLEANUP=true"
+      - "WATCHTOWER_POLL_INTERVAL=30"
+      - "WATCHTOWER_LABEL_ENABLE=true"
+      - "NO_COLOR=true"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+
+networks:
+  # ephemeral, created for us by compose
+  wiki-staging-internal:
+    driver: bridge
+  # persistent, externally created
+  traefik-backend:
+    external: true
