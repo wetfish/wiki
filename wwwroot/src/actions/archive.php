@@ -2,6 +2,7 @@
 
 function archive($path, $action, $title, $content)
 {
+    include dirname(__FILE__).'/../connection.php';
     // Make sure user is an admin
     if(!$_SESSION['admin'])
     {
@@ -16,7 +17,7 @@ function archive($path, $action, $title, $content)
     {
         if($_POST['confirmed'])
         {
-            mysql_query("Update `Wiki_Edits` set `Archived` = '1' where `ID` = '{$action[1]}'");
+            mysqli_query($mysql, "Update `Wiki_Edits` set `Archived` = '1' where `ID` = '{$action[1]}'");
             $content['Body'] = "<p><b>Edit archived!</b></p>";
         }
         else
@@ -39,14 +40,14 @@ function archive($path, $action, $title, $content)
         if($_POST['confirmed'])
         {
             // Get the page ID
-            $PageQuery = mysql_query("SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
-            list($pageID) = mysql_fetch_array($PageQuery);
+            $PageQuery = mysqli_query($mysql,"SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
+            list($pageID) = mysqli_fetch_array($PageQuery);
 
             if($pageID)
             {
-                mysql_query("Update `Wiki_Edits` set `Archived` = '1' where `PageID` = '{$pageID}'");
-                mysql_query("Delete from `Wiki_Tags` where `pageID` = '{$pageID}'");
-                mysql_query("Delete from `Wiki_Pages` where `ID` = '{$pageID}'");
+                mysqli_query($mysql,"Update `Wiki_Edits` set `Archived` = '1' where `PageID` = '{$pageID}'");
+                mysqli_query($mysql,"Delete from `Wiki_Tags` where `pageID` = '{$pageID}'");
+                mysqli_query($mysql,"Delete from `Wiki_Pages` where `ID` = '{$pageID}'");
                 $content['Body'] = "<p><b>Page archived!</b></p>";
             }
             else

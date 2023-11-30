@@ -2,19 +2,20 @@
 
 function view($path, $action, $title, $content)
 {
+    include dirname(__FILE__).'/../connection.php';
     $content['PageNav']->Active("View Page");
 
-    $PageQuery = mysql_query("SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path`='$path'");
-    list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime) = mysql_fetch_array($PageQuery);
+    $PageQuery = mysqli_query($mysql,"SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path`='$path'");
+    list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime) = mysqli_fetch_array($PageQuery);
     
-    $tagQuery = mysql_query("Select tags.`tag`, stats.`count`
+    $tagQuery = mysqli_query($mysql,"Select tags.`tag`, stats.`count`
                                 from `Wiki_Tags` as tags,
                                      `Wiki_Tag_Statistics` as stats
                                      
                                 where tags.`pageID` = '$PageID'
                                     and stats.`tag` = tags.`tag`");
 
-    while(list($tagName, $tagCount) = mysql_fetch_array($tagQuery))
+    while(list($tagName, $tagCount) = mysqli_fetch_array($tagQuery))
     {
         $plural = 's';
         
@@ -51,7 +52,7 @@ function view($path, $action, $title, $content)
     
     else
     {
-        mysql_query("Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
+        mysqli_query($mysql,"Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
     }
 
     if($_SESSION['admin'])

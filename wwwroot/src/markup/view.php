@@ -48,8 +48,8 @@ function view_replacements($tag, $content)
                 switch(strtolower($content))
                 {
                     case "pages":
-                        $pageTotal = mysql_query("Select `ID` from `Wiki_Pages`");
-                        $totalPages = mysql_num_rows($pageTotal);
+                        $pageTotal = mysqli_query($mysql,"Select `ID` from `Wiki_Pages`");
+                        $totalPages = mysqli_num_rows($pageTotal);
 
                         return number_format($totalPages);
                     break;
@@ -636,6 +636,7 @@ function custom_link($matches)
 
 function replace_links($matches, $mode)
 {
+    include dirname(__FILE__).'/../connection.php';
     // Replace spaces with hyphens
     $page = str_replace(" ", "-", $matches[1]);
 
@@ -646,10 +647,12 @@ function replace_links($matches, $mode)
     // Don't check if the page exists when linking to special pages
     if(!(strpos($page, "?") !== false))
     {
+        
+        
         // Check if the page exists
-        $escaped_page = mysql_real_escape_string($page);
-        $page_query = mysql_query("Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
-        list($page_exists) = mysql_fetch_array($page_query);
+        $escaped_page = mysqli_real_escape_string($mysql, $page);
+        $page_query = mysqli_query($mysql, "Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
+        list($page_exists) = mysqli_fetch_array($page_query);
 
         if(empty($page_exists))
         {
