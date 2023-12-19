@@ -2,6 +2,7 @@
 
 function tag($path, $action, $title, $content)
 {
+    include dirname(__FILE__).'/../connection.php';
     $action = implode('/', $action);
     $action = explode('/', $action, 3);
     
@@ -11,47 +12,47 @@ function tag($path, $action, $title, $content)
     if(isset($action[2]))
         $path = $action[2];
 
-    $totalQuery = mysql_query("Select stats.`count`
+    $totalQuery = mysqli_query($mysql,"Select stats.`count`
                                 from `Wiki_Tag_Statistics` as stats
                                 where stats.`tag` = '$tag'");
                                                                 
     
-    $nextQuery = mysql_query("Select `Path`, `Title`
+    $nextQuery = mysqli_query($mysql,"Select `Path`, `Title`
                                 from `Wiki_Pages`,
                                     `Wiki_Tags` as tag
                                 where tag.`tag` = '$tag' and tag.`pageID` = `ID`
                                     order by tag.`tagID` desc limit 1");
 
-    $previousQuery = mysql_query("Select `Path`, `Title`
+    $previousQuery = mysqli_query($mysql,"Select `Path`, `Title`
                                 from `Wiki_Pages`,
                                     `Wiki_Tags` as tag
                                 where tag.`tag` = '$tag' and tag.`pageID` = `ID`
                                     order by tag.`tagID` limit 1");
                                     
-    list($tagTotal) = mysql_fetch_array($totalQuery);
-    $next = mysql_fetch_array($nextQuery);
-    $previous = mysql_fetch_array($previousQuery);	
+    list($tagTotal) = mysqli_fetch_array($totalQuery);
+    $next = mysqli_fetch_array($nextQuery);
+    $previous = mysqli_fetch_array($previousQuery);	
                 
     // Check if we're actually on the home page
     if($path or isset($action[2]) or preg_match("{^/home}", $_SERVER['REQUEST_URI']))
     {	
-        $PageQuery = mysql_query("SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime`,tag.`tagID` FROM `Wiki_Pages`, `Wiki_Tags` as tag WHERE `Path` like '$path' and tag.`tag` = '$tag' and tag.`pageID` = `ID`");
-        list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime, $tagID) = mysql_fetch_array($PageQuery);
+        $PageQuery = mysqli_query($mysql,"SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime`,tag.`tagID` FROM `Wiki_Pages`, `Wiki_Tags` as tag WHERE `Path` like '$path' and tag.`tag` = '$tag' and tag.`pageID` = `ID`");
+        list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime, $tagID) = mysqli_fetch_array($PageQuery);
 
-        $previousQuery = mysql_query("Select `Path`, `Title`
+        $previousQuery = mysqli_query($mysql,"Select `Path`, `Title`
                                         from `Wiki_Pages`,
                                             `Wiki_Tags` as tag
                                         where tag.`tag` = '$tag' and tag.`pageID` = `ID` and tag.`tagID` >'$tagID'
                                             order by tag.`tagID` limit 1");
 
-        $nextQuery = mysql_query("Select `Path`, `Title`
+        $nextQuery = mysqli_query($mysql,"Select `Path`, `Title`
                                     from `Wiki_Pages`,
                                         `Wiki_Tags` as tag
                                     where tag.`tag` = '$tag' and tag.`pageID` = `ID` and tag.`tagID` < '$tagID'
                                         order by tag.`tagID` desc limit 1");
                                             
-        $pagePrevious = mysql_fetch_array($previousQuery);
-        $pageNext = mysql_fetch_array($nextQuery);
+        $pagePrevious = mysqli_fetch_array($previousQuery);
+        $pageNext = mysqli_fetch_array($nextQuery);
         
         if($pagePrevious)
             $previous = $pagePrevious;
@@ -60,14 +61,14 @@ function tag($path, $action, $title, $content)
             $next = $pageNext;
         
         
-        $tagQuery = mysql_query("Select tags.`tag`, stats.`count`
+        $tagQuery = mysqli_query($mysql,"Select tags.`tag`, stats.`count`
                                     from `Wiki_Tags` as tags,
                                          `Wiki_Tag_Statistics` as stats
                                          
                                     where tags.`pageID` = '$PageID'
                                         and stats.`tag` = tags.`tag`");
                                         
-        while(list($tagName, $tagCount) = mysql_fetch_array($tagQuery))
+        while(list($tagName, $tagCount) = mysqli_fetch_array($tagQuery))
         {
             $plural = 's';
             
@@ -103,7 +104,7 @@ function tag($path, $action, $title, $content)
         
         else
         {
-            mysql_query("Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
+            mysqli_query($mysql,"Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
         }
 
         if($_SESSION['admin'])
@@ -130,7 +131,7 @@ function tag($path, $action, $title, $content)
     }
     else
     {
-        mysql_query("Update `Wiki_Tag_Statistics` set `views` = `views` + 1
+        mysqli_query($mysql,"Update `Wiki_Tag_Statistics` set `views` = `views` + 1
                         where `tag` = '$tag'");
     
         if($previous['Path'])
@@ -162,7 +163,7 @@ function tag($path, $action, $title, $content)
             {
                 list($pageID, $pagePath, $pageTitle, $pageContent) = $Result;
                 
-                $tagQuery = mysql_query("Select tags.`tag`, stats.`count`
+                $tagQuery = mysqli_query($mysql,"Select tags.`tag`, stats.`count`
                                             from `Wiki_Tags` as tags,
                                                  `Wiki_Tag_Statistics` as stats
                                                  
@@ -170,7 +171,7 @@ function tag($path, $action, $title, $content)
                                                 and stats.`tag` = tags.`tag`");
                 
                 $tagLinks = array();
-                while(list($tagName, $tagCount) = mysql_fetch_array($tagQuery))
+                while(list($tagName, $tagCount) = mysqli_fetch_array($tagQuery))
                 {
                     $plural = 's';
                     

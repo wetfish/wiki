@@ -13,8 +13,8 @@ $Day = 86400; // Seconds
 
 $LastWeek = $Today - ($Day * 30);
 
-$Query = mysql_query("Select `Time` from `Wiki Searches` where `Time` > $LastWeek");
-while(list($Time) = mysql_fetch_array($Query))
+$Query = mysqli_query($mysql,"Select `Time` from `Wiki Searches` where `Time` > $LastWeek");
+while(list($Time) = mysqli_fetch_array($Query))
 {
 	$When = date('d M', $Time);
 	$Data[$When]++;

@@ -16,6 +16,7 @@ function uuid($prefix = '')
 
 if($_FILES)
 {
+
     $Image = $_FILES['Image'];
 
     if($Image['error'])
@@ -85,7 +86,7 @@ if($_FILES)
         // Make sure the user IP is sanitized
         $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 
-        mysql_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
+        mysqli_query($mysql,"Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
 
         if(!empty($_GET['api']))
         {

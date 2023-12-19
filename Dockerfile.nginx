@@ -34,12 +34,12 @@ RUN set -exu \
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-    php5.6 \
-    php5.6-fpm \
-    php5.6-mysqli \
-    php5.6-mysql \
-    php5.6-exif \
-    php5.6-gd \
+    php7.0 \
+    php7.0-fpm \
+    php7.0-mysqli \
+    php7.0-mysql \
+    php7.0-exif \
+    php7.0-gd \
     nodejs \
     npm
 

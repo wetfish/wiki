@@ -41,16 +41,17 @@ list($Data, $Links) = Paginate($Query, 25, $_GET['page'], $_SERVER['QUERY_STRING
 
 function Paginate($Query, $Limit, $Page = 1, $QueryString = '')
 {	
+	require('include.php');
 	$Page--;
 	$Start = $Page * $Limit;
 	$paginationOffset = $Limit * 3;
 
-	$CountQuery = mysql_query("$Query limit $Start, $paginationOffset");
-	$Rows = mysql_num_rows($CountQuery);
+	$CountQuery = mysqli_query($mysql,"$Query limit $Start, $paginationOffset");
+	$Rows = mysqli_num_rows($CountQuery);
 	$Pages = $Page + ceil($Rows / $Limit);
 	
-	$PageQuery = mysql_query("$Query limit $Start, $Limit");
-	while($Result = mysql_fetch_array($PageQuery))
+	$PageQuery = mysqli_query($mysql,"$Query limit $Start, $Limit");
+	while($Result = mysqli_fetch_array($PageQuery))
 	{
 		$Data[] = $Result;
 	}

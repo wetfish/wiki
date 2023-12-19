@@ -59,8 +59,8 @@ if($Name)
 
 			if(empty($Data[$PageID]))
 			{
-				$PageQuery = mysql_query("SELECT `Path` FROM `Wiki_Pages` WHERE `ID`='$PageID'");
-				list($PagePath) = mysql_fetch_array($PageQuery);
+				$PageQuery = mysqli_query($mysql,"SELECT `Path` FROM `Wiki_Pages` WHERE `ID`='$PageID'");
+				list($PagePath) = mysqli_fetch_array($PageQuery);
 
 				$Data[$PageID] = $PagePath;
 			}

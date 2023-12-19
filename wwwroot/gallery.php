@@ -23,7 +23,7 @@ $Generate = 'Thumbnails';
     # Generate thumbnails by default.
     # Change to anything but 'Thumbnails' to turn it off.
 
-$Thumbnail['Directory'] = 'upload/thumb';
+$Thumbnail['Directory'] = 'upload/thumbs';
 
     # A special place for your thumbnails...
     # 	like	http://wetfish.net/upload/thumb/
@@ -61,6 +61,7 @@ echo "<center>";
 
 if($Pagination['is'] == 'On')
 {
+
     if(is_numeric($_GET['page']))
         $Page = $_GET['page'];
 

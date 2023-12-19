@@ -2,52 +2,53 @@
 
 function history($path, $action, $title, $content)
 {
+    include dirname(__FILE__).'/../connection.php';
     $Head = '<meta name="robots" content="noindex, nofollow" />';
     $content['PageNav']->Active("Page History");
 
-    $pageQuery = mysql_query("Select `ID` from `Wiki_Pages` where `Path`='$path'");
-    list($pageID) = mysql_fetch_array($pageQuery);
+    $pageQuery = mysqli_query($mysql,"Select `ID` from `Wiki_Pages` where `Path`='$path'");
+    list($pageID) = mysqli_fetch_array($pageQuery);
 
-    $totalQuery = mysql_query("Select `ID`
+    $totalQuery = mysqli_query($mysql,"Select `ID`
                                 from `Wiki_Edits`
                                 where `PageID` = '$pageID' and `Archived` = 0");
     
-    $nextQuery = mysql_query("Select `ID`, `Title`
+    $nextQuery = mysqli_query($mysql,"Select `ID`, `Title`
                                 from `Wiki_Edits`
                                 where `PageID` = '$pageID' and `Archived` = 0
                                 order by `ID` desc limit 1");
 
-    $previousQuery = mysql_query("Select `ID`, `Title`
+    $previousQuery = mysqli_query($mysql,"Select `ID`, `Title`
                                 from `Wiki_Edits`
                                 where `PageID` = '$pageID' and `Archived` = 0
                                 order by `ID` limit 1");
 
 
-    $totalEdits = mysql_num_rows($totalQuery);
-    $next = mysql_fetch_array($nextQuery);
-    $previous = mysql_fetch_array($previousQuery);	
+    $totalEdits = mysqli_num_rows($totalQuery);
+    $next = mysqli_fetch_array($nextQuery);
+    $previous = mysqli_fetch_array($previousQuery);
 
     if(is_numeric($action[1]))
     {
-        $PreviousQuery = mysql_query("Select `Content` from `Wiki_Edits` where `ID` < '$action[1]' and `Archived` = 0 order by `ID` desc limit 1");
-        list($PreviousContent) = mysql_fetch_array($PreviousQuery);
+        $PreviousQuery = mysqli_query($mysql,"Select `Content` from `Wiki_Edits` where `ID` < '$action[1]' and `Archived` = 0 order by `ID` desc limit 1");
+        list($PreviousContent) = mysqli_fetch_array($PreviousQuery);
 
-        $PageQuery = mysql_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
-        list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent) = mysql_fetch_array($PageQuery);
+        $PageQuery = mysqli_query($mysql,"SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
+        list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent) = mysqli_fetch_array($PageQuery);
         
         
-        $previousQuery = mysql_query("Select `ID`, `Title`
+        $previousQuery = mysqli_query($mysql,"Select `ID`, `Title`
                                         from `Wiki_Edits`
                                         where `PageID` = '$pageID' and `ID` > '$action[1]' and `Archived` = 0
                                             order by `ID` limit 1");
 
-        $nextQuery = mysql_query("Select `ID`, `Title`
+        $nextQuery = mysqli_query($mysql,"Select `ID`, `Title`
                                         from `Wiki_Edits`
                                         where `PageID` = '$pageID' and `ID` < '$action[1]' and `Archived` = 0
                                             order by `ID` desc limit 1");
                                             
-        $pagePrevious = mysql_fetch_array($previousQuery);
-        $pageNext = mysql_fetch_array($nextQuery);
+        $pagePrevious = mysqli_fetch_array($previousQuery);
+        $pageNext = mysqli_fetch_array($nextQuery);
         
         if($pagePrevious)
             $previous = $pagePrevious;
@@ -94,8 +95,8 @@ function history($path, $action, $title, $content)
         
         $content['Title'] = "<a href='$previousPath' title='Previous - {$previous['Title']}'>⟨</a> Page History <a href='$nextPath' title='Next - {$next['Title']}'>⟩</a>";
         
-        $PageQuery = mysql_query("SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
-        list($PageID) = mysql_fetch_array($PageQuery);
+        $PageQuery = mysqli_query($mysql,"SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
+        list($PageID) = mysqli_fetch_array($PageQuery);
 
         $HistoryQuery = "SELECT `ID`,`AccountID`,`EditTime`,`Size`,`Tags`,`Name`,`Description`,`Title` FROM `Wiki_Edits` WHERE `PageID`='$PageID' and `Archived` = 0 ORDER BY `ID` DESC";
 

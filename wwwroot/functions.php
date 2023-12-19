@@ -3,10 +3,6 @@
 error_reporting(E_ALL ^ E_NOTICE);
 include("src/mysql.php");
 
-function Redirect($URL, $Time=2)
-{
-    return "<meta http-equiv='refresh' content='$Time;url=$URL'>";
-}
 
 function Clean($Input, $Type="dicks")
 {
@@ -225,18 +221,21 @@ function uuid($prefix = '')
 
 function RandomRow($table, $column)
 {
+
+    global $mysql;
     $max_sql = "SELECT max($column) AS max_id FROM $table";
-    $max_row = mysql_fetch_array(mysql_query($max_sql));
+    $max_row = mysqli_fetch_array(mysqli_query($mysql,$max_sql));
 
     $random_number = mt_rand(1, $max_row['max_id']);
 
     $random_sql = "SELECT * FROM $table WHERE $column >= $random_number ORDER BY $column ASC LIMIT 1";
-    $random_row = mysql_fetch_array(mysql_query($random_sql));
+    $random_row = mysqli_fetch_array(mysqli_query($mysql,$random_sql));
 
     while (!is_array($random_row))
     {
         $random_sql = "SELECT * FROM $table WHERE $column < $random_number ORDER BY $column DESC LIMIT 1";
-        $random_row = mysql_fetch_array(mysql_query($random_sql));
+        
+        $random_row = mysqli_fetch_array(mysqli_query($mysql,$random_sql));
     }
     
     return $random_row;

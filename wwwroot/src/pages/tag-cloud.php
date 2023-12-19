@@ -6,12 +6,12 @@ $viewedTags = array();
 $popularTags = array();
 $recentTags = array();
 
-$viewedQuery = mysql_query("Select `tag`, `views`
+$viewedQuery = mysqli_query($mysql,"Select `tag`, `views`
                                 from `Wiki_Tag_Statistics`
                                 order by `views` desc
                                 limit 50");
                                 
-while(list($tag, $views) = mysql_fetch_array($viewedQuery))
+while(list($tag, $views) = mysqli_fetch_array($viewedQuery))
 {
     $tagText = str_replace('-', ' ', $tag);
     $viewedTags[$tag] = array('text' => $tagText, 'views' => $views);
@@ -29,12 +29,12 @@ echo "</div>";
 
 
 
-$popularQuery = mysql_query("Select `tag`, `count`, `modified`
+$popularQuery = mysqli_query($mysql,"Select `tag`, `count`, `modified`
                                 from `Wiki_Tag_Statistics`
                                 order by `count` desc
                                 limit 50");
 
-while(list($tag, $count, $modified) = mysql_fetch_array($popularQuery))
+while(list($tag, $count, $modified) = mysqli_fetch_array($popularQuery))
 {
     $tagText = str_replace('-', ' ', $tag);
     $popularTags[$tag] = array('text' => $tagText, 'count' => $count);
@@ -52,12 +52,12 @@ echo "<span class='medium'>Most Used Tags</span>";
 echo "</div>";
 
 
-$recentQuery = mysql_query("Select `tag`, `count`, `modified`
+$recentQuery = mysqli_query($mysql,"Select `tag`, `count`, `modified`
                                 from `Wiki_Tag_Statistics`
                                 order by `modified` desc
                                 limit 50");
                                 
-while(list($tag, $count, $modified) = mysql_fetch_array($recentQuery))
+while(list($tag, $count, $modified) = mysqli_fetch_array($recentQuery))
 {
     $tagText = str_replace('-', ' ', $tag);
     $recentTags[$tag] = array('text' => $tagText, 'count' => $count);
