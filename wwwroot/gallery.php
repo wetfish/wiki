@@ -23,7 +23,7 @@ $Generate = 'Thumbnails';
     # Generate thumbnails by default.
     # Change to anything but 'Thumbnails' to turn it off.
 
-$Thumbnail['Directory'] = 'upload/thumbs';
+$Thumbnail['Directory'] = 'upload/thumb';
 
     # A special place for your thumbnails...
     # 	like	http://wetfish.net/upload/thumb/
