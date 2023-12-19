@@ -32,9 +32,9 @@ services:
       - ./php.env
     volumes:
       - ./upload:/var/www/upload:rw
-      - ./config/php-fpm.conf:/etc/php/5.6/fpm/php-fpm.conf:ro
-      - ./config/php-fpm-pool.conf:/etc/php/5.6/fpm/pool.d/www.conf:ro
-      - ./config/php.ini:/etc/php/5.6/fpm/php.ini:ro
+      - ./config/php-fpm.conf:/etc/php/7.0/fpm/php-fpm.conf:ro
+      - ./config/php-fpm-pool.conf:/etc/php/7.0/fpm/pool.d/www.conf:ro
+      - ./config/php.ini:/etc/php/7.0/fpm/php.ini:ro
     networks:
       wiki-staging-internal: {}
 
