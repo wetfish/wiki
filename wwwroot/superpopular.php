@@ -1,18 +1,19 @@
 <?php
 
 require('functions.php');
-$PeopleQuery = mysql_query("Select AccountID,count(*) as n
+include('src/connection.php');
+$PeopleQuery = mysqli_query($mysql,"Select AccountID,count(*) as n
                             from Wiki_Edits
                             group by AccountID
                             order by n desc
                             limit 25");
 
-while(list($AccountID, $Count) = mysql_fetch_array($PeopleQuery))
+while(list($AccountID, $Count) = mysqli_fetch_array($PeopleQuery))
 {
     $AccountCount++;
     
-    $AccountQuery = mysql_query("Select `Name`, `EditTime` from `Wiki_Accounts` where `ID`='$AccountID'");
-    list($AccountName, $EditTime) = mysql_fetch_array($AccountQuery);
+    $AccountQuery = mysqli_query($mysql,"Select `Name`, `EditTime` from `Wiki_Accounts` where `ID`='$AccountID'");
+    list($AccountName, $EditTime) = mysqli_fetch_array($AccountQuery);
     
     $AccountName = gethostbyaddr($AccountName);
     $AccountName = preg_replace('/\d+-\d+-\d+-\d+/', substr(md5(hash('whirlpool', $AccountName)), 0, 8), $AccountName);

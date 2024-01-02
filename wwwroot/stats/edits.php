@@ -23,9 +23,9 @@ else
 }
 
 $display = strtotime($display);
-$query = mysql_query("Select `EditTime` from `Wiki_Edits` where `EditTime` > {$display} order by `EditTime` asc");
+$query = mysqli_query($mysql,"Select `EditTime` from `Wiki_Edits` where `EditTime` > {$display} order by `EditTime` asc");
 
-while(list($time) = mysql_fetch_array($query))
+while(list($time) = mysqli_fetch_array($query))
 {
     if($mode == "year")
     {

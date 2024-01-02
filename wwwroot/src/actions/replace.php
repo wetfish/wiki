@@ -2,6 +2,7 @@
 
 function replace($path, $action, $title, $content)
 {
+    include dirname(__FILE__).'/../connection.php';
     // Make sure user is an admin
     if(!$_SESSION['admin'])
     {
@@ -20,26 +21,26 @@ function replace($path, $action, $title, $content)
         );
         
         // Loop through all pages
-        $pageQuery = mysql_query("Select `ID`, `Content` from `Wiki_Pages`");
-        while(list($pageID, $pageContent) = mysql_fetch_array($pageQuery))
+        $pageQuery = mysqli_query($mysql,"Select `ID`, `Content` from `Wiki_Pages`");
+        while(list($pageID, $pageContent) = mysqli_fetch_array($pageQuery))
         {
             $pageContent = str_replace($_POST['find'], $_POST['replace'], $pageContent);
-            $pageContent = mysql_real_escape_string($pageContent);
+            $pageContent = mysqli_real_escape_string($pageContent);
             
-            mysql_query("Update `Wiki_Pages` set `Content` = '{$pageContent}' where `ID` = '{$pageID}'");
+            mysqli_query($mysql,"Update `Wiki_Pages` set `Content` = '{$pageContent}' where `ID` = '{$pageID}'");
             unset($pageID, $pageContent);
 
             $count['pages']++;
         }
         
         // Loop through all edits
-        $editQuery = mysql_query("Select `ID`, `Content` from `Wiki_Edits`");
-        while(list($editID, $editContent) = mysql_fetch_array($editQuery))
+        $editQuery = mysqli_query($mysql,"Select `ID`, `Content` from `Wiki_Edits`");
+        while(list($editID, $editContent) = mysqli_fetch_array($editQuery))
         {
             $editContent = str_replace($_POST['find'], $_POST['replace'], $editContent);
-            $editContent = mysql_real_escape_string($editContent);
+            $editContent = mysqli_real_escape_string($editContent);
             
-            mysql_query("Update `Wiki_Edits` set `Content` = '{$editContent}' where `ID` = '{$editID}'");
+            mysqli_query($mysql,"Update `Wiki_Edits` set `Content` = '{$editContent}' where `ID` = '{$editID}'");
             unset($editID, $editContent);
 
             $count['edits']++;

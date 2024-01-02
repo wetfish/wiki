@@ -3,6 +3,7 @@
 function recent($path, $action, $title, $content)
 {
 //		$Head = '<meta name="robots" content="noindex, nofollow" />';
+    include dirname(__FILE__).'/../connection.php';
     $content['UserNav']->Active("Recent Activity");
 
     if(empty($_SESSION['Recent']))
@@ -41,8 +42,8 @@ function recent($path, $action, $title, $content)
 
                 if(empty($Data[$PageID]))
                 {
-                    $PageQuery = mysql_query("SELECT `Path` FROM `Wiki_Pages` WHERE `ID`='$PageID'");
-                    list($PagePath) = mysql_fetch_array($PageQuery);
+                    $PageQuery = mysqli_query($mysql,"SELECT `Path` FROM `Wiki_Pages` WHERE `ID`='$PageID'");
+                    list($PagePath) = mysqli_fetch_array($PageQuery);
 
                     $Data[$PageID] = $PagePath;
                 }

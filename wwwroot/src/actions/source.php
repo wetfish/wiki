@@ -2,6 +2,7 @@
 
 function source($path, $action, $title, $content)
 {
+    include dirname(__FILE__).'/../connection.php';
     $Head = '<meta name="robots" content="noindex, nofollow" />';
     $content['PageNav']->Active("Page History");
 
@@ -11,8 +12,8 @@ function source($path, $action, $title, $content)
 
     if(is_numeric($action[1]))
     {
-        $PageQuery = mysql_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content`,`TagList` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
-        list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent, $tagText) = mysql_fetch_array($PageQuery);
+        $PageQuery = mysqli_query($mysql,"SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content`,`TagList` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
+        list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent, $tagText) = mysqli_fetch_array($PageQuery);
 
         $Form['_Options'] = "action:;";
 

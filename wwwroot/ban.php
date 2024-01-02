@@ -8,7 +8,7 @@ if($_POST)
     if(is_numeric($_POST['id']) and $_POST['password'] == BAN_PASSWORD)
     {
         $ID = $_POST['id'];
-        mysql_query("Update `Wiki_Accounts` set `Verified`='-1' where `ID`='$ID'");
+        mysqli_query($mysql,"Update `Wiki_Accounts` set `Verified`='-1' where `ID`='$ID'");
         echo "User banned.<br />";
         
         if($_POST['revert'] == "on")
@@ -16,25 +16,25 @@ if($_POST)
             $Reverted = array();
             $BadAccount = $ID;
             
-            $PageQuery = mysql_query("SELECT `PageID` FROM `Wiki_Edits` WHERE `AccountID`='$BadAccount'");
-            while(list($PageID) = mysql_fetch_array($PageQuery))
+            $PageQuery = mysqli_query($mysql,"SELECT `PageID` FROM `Wiki_Edits` WHERE `AccountID`='$BadAccount'");
+            while(list($PageID) = mysqli_fetch_array($PageQuery))
             {
                 if(empty($Reverted[$PageID]))
                 {
-                    $DataQuery = mysql_query("SELECT `Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `PageID`='$PageID' AND `AccountID`!='$BadAccount' ORDER BY `ID` DESC LIMIT 1");
-                    list($PageName, $PageDescription, $PageTitle, $PageContent) = mysql_fetch_array($DataQuery);
+                    $DataQuery = mysqli_query($mysql,"SELECT `Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `PageID`='$PageID' AND `AccountID`!='$BadAccount' ORDER BY `ID` DESC LIMIT 1");
+                    list($PageName, $PageDescription, $PageTitle, $PageContent) = mysqli_fetch_array($DataQuery);
 
                     $Time = Time();
                     $Size = strlen($PageContent);
 
-                    mysql_query("UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
-                    $SQLError .= mysql_error();
+                    mysqli_query($mysql,"UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
+                    $SQLError .= mysqli_error($mysql);
 
-                    mysql_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Rachel&#39;s Super Revert: $PageDescription', '$PageTitle', '$PageContent', '')");
-                    $SQLError .= mysql_error();
+                    mysqli_query($mysql,"INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Rachel&#39;s Super Revert: $PageDescription', '$PageTitle', '$PageContent', '')");
+                    $SQLError .= mysqli_error($mysql);
 
-                    mysql_query("UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
-                    $SQLError .= mysql_error();
+                    mysqli_query($mysql,"UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
+                    $SQLError .= mysqli_error($mysql);
 
                     $Reverted[$PageID] = TRUE;
                 }

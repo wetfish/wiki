@@ -4,10 +4,10 @@
 version: '2.4'
 services:
   # httpd
-  wiki-web:
-    # production: track "prod-nginx" tag on ghcr.io
-    image: ghcr.io/wetfish/wiki:prod-nginx
-    container_name: wiki-web
+  wiki-staging-web:
+    # staging: track "staging-nginx" tag on ghcr.io
+    image: ghcr.io/wetfish/wiki:staging-nginx
+    container_name: wiki-staging-web
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
@@ -16,14 +16,14 @@ services:
       - ./upload:/var/www/upload:rw
     # join wiki-internal and traefik-backend networks
     networks:
-      wiki-internal: {}
+      wiki-staging-internal: {}
       traefik-backend: {}
 
   # php-fpm
-  wiki-php:
-    # production: track "prod-php" tag on ghcr.io
-    image: ghcr.io/wetfish/wiki:prod-php
-    container_name: wiki-php
+  wiki-staging-php:
+    # staging: track "staging-php" tag on ghcr.io
+    image: ghcr.io/wetfish/wiki:staging-php
+    container_name: wiki-staging-php
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
@@ -36,12 +36,12 @@ services:
       - ./config/php-fpm-pool.conf:/etc/php/7.0/fpm/pool.d/www.conf:ro
       - ./config/php.ini:/etc/php/7.0/fpm/php.ini:ro
     networks:
-      wiki-internal: {}
+      wiki-staging-internal: {}
 
   # database
-  wiki-db:
+  wiki-staging-db:
     image: docker.io/mariadb:10.10
-    container_name: wiki-db
+    container_name: wiki-staging-db
     restart: unless-stopped
     env_file:
       - ./mariadb.env
@@ -50,14 +50,14 @@ services:
       - ./config/schema.sql:/docker-entrypoint-initdb.d/setup.sql:ro
       - ./db/data:/var/lib/mysql:rw
     networks:
-      wiki-internal: {}
+      wiki-staging-internal: {}
 
   # watchtower - automatically pull new container images
   # note: this does not update the repo
   # if deployment files have changed you will need to git pull && docker compose up -d manually
-  wiki-watchtower:
+  wiki-staging-watchtower:
     image: ghcr.io/containrrr/watchtower:1.5.3
-    container_name: wiki-watchtower
+    container_name: wiki-staging-watchtower
     environment:
       - "WATCHTOWER_CLEANUP=true"
       - "WATCHTOWER_POLL_INTERVAL=30"
@@ -68,7 +68,7 @@ services:
 
 networks:
   # ephemeral, created for us by compose
-  wiki-internal:
+  wiki-staging-internal:
     driver: bridge
   # persistent, externally created
   traefik-backend:

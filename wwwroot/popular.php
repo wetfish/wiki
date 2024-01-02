@@ -1,14 +1,14 @@
 <?php
-
+include('src/connection.php');
 require('functions.php');
 
 
-$viewsQuery = mysql_query("Select `Path`,`Title`,`Views`
+$viewsQuery = mysqli_query($mysql,"Select `Path`,`Title`,`Views`
                             from Wiki_Pages
                             order by `Views` desc
                             limit 40");
 
-while(list($path, $title, $views) = mysql_fetch_array($viewsQuery))
+while(list($path, $title, $views) = mysqli_fetch_array($viewsQuery))
 {
     $viewsCount++;
     ob_start();
@@ -30,14 +30,14 @@ while(list($path, $title, $views) = mysql_fetch_array($viewsQuery))
 }
 
 
-$peopleQuery = mysql_query("Select Name,count(*) as n
+$peopleQuery = mysqli_query($mysql,"Select Name,count(*) as n
                             from Wiki_Edits
                             where Archived != 1
                             group by Name
                             order by n desc
                             limit 40");
 
-while(list($name, $count) = mysql_fetch_array($peopleQuery))
+while(list($name, $count) = mysqli_fetch_array($peopleQuery))
 {
     $peopleCount++;
     ob_start();
@@ -63,17 +63,17 @@ while(list($name, $count) = mysql_fetch_array($peopleQuery))
 }
 
 
-$pageQuery = mysql_query("Select PageID,count(*) as n
+$pageQuery = mysqli_query($mysql,"Select PageID,count(*) as n
                             from Wiki_Edits
                             where Archived != 1
                             group by PageID
                             order by n desc
                             limit 40");
 
-while(list($pageID, $count) = mysql_fetch_array($pageQuery))
+while(list($pageID, $count) = mysqli_fetch_array($pageQuery))
 {
-    $pageInfo = mysql_query("Select `Path`, `Title` from `Wiki_Pages` where `ID`='$pageID'");
-    list($path, $title) = mysql_fetch_array($pageInfo);
+    $pageInfo = mysqli_query($mysql,"Select `Path`, `Title` from `Wiki_Pages` where `ID`='$pageID'");
+    list($path, $title) = mysqli_fetch_array($pageInfo);
     
     $pageCount++;
     ob_start();

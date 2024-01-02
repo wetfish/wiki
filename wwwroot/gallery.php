@@ -61,6 +61,7 @@ echo "<center>";
 
 if($Pagination['is'] == 'On')
 {
+
     if(is_numeric($_GET['page']))
         $Page = $_GET['page'];
 
