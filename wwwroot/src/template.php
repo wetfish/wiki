@@ -26,7 +26,7 @@
         <script type="text/javascript" src="/src/js/captcha.js"></script>
         
         <link rel="icon" type="image/png" href="/favzz.png"/>
-        <script src="https://unpkg.com/@ruffle-rs/ruffle"></script>
+        <script src="/src/node_modules/@ruffle-rs/ruffle/ruffle.js"></script>
     </head>
     <body>
         <div class="bodyborder">
