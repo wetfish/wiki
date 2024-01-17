@@ -72,16 +72,18 @@ class Parser
         $replacementID = uuid();
 
         // Ensure it is unique and doesn't exist in the document
-        while($this->tags[$replacementID] || strpos($this->text, $replacementID) !== false)
-        {
-            $replacementID = uuid();
+        if (!empty($this->tags[$replacementID])) {
+            while($this->tags[$replacementID] || strpos($this->text, $replacementID) !== false)
+            {
+                $replacementID = uuid();
+            }
         }
 
         $data = array
         (
             'source' => $match[0],
             'tag' => $match[1],
-            'content' => ($match[3]) ? $match[3] : $match[2]
+            'content' => (!empty($match[3])) ? $match[3] : $match[2]
         );
 
         $this->tags[$replacementID] = $data;

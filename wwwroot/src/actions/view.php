@@ -3,8 +3,9 @@
 function view($path, $action, $title, $content)
 {
     include dirname(__FILE__).'/../connection.php';
-    $content['PageNav']->Active("View Page");
 
+    $content['PageNav']->Active("View Page");
+    $tagLinks = null;
     $PageQuery = mysqli_query($mysql,"SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path`='$path'");
     list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime) = mysqli_fetch_array($PageQuery);
     
@@ -55,15 +56,18 @@ function view($path, $action, $title, $content)
         mysqli_query($mysql,"Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
     }
 
-    if($_SESSION['admin'])
+    if(!empty($_SESSION['admin']))
     {
         $content['ExtraNav'] = new Navigation;
         $content['ExtraNav']->Add("Archive This Page", FormatPath("/$path/")."?archive");
         $content['ExtraNav']->Add("Rename This Page", FormatPath("/$path/")."?rename");
     }
 
-    $title[] = FishFormat($PageTitle, "strip");
-    $content['Title'] .= FishFormat($PageTitle);
+    $title[0] = FishFormat($PageTitle, "strip");
+    if(!empty($content['Title'])) {
+        $content['Title'] .= FishFormat($PageTitle);
+    }
+    
     $content['Body'] .= FishFormat($PageContent);
     
     if($PageEdits)

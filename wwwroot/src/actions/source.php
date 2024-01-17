@@ -34,7 +34,7 @@ function source($path, $action, $title, $content)
         $Form['tags']['Form'] = "name:tags; value:x{".$tagText."}x; size: 80; maxlength:255;";
 
         $content['Title'] = "Viewing Source of: $PageTitle";
-        $content['Body'] .= Format($Form, Form);
+        $content['Body'] .= Format($Form);
 
         date_default_timezone_set('America/New_York');
 //			$PageEditTime = date("F j\, Y G:i:s", $PageEditTime)." EST";

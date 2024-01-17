@@ -3,6 +3,7 @@
 function random($path, $action, $title, $content)
 {
     include dirname(__FILE__).'/../connection.php';
+    $tagLinks = [];
     if($path)
     {
         $PageQuery = mysqli_query($mysql,"SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path` = '$path'");

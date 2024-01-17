@@ -5,7 +5,9 @@ function login($path, $action, $title, $content)
     include dirname(__FILE__).'/../connection.php';
     $content['UserNav']->Active("Login");
     $content['Title'] = "Super Secret Login Form";
-
+    if (empty($content['Body'])) {
+        $content['Body'] = '';
+    }
     if($_POST)
     {
         if($_POST['Password'] == LOGIN_PASSWORD)
@@ -43,7 +45,7 @@ function login($path, $action, $title, $content)
         $Form['Password']['Form'] = "name:Password; type:password;";
         $Form['Submit']['Form'] = "type:submit; value:Submit;";
         
-        $content['Body'] .= Format($Form, Form);
+        $content['Body'] .= Format($Form);
     }
     
     return array($title, $content);
