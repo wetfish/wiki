@@ -3,7 +3,10 @@
 error_reporting(E_ALL ^ E_NOTICE);
 include("src/mysql.php");
 
-
+function Redirect($URL, $Time=2)
+{
+    return "<meta http-equiv='refresh' content='$Time;url=$URL'>";
+}
 function Clean($Input, $Type="dicks")
 {
     if($Type == "textarea")

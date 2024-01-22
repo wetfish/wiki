@@ -70,7 +70,7 @@ else
     }
 }
 
-$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive', 'replace', 'rename');
+$actions = array('edit', 'preview', 'recent', 'history', 'login', 'register', 'diff', 'source', 'random', 'tag', 'archive', 'replace', 'rename', 'admin');
 $get = array_change_key_case($_GET);
 
 foreach($_GET as $action => $value)
@@ -149,6 +149,23 @@ else
 
 switch($Action[0])
 {
+    case "admin":
+        if($_SESSION['admin'])
+        {
+            ob_start();
+            phpinfo();
+            echo "<style>.v,.e { background-color: rgba(0, 0, 0, 0.5); } a:link { background-color: initial }</style>";
+            $phpinfo = ob_get_contents();
+            ob_end_clean();
+
+            $Content['Body'] = $phpinfo;
+        }
+        else
+        {
+            $Content['Body'] = Redirect("/$PathURL?login", 0);
+        }
+    break;
+
     case "fixtags":
         $tagQuery = mysqli_query($mysql,"Select `tag` from `Wiki_Tags`");
         while(list($tag) = mysqli_fetch_array($tagQuery))
