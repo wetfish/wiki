@@ -3,6 +3,7 @@
 function login($path, $action, $title, $content)
 {
     include dirname(__FILE__).'/../connection.php';
+
     $content['UserNav']->Active("Login");
     $content['Title'] = "Super Secret Login Form";
 
