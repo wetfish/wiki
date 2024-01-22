@@ -18,8 +18,8 @@ function login($path, $action, $title, $content)
         {
             $_SESSION['bypass'] = true;
             $_SESSION['admin'] = true;
-            $content['Body'] = "Wow, you're an admin!!<br /><br />You will now be brought back to your previous page.";
-            $content['Body'] .= Redirect(str_replace("//", "/", "/$path"));
+            $content['Body'] = "Wow, you're an admin!!<br /><br />You will now be brought to the admin page.";
+            $content['Body'] .= Redirect(str_replace("//", "/", "/$path?admin"));
         }
 
         else
@@ -36,14 +36,14 @@ function login($path, $action, $title, $content)
         }
 
         $content['Body'] .= "Protip: The super secret password is the same as the PIBDGAF ichc password.";
-        
+
         $Form['_Options'] = "action:".str_replace("//", "/", "/$path/?login").";";
         $Form['Password']['Text'] = "Password:";
         $Form['Password']['Form'] = "name:Password; type:password;";
         $Form['Submit']['Form'] = "type:submit; value:Submit;";
-        
+
         $content['Body'] .= Format($Form, Form);
     }
-    
+
     return array($title, $content);
 }
