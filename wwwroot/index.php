@@ -12,7 +12,7 @@ include('src/libraries/simple_html_dom.php');
 require('src/markup/fishformat.php');
 require('navigation.php');
 include('fun/paginate.php');
- $Action = [];
+
 if(!class_exists("Benchmark"))
 {
     include_once("src/benchmark.php");
@@ -147,7 +147,7 @@ else
     $Navigation['Register']['URL'] = "/$Path/?register";
 }
 
-switch($Action[0])
+switch($Action[0] ?? false)
 {
     case "admin":
         if($_SESSION['admin'])
@@ -186,7 +186,7 @@ switch($Action[0])
     case "preview":
         $Head = '<meta name="robots" content="noindex, nofollow" />';
 
-        //var_dump($Content);
+        
         $Content['PageNav']->Active("Edit Page");
         $Content['Body'] = null;
         if($_SESSION['Verified'] == -1)
@@ -416,10 +416,9 @@ switch($Action[0])
         }
 
         $PageTitle = PageTitler($PageTitle);
-        if (!empty($_POST)) {
-            // code...
-            $Content['Title'] .= 'Editing: '.FishFormat($PageTitle);
-        }
+
+        $Content['Title'] .= 'Editing: '.FishFormat($PageTitle);
+        
         
 
         if((!empty($Form['_Errors'])) || (empty($_POST)) || $Action[0] == "preview")
@@ -676,7 +675,7 @@ SuperNav;
 
     default:
         // If you're on a page and there is no action, view it!
-        if(empty($Action) || !is_string($Action[0]) || !in_array($action[0], $actions))
+        if(empty($Action) || !is_string($Action[0]))
         {
             $Action[0] = "view";
         }

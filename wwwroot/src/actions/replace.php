@@ -62,7 +62,7 @@ function replace($path, $action, $title, $content)
         $Form['Replace']['Form'] = "name:replace; type:text;";
         $Form['Submit']['Form'] = "type:submit; value:Submit;";
         
-        $content['Body'] .= Format($Form, Form);
+        $content['Body'] .= Format($Form, 'Form');
     }
     
     return array($title, $content);

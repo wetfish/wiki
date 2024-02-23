@@ -64,9 +64,7 @@ function view($path, $action, $title, $content)
     }
 
     $title[0] = FishFormat($PageTitle, "strip");
-    if(!empty($content['Title'])) {
-        $content['Title'] .= FishFormat($PageTitle);
-    }
+    $content['Title'] .= FishFormat($PageTitle);
     
     $content['Body'] .= FishFormat($PageContent);
     

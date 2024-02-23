@@ -664,7 +664,9 @@ function replace_links($matches, $mode)
     if(isset($_GET['random'])){
         $random = "/?random";
     }
-    else {$random = null;}
+    else {
+        $random = null;
+    }
 
     $site = getenv('SITE_URL');
     if (empty($matches[2])) {
