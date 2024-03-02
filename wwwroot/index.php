@@ -416,9 +416,7 @@ switch($Action[0] ?? false)
         }
 
         $PageTitle = PageTitler($PageTitle);
-
         $Content['Title'] .= 'Editing: '.FishFormat($PageTitle);
-        
         
 
         if((!empty($Form['_Errors'])) || (empty($_POST)) || $Action[0] == "preview")
