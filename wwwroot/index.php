@@ -186,7 +186,7 @@ switch($Action[0] ?? false)
     case "preview":
         $Head = '<meta name="robots" content="noindex, nofollow" />';
 
-        
+
         $Content['PageNav']->Active("Edit Page");
         $Content['Body'] = null;
         if($_SESSION['Verified'] == -1)
