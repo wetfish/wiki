@@ -38,6 +38,7 @@ function view_markup($input, $markup)
 }
 function view_replacements($tag, $content)
 {
+    include dirname(__FILE__).'/../connection.php';
     if($content !== "")
     {
         $tag = trim($tag);
@@ -639,7 +640,7 @@ function replace_links($matches, $mode)
     include dirname(__FILE__).'/../connection.php';
     // Replace spaces with hyphens
     $page = str_replace(" ", "-", $matches[1]);
-
+    $class='';
     // Remove invalid characters from URLs
     $invalid = array("&lt;", "&gt;", "&#34;", "&#39;", "&#92;", "&#96;");
     $page = str_replace($invalid, "", $page);
@@ -660,11 +661,17 @@ function replace_links($matches, $mode)
         }
     }
 
-    if(isset($_GET['random']))
+    if(isset($_GET['random'])){
         $random = "/?random";
+    }
+    else {
+        $random = null;
+    }
 
     $site = getenv('SITE_URL');
-
+    if (empty($matches[2])) {
+        $matches[2] = '';
+    }
     if($mode == "custom")
     {
         return "<a href='https://$site/{$page}{$random}' class='$class'>{$matches[2]}</a>";

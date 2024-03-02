@@ -30,7 +30,7 @@ function archive($path, $action, $title, $content)
             $Form['Confirmed']['Form'] = "name:confirmed; type:hidden; value:true";
             $Form['Submit']['Form'] = "type:submit; value:Yes;";
             
-            $content['Body'] .= Format($Form, Form);
+            $content['Body'] .= Format($Form, 'Form');
         }
     }
     
@@ -66,7 +66,7 @@ function archive($path, $action, $title, $content)
             $Form['Confirmed']['Form'] = "name:confirmed; type:hidden; value:true";
             $Form['Submit']['Form'] = "type:submit; value:Yes;";
             
-            $content['Body'] .= Format($Form, Form);
+            $content['Body'] .= Format($Form, 'Form');
         }
     }
     

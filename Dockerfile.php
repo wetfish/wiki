@@ -25,7 +25,7 @@ RUN set -exu \
   && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add - \
   && echo "deb https://deb.nodesource.com/node_14.x bookworm main" | tee /etc/apt/sources.list.d/nodesource.list
 
-# setup php7.0 repo
+# setup php8.0 repo
 RUN set -exu \
   && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
   && curl -fsSL https://packages.sury.org/php/apt.gpg | apt-key add -
@@ -34,12 +34,12 @@ RUN set -exu \
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
-    php7.0 \
-    php7.0-fpm \
-    php7.0-mysqli \
-    php7.0-mysql \
-    php7.0-exif \
-    php7.0-gd \
+    php8.0 \
+    php8.0-fpm \
+    php8.0-mysqli \
+    php8.0-mysql \
+    php8.0-exif \
+    php8.0-gd \
     nodejs \
     npm
 
@@ -83,4 +83,4 @@ RUN set -exu \
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000
-CMD ["/usr/sbin/php-fpm7.0", "--nodaemonize", "--force-stderr"]
+CMD ["/usr/sbin/php-fpm8.0", "--nodaemonize", "--force-stderr"]

@@ -1,4 +1,5 @@
 <?php
+include('src/config.php');
 include('src/connection.php');
 require('functions.php');
 

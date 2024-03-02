@@ -28,7 +28,7 @@ function Format($Array)
 
             case "_Options":
                 $Options = Queries($Data);
-
+                $Extra = '';
                 if(!empty($Options['enctype']))
                     $Extra .= "enctype=\"{$Options['enctype']}\" ";
 
@@ -112,7 +112,7 @@ function Format($Array)
 function Queries($Text)
 {
     preg_match_all("/\s*(.*?)\s*:\s*(?:(.)?{(.*)}\\2?|(.*?))(?:;|\s*$)/", $Text, $Matches);
-
+    $Queries = null;
     foreach($Matches[3] as $Key=>$Data)
     {
         if(trim($Data) == "")

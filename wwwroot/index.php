@@ -13,7 +13,7 @@ require('src/markup/fishformat.php');
 require('navigation.php');
 include('fun/paginate.php');
 
-if(!class_exists(Benchmark))
+if(!class_exists("Benchmark"))
 {
     include_once("src/benchmark.php");
     $benchmark = new Benchmark;
@@ -59,7 +59,7 @@ else
     $Path = $uri['path'];
 
     // Save get parameters
-    if($uri['query'])
+    if(!empty($uri['query']))
     {
         parse_str($uri['query'], $query);
 
@@ -79,7 +79,8 @@ foreach($_GET as $action => $value)
     $action = explode('/', $actionText);
 
     if(in_array($action[0], $actions))
-        $Action = $action;
+       global $Action;
+       $Action = $action;
 }
 
 if(strpos($Path, ' ') !== FALSE || strpos($Path, '%20') !== FALSE)
@@ -105,7 +106,7 @@ $Content['PageNav']->Add("View Page", "/$Path");
 $Content['PageNav']->Add("Edit Page", "/$Path/?edit");
 $Content['PageNav']->Add("Page History", "/$Path/?history");
 
-if($_SESSION['Name'])
+if(!empty($_SESSION['Name']))
 {
     $LoginQuery = mysqli_query($mysql,"SELECT `ID`,`Name`,`Password`,`Verified`,`EditTime` FROM `Wiki_Accounts` WHERE `ID`='{$_SESSION['ID']}'");
     list($ID, $Name, $Password, $Verified, $EditTime) = mysqli_fetch_array($LoginQuery,MYSQLI_NUM);
@@ -142,11 +143,11 @@ else
     $_SESSION['Verified'] = $Verified;
     $_SESSION['EditTime'] = $EditTime;
 
-    $Navigation['Login']['URL'] = "/$PathURL/?login";
-    $Navigation['Register']['URL'] = "/$PathURL/?register";
+    $Navigation['Login']['URL'] = "/$Path/?login";
+    $Navigation['Register']['URL'] = "/$Path/?register";
 }
 
-switch($Action[0])
+switch($Action[0] ?? false)
 {
     case "admin":
         if($_SESSION['admin'])
@@ -184,8 +185,10 @@ switch($Action[0])
     case "edit":
     case "preview":
         $Head = '<meta name="robots" content="noindex, nofollow" />';
-        $Content['PageNav']->Active("Edit Page");
 
+
+        $Content['PageNav']->Active("Edit Page");
+        $Content['Body'] = null;
         if($_SESSION['Verified'] == -1)
         {
             $Content['Body'] = "<b>LOL UR BANNED</b>";
@@ -204,7 +207,11 @@ switch($Action[0])
         }
 
         $tagText = implode(', ', $originalTags);
-        $Name = ($_POST['Name']) ? Clean($_POST['Name']) : $_SESSION['username'];
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // code...
+            $Name = ($_POST['Name']) ? Clean($_POST['Name']) : $_SESSION['username'];
+        }
+        
 
         if(!empty($_POST))
         {
@@ -410,9 +417,11 @@ switch($Action[0])
 
         $PageTitle = PageTitler($PageTitle);
         $Content['Title'] .= 'Editing: '.FishFormat($PageTitle);
+        
 
         if((!empty($Form['_Errors'])) || (empty($_POST)) || $Action[0] == "preview")
         {
+
 $Content['Body'] .= <<<SuperNav
 <script>
     $(document).ready(function ()
@@ -474,7 +483,7 @@ SuperNav;
                 $Content['Title'] = 'Preview: '.FishFormat($PageTitle);
                 $Content['Body'] .= FishFormat($PageContent)."<div style='clear:both'></div><hr />";
             }
-            $Content['Body'] .= Format($Form, Form);
+            $Content['Body'] .= Format($Form);
         }
 
         if($PageEdits)
@@ -643,7 +652,7 @@ SuperNav;
 
             $Content['Body'] .= "<br />";
             $Content['Body'] .= "<div class='big'><div class='big'><div class='big'>FUN FACT THIS PAGE DOES NOT WORK, IT HAS NEVER WORKED, STOP TRYING TO USE IT LOL</div></div>Seriously, just start editing pages. You don't need an account. :)</div>";
-            $Content['Body'] .= Format($Form, Form);
+            $Content['Body'] .= Format($Form);
         }
     break;
 
