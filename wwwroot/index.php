@@ -78,9 +78,9 @@ foreach($_GET as $action => $value)
     $actionText = strtolower($action);
     $action = explode('/', $actionText);
 
-    if(in_array($action[0], $actions))
-       global $Action;
-       $Action = $action;
+    if(in_array($action[0], $actions)) {
+        $Action = $action;
+    }
 }
 
 if(strpos($Path, ' ') !== FALSE || strpos($Path, '%20') !== FALSE)
@@ -211,7 +211,7 @@ switch($Action[0] ?? false)
             // code...
             $Name = ($_POST['Name']) ? Clean($_POST['Name']) : $_SESSION['username'];
         }
-        
+
 
         if(!empty($_POST))
         {
@@ -417,7 +417,7 @@ switch($Action[0] ?? false)
 
         $PageTitle = PageTitler($PageTitle);
         $Content['Title'] .= 'Editing: '.FishFormat($PageTitle);
-        
+
 
         if((!empty($Form['_Errors'])) || (empty($_POST)) || $Action[0] == "preview")
         {
