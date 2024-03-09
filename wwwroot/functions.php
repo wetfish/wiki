@@ -1,6 +1,6 @@
 <?php
 
-error_reporting(E_ALL ^ E_NOTICE);
+error_reporting(E_ERROR | E_PARSE);
 include("src/mysql.php");
 
 function Redirect($URL, $Time=2)
