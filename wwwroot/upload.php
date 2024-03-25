@@ -26,6 +26,7 @@ if($_FILES)
     else
     {
         $Mime = mime_content_type($Image['tmp_name']);
+        error_log($Mime);
         switch($Mime){
             case "image/jpg":
                 $Extension = "jpg";
@@ -39,6 +40,9 @@ if($_FILES)
             case "image/png":
                 $Extension = "png";
                 break;
+            case "image/webp":
+                $Extension = "webp";
+                break;
             case "audio/mpeg":
             case "audio/mp3":
                 $Extension = "mp3";
@@ -49,6 +53,9 @@ if($_FILES)
                 break;
             case "video/mp4":
                 $Extension = "mp4";
+                break;
+            case "video/quicktime":
+                $Extension = "mov";
                 break;
             case "audio/midi":
             case "audio/xmidi":
