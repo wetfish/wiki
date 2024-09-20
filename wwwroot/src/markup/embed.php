@@ -50,6 +50,8 @@ function embed_html5_video($input, $options = array())
     }
 
     $attributes = implode(' ', $attributes);
+    if(preg_match("/^https?/", $input))
+        return "<video $attributes><source src='{$input}'></video>";
     return "<video $attributes><source src='/{$input}'></video>";
 }
 
