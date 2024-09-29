@@ -158,7 +158,7 @@ $(document).ready(function()
                 e.preventDefault();
             } else {
                 // Override function to make sure it doesn't fire anyways
-                $(wnidow).on('beforeunload', function (e) {});
+                $(window).on('beforeunload', function (e) {});
                 changed = false;
             }
         }
