@@ -157,10 +157,21 @@ $(document).ready(function()
             if (!confirm('You have unsaved changes. Are you sure you want to leave?')) {
                 e.preventDefault();
             } else {
+                // Override function to make sure it doesn't fire anyways
+                $(wnidow).on('beforeunload', function (e) {});
                 changed = false;
             }
         }
     });
+
+    $(window).on('beforeunload', function(e) {
+        if (hasChanges(changed, formData)) {
+            var confirmationMessage = 'You have unsaved changes. Are you sure you want to leave?';
+            (e || window.event).returnValue = confirmationMessage;
+            return confirmationMessage;
+        }
+    });
+
 
     $('#TheInternet').on('change input', function () {
         changed = true;
