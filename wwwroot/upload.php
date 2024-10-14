@@ -102,7 +102,7 @@ else
 {
     echo <<<Image
 <form enctype="multipart/form-data" action="upload.php" method="POST">
-    Send this file: <input name="Image" type="file" />
+    Send this file: <input name="Image" type="file" id="upload-file" />
     <input type="submit" value="Send File" />
 </form>
 Image;
