@@ -16,7 +16,7 @@ function the($Thing)
 		$Path = pathinfo($Thing);
 		$Extension = $Path['extension'];
 
-		if(preg_match('{jpe?g|gif|png}i', $Extension))
+		if(preg_match('{jpe?g|gif|png|webp}i', $Extension))
 			return 'Image';
 	}
 
@@ -62,9 +62,11 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 		case "image/jpeg":
 			$Image = @ImageCreateFromJpeg($Filename);
 			break;
+		case "image/webp":
+			$Image = @ImageCreateFromWebp($Filename);
 	}
 
-	if($ImageData[2] == IMAGETYPE_GIF or $ImageData[2]  == IMAGETYPE_PNG)
+	if($ImageData[2] == IMAGETYPE_GIF or $ImageData[2]  == IMAGETYPE_PNG or $ImageData[2] == IMAGETYPE_WEBP)
 	{
 		$TransIndex = imagecolortransparent($Image);
 
@@ -85,7 +87,7 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 
 		}
 		// Always make a transparent background color for PNGs that don't have one allocated already
-		elseif ($ImageData[2] == IMAGETYPE_PNG)
+		elseif ($ImageData[2] == IMAGETYPE_PNG or $ImageData[2] == IMAGETYPE_WEBP)
 		{
 
 			// Turn off transparency blending (temporarily)
@@ -110,6 +112,9 @@ function ResizeImage($Filename, $Thumbnail, $Size)
 			break;
 		case "image/png":
 			@ImagePng($NewImage, $Thumbnail);
+			break;
+		case "image/webp":
+			@ImageWebp($NewImage, $Thumbnail);
 			break;
 		case "image/jpeg":
 			@ImageJpeg($NewImage, $Thumbnail);
