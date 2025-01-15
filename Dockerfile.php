@@ -18,7 +18,8 @@ RUN set -exu \
     ca-certificates \
     lsb-release \
     apt-transport-https \
-    curl
+    curl \
+    ffmpeg
 
 # setup nodejs repo
 RUN set -exu \

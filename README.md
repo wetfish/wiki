@@ -3,12 +3,16 @@
 See [https://github.com/wetfish/production-manifests](https://github.com/wetfish/production-manifests)
 for production deployment and full stack dev env info.
 
+TODO: doesnt work with rootless docker/podman, need to build and launch as root.
+
 For development, to run just this stack, do 
 ```bash
 cp mariadb.env.example mariadb.env
 # -> edit, change passwords and other info as needed
 cp php.env.example php.env
 # -> edit, change db info to match mariadb, other passwords as needed
+# for the uploader & gallery features
+chmod 777 ./upload; mkdir ./upload/thumbs; chmod -R 777 ./upload/thumbs
 
 # in dev env, run npm install manually
 cd wwwroot/src && npm install
