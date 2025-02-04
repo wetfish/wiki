@@ -1,12 +1,8 @@
-# version 3+ does different things re: networking from 2.x
-# mainly things to support swarms
-# aka things we don't need/want
-version: '2.4'
+version: "2.4"
 services:
-  # httpd
+  # httpd (Nginx)
   wiki-web:
-    # production: track "prod-nginx" tag on ghcr.io
-    image: ghcr.io/wetfish/wiki:prod-nginx
+    image: ghcr.io/wetfish/wiki:${ENV_TAG}-nginx # Use the ENV_TAG variable for dynamic image selection
     container_name: wiki-web
     restart: unless-stopped
     labels:
@@ -14,20 +10,17 @@ services:
     volumes:
       - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./upload:/var/www/upload:rw
-    # join wiki-internal and traefik-backend networks
     networks:
       wiki-internal: {}
       traefik-backend: {}
 
   # php-fpm
   wiki-php:
-    # production: track "prod-php" tag on ghcr.io
-    image: ghcr.io/wetfish/wiki:prod-php
+    image: ghcr.io/wetfish/wiki:${ENV_TAG}-php # Dynamically set PHP image tag using ENV_TAG
     container_name: wiki-php
     restart: unless-stopped
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
-    # db connection info
     env_file:
       - ./php.env
     volumes:
@@ -53,8 +46,6 @@ services:
       wiki-internal: {}
 
   # watchtower - automatically pull new container images
-  # note: this does not update the repo
-  # if deployment files have changed you will need to git pull && docker compose up -d manually
   wiki-watchtower:
     image: ghcr.io/containrrr/watchtower:1.5.3
     container_name: wiki-watchtower
