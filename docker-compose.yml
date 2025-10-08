@@ -44,6 +44,8 @@ services:
       - ./db/data:/var/lib/mysql:rw
     networks:
       wiki-internal: {}
+    ports:
+      - "127.0.0.1:3309:3306"
 
   # watchtower - automatically pull new container images
   wiki-watchtower:
