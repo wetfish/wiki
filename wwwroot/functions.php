@@ -131,6 +131,8 @@ function ResizeImage($Filename, $Thumbnail, $Size)
     $Extension = $Path['extension'];
     
     $ImageData = @GetImageSize($Filename);
+    if(!$ImageData)
+        return false;
     $Width = $ImageData[0];
     $Height = $ImageData[1];
 
@@ -156,8 +158,12 @@ function ResizeImage($Filename, $Thumbnail, $Size)
         $Image = @ImageCreateFromGif($Filename);
     elseif(preg_match('/^png$/i', $Extension))
         $Image = @ImageCreateFromPng($Filename);
-    else
+    elseif(preg_match('/^webp$/i', $Extension))
+        $Image = ImageCreateFromWebp($Filename);
+    elseif(preg_match('/^jpe?g$/i', $Extension))
         $Image = @ImageCreateFromJpeg($Filename);
+    if(!$Image)
+        return false;
     
     if($ImageData[2] == IMAGETYPE_GIF or $ImageData[2]  == IMAGETYPE_PNG)
     {

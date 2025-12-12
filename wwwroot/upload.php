@@ -25,16 +25,15 @@ if($_FILES)
     }
     else
     {
+        $Extension = "";
         $Mime = mime_content_type($Image['tmp_name']);
         switch($Mime){
-            case "image/jpg":
-                $Extension = "jpg";
-                break;
-            case "image/jpeg":
-                $Extension = "jpeg";
-                break;
             case "image/gif":
                 $Extension = "gif";
+                break;
+            case "image/jpeg":
+            case "image/jpg":
+                $Extension = "jpg";
                 break;
             case "image/png":
                 $Extension = "png";
@@ -46,6 +45,9 @@ if($_FILES)
             case "audio/webm":
             case "video/webm":
                 $Extension = "webm";
+                break;
+            case "image/webp":
+                $Extension = "webp";
                 break;
             case "video/mp4":
                 $Extension = "mp4";
@@ -61,10 +63,12 @@ if($_FILES)
             // Catch all for the various text types that may end up being parsed, accept them as text files
                 if(preg_match('/text\/.*/i', $Mime))
                     $Extension = "txt";
-                else {
-                    echo "HACKER!!!!!!!!!!!!!";
-                    return;
-		}
+        }
+        if($Extension=="")
+        {
+            # echo "HACKER!!!!!!!!!!!!!";
+            echo "We do not accept $Mime files at this time.";
+            return false;
         }
     
         $Filename = uuid();
