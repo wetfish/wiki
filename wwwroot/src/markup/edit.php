@@ -108,11 +108,17 @@ function edit_replacements($tag, $content)
                     case "image/png":
                         $Extension = "png";
                         break;
+                    case "image/webp":
+                        $Extension = "webp";
+                        break;
                     case "video/webm":
                         $Extension = "webm";
                         break;
                     case "video/mp4":
                         $Extension = "mp4";
+                        break;
+                    case "video/quicktime";
+                        $Extension = "mov";
                         break;
                     case "video/ogg":
                         $Extension = "ogv";
@@ -121,7 +127,7 @@ function edit_replacements($tag, $content)
                         $Extension = "svg";
                         break;
                     default:
-                        return "$Mime: Unsupported format! Please use: jpg, gif, png, webm, gifv, mp4, or ogv";
+                        return "$Mime: Unsupported format! Please use: jpg, gif, png, webp, webm, gifv, mp4, mov, or ogv";
                 }
 
                 while(file_exists("upload/$Filename.$Extension"))

@@ -261,7 +261,7 @@ function view_replacements($tag, $content)
                 $path = pathinfo($Link);
 
                 // If a video extension was used
-                if(preg_match('/^(webm|mp4|ogv)$/i', $path['extension']))
+                if(preg_match('/^(webm|mp4|ogv|mov)$/i', $path['extension']))
                 {
                     // Output a special html5 player that behaves like a gif
                     $options = array
