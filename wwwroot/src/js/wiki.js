@@ -131,23 +131,69 @@ function buildQuery(input)
     return output.join('&');
 }
 
+function hasChanges(changed, formData) {
+    var Form = document.getElementById('TheInternet');
+    return changed || (new FormData(Form) !== formData);
+}
+
 $(document).ready(function()
 {
     // Populate saved name from local storage
     var name = localStorage.getItem('name');
+    // Check if the title is "Preview:", which means changes are likely pending
+    var title = document.querySelector('div.title');
+    var changed = title && title.textContent.trim().startsWith('Preview:');
+    // Stash the form so we can use it to compare for changes later
+    var Form = document.getElementById('TheInternet');
+    var formData = new FormData(Form);
 
     if(name)
     {
         $('#Name').value(name);
     }
 
-    $('#TheInternet').on('submit', function() {
-        var Form = document.getElementById('TheInternet');
-        Form.action = Form.action + 'edit';
+    $('a').on('click', function(e) {
+        if (hasChanges(changed, formData)) {
+            if (!confirm('You have unsaved changes. Are you sure you want to leave?')) {
+                e.preventDefault();
+            } else {
+                // Override function to make sure it doesn't fire anyways
+                $(window).on('beforeunload', function (e) {});
+                changed = false;
+            }
+        }
+    });
 
+    $(window).on('beforeunload', function(e) {
+        if (hasChanges(changed, formData)) {
+            var confirmationMessage = 'You have unsaved changes. Are you sure you want to leave?';
+            (e || window.event).returnValue = confirmationMessage;
+            return confirmationMessage;
+        }
+    });
+
+
+    $('#TheInternet').on('change input', function () {
+        changed = true;
+    });
+
+    $('#TheInternet').on('submit', function() {
+        // Update our stashed form data, and remove the `changed` guard
+        var Form = document.getElementById('TheInternet');
+        formData = new FormData(Form);
+        changed = false;
+
+        Form.action = Form.action + 'edit';
         // Save current name in local storage
         var name = $('#Name').value();
         localStorage.setItem('name', name);
+        return true;
+    });
+
+    // Preview should justwerk
+    $('input[value="Preview"]').on('click', function(e) {
+        changed = false;
+        return true;
     });
 
     $('.navbox').on('click', function(event)
