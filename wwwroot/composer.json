@@ -1,0 +1,13 @@
+{
+    "require": {
+        "open-telemetry/sdk": "^1.0",
+        "open-telemetry/exporter-otlp": "^1.0.0",
+        "open-telemetry/gen-otlp-protobuf": "^1.2.1",
+        "google/protobuf": "^4.0",
+        "php-http/curl-client": "^2.0",
+        "nyholm/psr7": "^1.0"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

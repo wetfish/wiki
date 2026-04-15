@@ -2,7 +2,7 @@
 
 require('functions.php');
 include('src/connection.php');
-$PeopleQuery = mysqli_query($mysql,"Select AccountID,count(*) as n
+$PeopleQuery = wiki_query("Select AccountID,count(*) as n
                             from Wiki_Edits
                             group by AccountID
                             order by n desc
@@ -12,7 +12,7 @@ while(list($AccountID, $Count) = mysqli_fetch_array($PeopleQuery))
 {
     $AccountCount++;
     
-    $AccountQuery = mysqli_query($mysql,"Select `Name`, `EditTime` from `Wiki_Accounts` where `ID`='$AccountID'");
+    $AccountQuery = wiki_query("Select `Name`, `EditTime` from `Wiki_Accounts` where `ID`='$AccountID'");
     list($AccountName, $EditTime) = mysqli_fetch_array($AccountQuery);
     
     $AccountName = gethostbyaddr($AccountName);

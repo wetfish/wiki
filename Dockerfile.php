@@ -20,17 +20,16 @@ RUN set -exu \
     apt-transport-https \
     curl
 
-# setup nodejs repo
+# setup nodejs repo (node 20 LTS)
 RUN set -exu \
-  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add - \
-  && echo "deb https://deb.nodesource.com/node_14.x bookworm main" | tee /etc/apt/sources.list.d/nodesource.list
+  && curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 
 # setup php8.0 repo
 RUN set -exu \
   && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
   && curl -fsSL https://packages.sury.org/php/apt.gpg | apt-key add -
 
-# install php5.6, some extensions, and nodejs
+# install php8.0, some extensions, and nodejs
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
@@ -40,8 +39,8 @@ RUN set -exu \
     php8.0-mysql \
     php8.0-exif \
     php8.0-gd \
-    nodejs \
-    npm
+    php8.0-curl \
+    nodejs
 
 # clean apt caches
 RUN set -exu \
@@ -64,14 +63,22 @@ COPY ./wwwroot /var/www
 RUN set -exu \
   && chown -R builder:builder /var/www
 
+# install composer
+RUN set -exu \
+  && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 # switch to our nonroot user
 USER builder
 
-# run npm install
+# run npm install and composer install
 WORKDIR /var/www/src
 RUN set -exu \
   && cd /var/www/src \
   && npm install
+
+WORKDIR /var/www
+RUN set -exu \
+  && composer install --no-dev --no-interaction --no-progress
 
 # back to root
 USER root

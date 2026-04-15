@@ -227,18 +227,18 @@ function RandomRow($table, $column)
 
     global $mysql;
     $max_sql = "SELECT max($column) AS max_id FROM $table";
-    $max_row = mysqli_fetch_array(mysqli_query($mysql,$max_sql));
+    $max_row = mysqli_fetch_array(wiki_query($max_sql));
 
     $random_number = mt_rand(1, $max_row['max_id']);
 
     $random_sql = "SELECT * FROM $table WHERE $column >= $random_number ORDER BY $column ASC LIMIT 1";
-    $random_row = mysqli_fetch_array(mysqli_query($mysql,$random_sql));
+    $random_row = mysqli_fetch_array(wiki_query($random_sql));
 
     while (!is_array($random_row))
     {
         $random_sql = "SELECT * FROM $table WHERE $column < $random_number ORDER BY $column DESC LIMIT 1";
         
-        $random_row = mysqli_fetch_array(mysqli_query($mysql,$random_sql));
+        $random_row = mysqli_fetch_array(wiki_query($random_sql));
     }
     
     return $random_row;
