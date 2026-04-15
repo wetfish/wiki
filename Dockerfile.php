@@ -20,10 +20,9 @@ RUN set -exu \
     apt-transport-https \
     curl
 
-# setup nodejs repo
+# setup nodejs repo (node 20 LTS)
 RUN set -exu \
-  && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | gpg --dearmor | apt-key add - \
-  && echo "deb https://deb.nodesource.com/node_14.x bookworm main" | tee /etc/apt/sources.list.d/nodesource.list
+  && curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
 
 # setup php8.0 repo
 RUN set -exu \
