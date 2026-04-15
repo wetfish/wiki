@@ -6,7 +6,7 @@ $viewedTags = array();
 $popularTags = array();
 $recentTags = array();
 
-$viewedQuery = mysqli_query($mysql,"Select `tag`, `views`
+$viewedQuery = wiki_query("Select `tag`, `views`
                                 from `Wiki_Tag_Statistics`
                                 order by `views` desc
                                 limit 50");
@@ -29,7 +29,7 @@ echo "</div>";
 
 
 
-$popularQuery = mysqli_query($mysql,"Select `tag`, `count`, `modified`
+$popularQuery = wiki_query("Select `tag`, `count`, `modified`
                                 from `Wiki_Tag_Statistics`
                                 order by `count` desc
                                 limit 50");
@@ -52,7 +52,7 @@ echo "<span class='medium'>Most Used Tags</span>";
 echo "</div>";
 
 
-$recentQuery = mysqli_query($mysql,"Select `tag`, `count`, `modified`
+$recentQuery = wiki_query("Select `tag`, `count`, `modified`
                                 from `Wiki_Tag_Statistics`
                                 order by `modified` desc
                                 limit 50");

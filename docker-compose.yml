@@ -30,6 +30,8 @@ services:
     # db connection info
     env_file:
       - ./php.env
+    extra_hosts:
+      - "host-gateway:host-gateway"
     volumes:
       - ./upload:/var/www/upload:rw
       - ./config/php-fpm.conf:/etc/php/8.0/fpm/php-fpm.conf:ro

@@ -46,11 +46,11 @@ function Paginate($Query, $Limit, $Page = 1, $QueryString = '')
 	$Start = $Page * $Limit;
 	$paginationOffset = $Limit * 3;
 
-	$CountQuery = mysqli_query($mysql,"$Query limit $Start, $paginationOffset");
+	$CountQuery = wiki_query("$Query limit $Start, $paginationOffset");
 	$Rows = mysqli_num_rows($CountQuery);
 	$Pages = $Page + ceil($Rows / $Limit);
 	
-	$PageQuery = mysqli_query($mysql,"$Query limit $Start, $Limit");
+	$PageQuery = wiki_query("$Query limit $Start, $Limit");
 	while($Result = mysqli_fetch_array($PageQuery))
 	{
 		$Data[] = $Result;

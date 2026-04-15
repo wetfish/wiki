@@ -23,7 +23,7 @@ else
 }
 
 $display = strtotime($display);
-$query = mysqli_query($mysql,"Select `EditTime` from `Wiki_Edits` where `EditTime` > {$display} order by `EditTime` asc");
+$query = wiki_query("Select `EditTime` from `Wiki_Edits` where `EditTime` > {$display} order by `EditTime` asc");
 
 while(list($time) = mysqli_fetch_array($query))
 {

@@ -4,7 +4,7 @@ include('../mysql.php');
 include('../functions.php');
 
 
-$viewedQuery = mysqli_query($mysql,"Select `tag`, `views`
+$viewedQuery = wiki_query("Select `tag`, `views`
                                 from `Wiki_Tag_Statistics`
                                 order by `views` desc
                                 limit 35");
@@ -17,7 +17,7 @@ while(list($tag, $views) = mysqli_fetch_array($viewedQuery))
     $viewedTable .= "<tr><td>$viewedCount</td><td class='littleborder' style='max-width:150px'><a href='/?tag/$tag'>$tagText</a></td><td class='littleborder' style='color:#FCA5BD'>$views</td></tr>";
 }
 
-$popularQuery = mysqli_query($mysql,"Select `tag`, `count`, `modified`
+$popularQuery = wiki_query("Select `tag`, `count`, `modified`
                                 from `Wiki_Tag_Statistics`
                                 order by `count` desc
                                 limit 35");
@@ -31,7 +31,7 @@ while(list($tag, $count, $modified) = mysqli_fetch_array($popularQuery))
     $popularTable .= "<tr><td>$popularCount</td><td class='littleborder' style='max-width:150px'><a href='/?tag/$tag'>$tagText</a></td><td class='littleborder' style='color:#FCA5BD'>$count</td><td class='littleborder'>$popularDate</td></tr>";
 }
 
-$recentQuery = mysqli_query($mysql,"Select `tag`, `count`, `modified`
+$recentQuery = wiki_query("Select `tag`, `count`, `modified`
                                 from `Wiki_Tag_Statistics`
                                 order by `modified` desc
                                 limit 35");
@@ -46,7 +46,7 @@ while(list($tag, $count, $modified) = mysqli_fetch_array($recentQuery))
 }
 
 /*
-$newestQuery = mysqli_query($mysql,"Select `tag`, `count`, `modified`
+$newestQuery = wiki_query("Select `tag`, `count`, `modified`
                                 from `Wiki_Tag_Statistics`
                                 order by `created` desc
                                 limit 35");

@@ -17,7 +17,7 @@ function archive($path, $action, $title, $content)
     {
         if($_POST['confirmed'])
         {
-            mysqli_query($mysql, "Update `Wiki_Edits` set `Archived` = '1' where `ID` = '{$action[1]}'");
+            wiki_query( "Update `Wiki_Edits` set `Archived` = '1' where `ID` = '{$action[1]}'");
             $content['Body'] = "<p><b>Edit archived!</b></p>";
         }
         else
@@ -40,14 +40,14 @@ function archive($path, $action, $title, $content)
         if($_POST['confirmed'])
         {
             // Get the page ID
-            $PageQuery = mysqli_query($mysql,"SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
+            $PageQuery = wiki_query("SELECT `ID` FROM `Wiki_Pages` WHERE `Path`='$path'");
             list($pageID) = mysqli_fetch_array($PageQuery);
 
             if($pageID)
             {
-                mysqli_query($mysql,"Update `Wiki_Edits` set `Archived` = '1' where `PageID` = '{$pageID}'");
-                mysqli_query($mysql,"Delete from `Wiki_Tags` where `pageID` = '{$pageID}'");
-                mysqli_query($mysql,"Delete from `Wiki_Pages` where `ID` = '{$pageID}'");
+                wiki_query("Update `Wiki_Edits` set `Archived` = '1' where `PageID` = '{$pageID}'");
+                wiki_query("Delete from `Wiki_Tags` where `pageID` = '{$pageID}'");
+                wiki_query("Delete from `Wiki_Pages` where `ID` = '{$pageID}'");
                 $content['Body'] = "<p><b>Page archived!</b></p>";
             }
             else

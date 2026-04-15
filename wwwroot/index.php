@@ -108,7 +108,7 @@ $Content['PageNav']->Add("Page History", "/$Path/?history");
 
 if(!empty($_SESSION['Name']))
 {
-    $LoginQuery = mysqli_query($mysql,"SELECT `ID`,`Name`,`Password`,`Verified`,`EditTime` FROM `Wiki_Accounts` WHERE `ID`='{$_SESSION['ID']}'");
+    $LoginQuery = wiki_query("SELECT `ID`,`Name`,`Password`,`Verified`,`EditTime` FROM `Wiki_Accounts` WHERE `ID`='{$_SESSION['ID']}'");
     list($ID, $Name, $Password, $Verified, $EditTime) = mysqli_fetch_array($LoginQuery,MYSQLI_NUM);
 
     if($Password and $_SESSION['Password'] == $Password)
@@ -130,12 +130,12 @@ if(!empty($_SESSION['Name']))
 }
 else
 {
-    $LoginQuery = mysqli_query($mysql,"SELECT `ID`,`Verified`,`EditTime` FROM `Wiki_Accounts` WHERE `Name`='$userIP'");
+    $LoginQuery = wiki_query("SELECT `ID`,`Verified`,`EditTime` FROM `Wiki_Accounts` WHERE `Name`='$userIP'");
     list($ID, $Verified, $EditTime) = mysqli_fetch_array($LoginQuery, MYSQLI_NUM);
 
     if(empty($ID))
     {
-        mysqli_query($mysql,"INSERT INTO `Wiki_Accounts` VALUES ('NULL', '$userIP', '', '', '', '0', '')");
+        wiki_query("INSERT INTO `Wiki_Accounts` VALUES ('NULL', '$userIP', '', '', '', '0', '')");
         $ID = mysqli_insert_id($mysql);
     }
 
@@ -167,7 +167,7 @@ switch($Action[0] ?? false)
     break;
 
     case "fixtags":
-        $tagQuery = mysqli_query($mysql,"Select `tag` from `Wiki_Tags`");
+        $tagQuery = wiki_query("Select `tag` from `Wiki_Tags`");
         while(list($tag) = mysqli_fetch_array($tagQuery))
         {
             $fixTags[$tag]++;
@@ -175,7 +175,7 @@ switch($Action[0] ?? false)
 
         foreach($fixTags as $tag => $count)
         {
-            mysqli_query($mysql,"Insert into `Wiki_Tag_Statistics`
+            wiki_query("Insert into `Wiki_Tag_Statistics`
                             values ('', '$tag', '1', '0', NOW(), NOW())
 
                             on duplicate key update `count` = '$count'");
@@ -195,12 +195,12 @@ switch($Action[0] ?? false)
             break;
         }
 
-        $PageQuery = mysqli_query($mysql,"SELECT `ID`,`Title`,`Content`,`Edits`,`Views`, `EditTime` FROM `Wiki_Pages` WHERE `Path`='$Path'");
+        $PageQuery = wiki_query("SELECT `ID`,`Title`,`Content`,`Edits`,`Views`, `EditTime` FROM `Wiki_Pages` WHERE `Path`='$Path'");
         list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime) = mysqli_fetch_array($PageQuery);
 
         $originalTags = array();
 
-        $tagQuery = mysqli_query($mysql,"Select `tag` from `Wiki_Tags` where `pageID` = '$PageID'");
+        $tagQuery = wiki_query("Select `tag` from `Wiki_Tags` where `pageID` = '$PageID'");
         while(list($tagName) = mysqli_fetch_array($tagQuery))
         {
             $originalTags[] = $tagName;
@@ -297,28 +297,28 @@ switch($Action[0] ?? false)
 
                 if($PageID)
                 {
-                    mysqli_query($mysql,"UPDATE `Wiki_Pages` SET `Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
+                    wiki_query("UPDATE `Wiki_Pages` SET `Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
                     $SQLError .= mysqli_error($mysql);
 
-                    mysqli_query($mysql,"INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$tagText', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
+                    wiki_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$tagText', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
                     $SQLError .= mysqli_error($mysql);
 
                     $EditID = mysqli_insert_id($mysql);
                 }
                 else
                 {
-                    mysqli_query($mysql,"INSERT INTO `Wiki_Pages` VALUES ('NULL', '1', '$Path', '$PageTitle', '$PageContent', '', '')");
+                    wiki_query("INSERT INTO `Wiki_Pages` VALUES ('NULL', '1', '$Path', '$PageTitle', '$PageContent', '', '')");
                     $SQLError .= mysqli_error($mysql);
 
                     $PageID = mysqli_insert_id($mysql);
 
-                    mysqli_query($mysql,"INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$tagText', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
+                    wiki_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$tagCount', '$tagText', '$Name', '$Description', '$PageTitle', '$PageContent', '')");
                     $SQLError .= mysqli_error($mysql);
 
                     $EditID = mysqli_insert_id($mysql);
                 }
 
-                mysqli_query($mysql,"Delete from `Wiki_Tags` where `pageID`='$PageID'");
+                wiki_query("Delete from `Wiki_Tags` where `pageID`='$PageID'");
 
                 foreach($newTags as $tag)
                 {
@@ -327,7 +327,7 @@ switch($Action[0] ?? false)
                     if($tag)
                     {
                         $tag = str_replace(" ", "-", $tag);
-                        mysqli_query($mysql,"Insert into `Wiki_Tags` values('', '$PageID', '$tag')");
+                        wiki_query("Insert into `Wiki_Tags` values('', '$PageID', '$tag')");
 
                         $tagKey = array_search($tag, $originalTags);
 
@@ -342,7 +342,7 @@ switch($Action[0] ?? false)
                             //echo "<br />Tag update called<hr />";
 
                             // If the current tag doesn't exist in the original tag array, insert/update it
-                            mysqli_query($mysql,"Insert into `Wiki_Tag_Statistics`
+                            wiki_query("Insert into `Wiki_Tag_Statistics`
                                             values ('', '$tag', '1', '0', NOW(), NOW())
 
                                             on duplicate key update `count` = `count` + 1, `modified` = NOW()");
@@ -358,7 +358,7 @@ switch($Action[0] ?? false)
                 // Take all the remaining original tags and subtract one from the count
                 foreach($originalTags as $tag)
                 {
-                    mysqli_query($mysql,"Update `Wiki_Tag_Statistics`
+                    wiki_query("Update `Wiki_Tag_Statistics`
                                     set `count` = `count` - 1
                                     where `tag`='$tag'");
                 }
@@ -381,10 +381,10 @@ switch($Action[0] ?? false)
 
                 $UserEdits = implode(",", $UserEdits);
 
-                mysqli_query($mysql,"UPDATE `Wiki_Pages` SET `Edits`='$PageEdits',`EditTime`='$Time' WHERE `ID`='$PageID'");
+                wiki_query("UPDATE `Wiki_Pages` SET `Edits`='$PageEdits',`EditTime`='$Time' WHERE `ID`='$PageID'");
                 $SQLError .= mysqli_error($mysql);
 
-                mysqli_query($mysql,"UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
+                wiki_query("UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
                 $SQLError .= mysqli_error($mysql);
 
                 if($SQLError)
@@ -510,35 +510,35 @@ SuperNav;
         //$BadAccount = 250481;
         $BadAccount = 250534;
 
-        $PageQuery = mysqli_query($mysql,"SELECT `ID`, `PageID` FROM `Wiki_Edits` WHERE `AccountID`='$BadAccount'");
+        $PageQuery = wiki_query("SELECT `ID`, `PageID` FROM `Wiki_Edits` WHERE `AccountID`='$BadAccount'");
         while(list($BadEditID, $PageID) = mysqli_fetch_array($PageQuery))
         {
 
             if(empty($Reverted[$PageID]))
             {
-                $DataQuery = mysqli_query($mysql,"SELECT `Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `PageID`='$PageID' AND `AccountID`!='$BadAccount' AND `Archived` = '0' ORDER BY `ID` DESC LIMIT 1");
+                $DataQuery = wiki_query("SELECT `Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `PageID`='$PageID' AND `AccountID`!='$BadAccount' AND `Archived` = '0' ORDER BY `ID` DESC LIMIT 1");
                 list($PageName, $PageDescription, $PageTitle, $PageContent) = mysqli_fetch_array($DataQuery);
 
                 $Time = Time();
                 $Size = strlen($PageContent);
 
-                mysqli_query($mysql,"UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
+                wiki_query("UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
                 $SQLError .= mysqli_error($mysql);
 
-                //mysqli_query($mysql,"INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Rachel&#39;s Super Revert: $PageDescription', '$PageTitle', '$PageContent', '')");
+                //wiki_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Rachel&#39;s Super Revert: $PageDescription', '$PageTitle', '$PageContent', '')");
                 //$SQLError .= mysqli_error($mysql);
 
-                //mysqli_query($mysql,"UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
+                //wiki_query("UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
                 //$SQLError .= mysqli_error($mysql);
 
-                mysqli_query($mysql,"UPDATE `Wiki_Edits` SET `Archived` = 1 where `ID` = '$BadEditID'");
+                wiki_query("UPDATE `Wiki_Edits` SET `Archived` = 1 where `ID` = '$BadEditID'");
                 $SQLError .= mysqli_error($mysql);
 
                 $Reverted[$PageID] = TRUE;
             }
             else
             {
-                mysqli_query($mysql,"UPDATE `Wiki_Edits` SET `Archived` = 1 where `ID` = '$BadEditID'");
+                wiki_query("UPDATE `Wiki_Edits` SET `Archived` = 1 where `ID` = '$BadEditID'");
                 $SQLError .= mysqli_error($mysql);
             }
         }
@@ -553,7 +553,7 @@ SuperNav;
     case "revert":
         $Head = '<meta name="robots" content="noindex, nofollow" />';
 
-        $PageQuery = mysqli_query($mysql,"SELECT `PageID`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$Action[1]'");
+        $PageQuery = wiki_query("SELECT `PageID`,`Name`,`Description`,`Title`,`Content` FROM `Wiki_Edits` WHERE `ID`='$Action[1]'");
         list($PageID, $PageName, $PageDescription, $PageTitle, $PageContent) = mysqli_fetch_array($PageQuery);
 
         if($PageID and $_SESSION['Verified'] == 1)
@@ -567,13 +567,13 @@ SuperNav;
                 break;
             }
 
-            mysqli_query($mysql,"UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
+            wiki_query("UPDATE `Wiki_Pages` SET `EditTime`='$Time',`Title`='$PageTitle',`Content`='$PageContent' WHERE `ID`='$PageID'");
             $SQLError .= mysqli_error($mysql);
 
-            mysqli_query($mysql,"INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Reverted to: $PageDescription', '$PageTitle', '$PageContent', '')");
+            wiki_query("INSERT INTO `Wiki_Edits` VALUES ('NULL', '$PageID', '{$_SESSION['ID']}', '$Time', '$Size', '$PageName', 'Reverted to: $PageDescription', '$PageTitle', '$PageContent', '')");
             $SQLError .= mysqli_error($mysql);
 
-            mysqli_query($mysql,"UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
+            wiki_query("UPDATE `Wiki_Accounts` SET `EditTime`='$Time' WHERE `ID`='{$_SESSION['ID']}'");
             $SQLError .= mysqli_error($mysql);
 
             if($SQLError)
@@ -615,7 +615,7 @@ SuperNav;
 
             if(empty($Form['_Errors']))
             {
-                $Penis = mysqli_query($mysql,"Select `Name` from `Wiki_Accounts` where `Name`='$Name'");
+                $Penis = wiki_query("Select `Name` from `Wiki_Accounts` where `Name`='$Name'");
                 list($OldName) = mysqli_fetch_array($Penis);
 
                 if($Name == $OldName)

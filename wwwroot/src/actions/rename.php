@@ -15,14 +15,14 @@ function action_rename($path, $action, $title, $content)
     if(!empty($_POST))
     {
         $path = mysqli_real_escape_string($mysql,$path);
-        $page_query = mysqli_query($mysql,"Select ID from `Wiki_Pages` where Path = '{$path}' limit 1");
+        $page_query = wiki_query("Select ID from `Wiki_Pages` where Path = '{$path}' limit 1");
         list($page_id) = mysqli_fetch_array($page_query);
 
         // We can only change the path of an existing page...
         if($page_id)
         {
             $new = str_replace(" ", "-", $_POST['new']);
-            mysqli_query($mysql,"Update `Wiki_Pages` set `Path` = '".mysqli_real_escape_string($mysql, $new)."' where ID = '{$page_id}'");
+            wiki_query("Update `Wiki_Pages` set `Path` = '".mysqli_real_escape_string($mysql, $new)."' where ID = '{$page_id}'");
             
             $content['Title'] = "Page renamed!";
             $content['Body'] = "<p>The old page <b>{$path}</b> has been renamed to <a href='/{$new}'>{$_POST['new']}</a></p>";
