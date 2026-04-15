@@ -40,8 +40,7 @@ RUN set -exu \
     php8.0-exif \
     php8.0-gd \
     php8.0-curl \
-    nodejs \
-    npm
+    nodejs
 
 # clean apt caches
 RUN set -exu \
