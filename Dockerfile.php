@@ -30,7 +30,7 @@ RUN set -exu \
   && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
   && curl -fsSL https://packages.sury.org/php/apt.gpg | apt-key add -
 
-# install php5.6, some extensions, and nodejs
+# install php8.0, some extensions, and nodejs
 RUN set -exu \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq update \
   && DEBIAN_FRONTEND=noninteractive apt-get -yq install \
@@ -40,6 +40,7 @@ RUN set -exu \
     php8.0-mysql \
     php8.0-exif \
     php8.0-gd \
+    php8.0-curl \
     nodejs \
     npm
 
@@ -64,14 +65,22 @@ COPY ./wwwroot /var/www
 RUN set -exu \
   && chown -R builder:builder /var/www
 
+# install composer
+RUN set -exu \
+  && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 # switch to our nonroot user
 USER builder
 
-# run npm install
+# run npm install and composer install
 WORKDIR /var/www/src
 RUN set -exu \
   && cd /var/www/src \
   && npm install
+
+WORKDIR /var/www
+RUN set -exu \
+  && composer install --no-dev --no-interaction --no-progress
 
 # back to root
 USER root

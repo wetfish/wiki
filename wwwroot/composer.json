@@ -1,0 +1,11 @@
+{
+    "require": {
+        "open-telemetry/sdk": "^1.0",
+        "open-telemetry/exporter-otlp": "^1.0",
+        "php-http/curl-client": "^2.0",
+        "nyholm/psr7": "^1.0"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

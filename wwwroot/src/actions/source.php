@@ -12,7 +12,7 @@ function source($path, $action, $title, $content)
 
     if(is_numeric($action[1]))
     {
-        $PageQuery = mysqli_query($mysql,"SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content`,`TagList` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
+        $PageQuery = wiki_query("SELECT `AccountID`,`EditTime`,`Name`,`Description`,`Title`,`Content`,`TagList` FROM `Wiki_Edits` WHERE `ID`='$action[1]' and `Archived` = 0");
         list($AccountID, $PageEditTime, $PageName, $PageDescription, $PageTitle, $PageContent, $tagText) = mysqli_fetch_array($PageQuery);
 
         $Form['_Options'] = "action:;";

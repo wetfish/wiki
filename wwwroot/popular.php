@@ -4,7 +4,7 @@ include('src/connection.php');
 require('functions.php');
 
 
-$viewsQuery = mysqli_query($mysql,"Select `Path`,`Title`,`Views`
+$viewsQuery = wiki_query("Select `Path`,`Title`,`Views`
                             from Wiki_Pages
                             order by `Views` desc
                             limit 40");
@@ -31,7 +31,7 @@ while(list($path, $title, $views) = mysqli_fetch_array($viewsQuery))
 }
 
 
-$peopleQuery = mysqli_query($mysql,"Select Name,count(*) as n
+$peopleQuery = wiki_query("Select Name,count(*) as n
                             from Wiki_Edits
                             where Archived != 1
                             group by Name
@@ -64,7 +64,7 @@ while(list($name, $count) = mysqli_fetch_array($peopleQuery))
 }
 
 
-$pageQuery = mysqli_query($mysql,"Select PageID,count(*) as n
+$pageQuery = wiki_query("Select PageID,count(*) as n
                             from Wiki_Edits
                             where Archived != 1
                             group by PageID
@@ -73,7 +73,7 @@ $pageQuery = mysqli_query($mysql,"Select PageID,count(*) as n
 
 while(list($pageID, $count) = mysqli_fetch_array($pageQuery))
 {
-    $pageInfo = mysqli_query($mysql,"Select `Path`, `Title` from `Wiki_Pages` where `ID`='$pageID'");
+    $pageInfo = wiki_query("Select `Path`, `Title` from `Wiki_Pages` where `ID`='$pageID'");
     list($path, $title) = mysqli_fetch_array($pageInfo);
     
     $pageCount++;

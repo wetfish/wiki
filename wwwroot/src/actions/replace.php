@@ -21,26 +21,26 @@ function replace($path, $action, $title, $content)
         );
         
         // Loop through all pages
-        $pageQuery = mysqli_query($mysql,"Select `ID`, `Content` from `Wiki_Pages`");
+        $pageQuery = wiki_query("Select `ID`, `Content` from `Wiki_Pages`");
         while(list($pageID, $pageContent) = mysqli_fetch_array($pageQuery))
         {
             $pageContent = str_replace($_POST['find'], $_POST['replace'], $pageContent);
             $pageContent = mysqli_real_escape_string($pageContent);
             
-            mysqli_query($mysql,"Update `Wiki_Pages` set `Content` = '{$pageContent}' where `ID` = '{$pageID}'");
+            wiki_query("Update `Wiki_Pages` set `Content` = '{$pageContent}' where `ID` = '{$pageID}'");
             unset($pageID, $pageContent);
 
             $count['pages']++;
         }
         
         // Loop through all edits
-        $editQuery = mysqli_query($mysql,"Select `ID`, `Content` from `Wiki_Edits`");
+        $editQuery = wiki_query("Select `ID`, `Content` from `Wiki_Edits`");
         while(list($editID, $editContent) = mysqli_fetch_array($editQuery))
         {
             $editContent = str_replace($_POST['find'], $_POST['replace'], $editContent);
             $editContent = mysqli_real_escape_string($editContent);
             
-            mysqli_query($mysql,"Update `Wiki_Edits` set `Content` = '{$editContent}' where `ID` = '{$editID}'");
+            wiki_query("Update `Wiki_Edits` set `Content` = '{$editContent}' where `ID` = '{$editID}'");
             unset($editID, $editContent);
 
             $count['edits']++;

@@ -15,7 +15,7 @@ if($Search)
                 where match(`Path`, `Title`, `Content`)
                 against('$Search')";
     
-    $Results = mysqli_num_rows(mysqli_query($mysql,$Query));
+    $Results = mysqli_num_rows(wiki_query($Query));
     $Time = time();
 
     if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
@@ -47,7 +47,7 @@ if($Search)
         echo "<br /><b>Looks like your search didn't turn up anything.<br />Your query might be too short, too common, or maybe it's really not here.</b>";
     else
     {
-        $TimeQuery = mysqli_query($mysql,"Select `Time`
+        $TimeQuery = wiki_query("Select `Time`
                                     from `Wiki Searches`
                                     where `IP`='$userIP' and `Search`='$Search'
                                     order by `ID` desc");
@@ -55,7 +55,7 @@ if($Search)
         list($OldTime) = mysqli_fetch_array($TimeQuery);
 
         if($OldTime + 86400 < $Time)
-            mysqli_query($mysql,"Insert into `Wiki Searches` values ('', '$Time', '$Results', '$Search', '$userIP')");
+            wiki_query("Insert into `Wiki Searches` values ('', '$Time', '$Results', '$Search', '$userIP')");
     }
     
     echo "<center>$Links</center>";	

@@ -7,7 +7,7 @@ $ID = filter_var(stripslashes($_GET['id']), FILTER_SANITIZE_SPECIAL_CHARS);
 if(empty($ID))
 	$ID = $_SESSION['ID'];
 
-$AccountQuery = mysqli_query($mysql,"Select `Name` from `Wiki_Accounts` where `ID`='$ID'");
+$AccountQuery = wiki_query("Select `Name` from `Wiki_Accounts` where `ID`='$ID'");
 list($AccountName) = mysqli_fetch_array($AccountQuery);
 
 $hostname = gethostbyaddr($AccountName);
@@ -26,7 +26,7 @@ else
 	$Title = "Names $hostname has edited with";
 }
 
-$NameQuery = mysqli_query($mysql,"Select `Name`, max(`EditTime`),count(*) as n
+$NameQuery = wiki_query("Select `Name`, max(`EditTime`),count(*) as n
 								from `Wiki_Edits`
 								where `AccountID`='$ID'
 								group by `Name`

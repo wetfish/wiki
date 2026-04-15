@@ -49,7 +49,7 @@ function view_replacements($tag, $content)
                 switch(strtolower($content))
                 {
                     case "pages":
-                        $pageTotal = mysqli_query($mysql,"Select `ID` from `Wiki_Pages`");
+                        $pageTotal = wiki_query("Select `ID` from `Wiki_Pages`");
                         $totalPages = mysqli_num_rows($pageTotal);
 
                         return number_format($totalPages);
@@ -652,7 +652,7 @@ function replace_links($matches, $mode)
         
         // Check if the page exists
         $escaped_page = mysqli_real_escape_string($mysql, $page);
-        $page_query = mysqli_query($mysql, "Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
+        $page_query = wiki_query( "Select ID from `Wiki_Pages` where `Path`='{$escaped_page}'");
         list($page_exists) = mysqli_fetch_array($page_query);
 
         if(empty($page_exists))

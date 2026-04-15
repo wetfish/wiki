@@ -86,7 +86,7 @@ if($_FILES)
         // Make sure the user IP is sanitized
         $userIP = preg_replace('/[^0-9.]/', '', $userIP);
 
-        mysqli_query($mysql,"Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
+        wiki_query("Insert into `Images` values ('NULL', '$Time', '', '$userIP', '{$Image['name']}', 'upload/$Filename.$Extension')");
 
         if(!empty($_GET['api']))
         {

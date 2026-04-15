@@ -6,7 +6,7 @@ function random($path, $action, $title, $content)
     $tagLinks = [];
     if($path)
     {
-        $PageQuery = mysqli_query($mysql,"SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path` = '$path'");
+        $PageQuery = wiki_query("SELECT `ID`,`Title`,`Content`,`Edits`,`Views`,`EditTime` FROM `Wiki_Pages` WHERE `Path` = '$path'");
         list($PageID, $PageTitle, $PageContent, $PageEdits, $pageViews, $PageEditTime) = mysqli_fetch_array($PageQuery);
 
 
@@ -20,7 +20,7 @@ function random($path, $action, $title, $content)
             $next = $pageNext;
 
 
-        $tagQuery = mysqli_query($mysql,"Select tags.`tag`, stats.`count`
+        $tagQuery = wiki_query("Select tags.`tag`, stats.`count`
                                     from `Wiki_Tags` as tags,
                                          `Wiki_Tag_Statistics` as stats
 
@@ -63,7 +63,7 @@ function random($path, $action, $title, $content)
 
         else
         {
-            mysqli_query($mysql,"Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
+            wiki_query("Update `Wiki_Pages` set `Views` = `Views` + 1 where `ID`='$PageID'");
         }
 
         if($previous['Path'])
