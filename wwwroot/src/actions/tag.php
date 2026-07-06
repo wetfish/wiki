@@ -68,6 +68,7 @@ function tag($path, $action, $title, $content)
                                     where tags.`pageID` = '$PageID'
                                         and stats.`tag` = tags.`tag`");
                                         
+        $tagLinks = array();
         while(list($tagName, $tagCount) = mysqli_fetch_array($tagQuery))
         {
             $plural = 's';
