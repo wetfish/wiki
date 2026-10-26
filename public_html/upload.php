@@ -66,7 +66,7 @@ if($_FILES)
                     return;
 		}
         }
-    
+
         $Filename = uuid();
         while(file_exists("upload/$Filename.$Extension"))
             {
@@ -78,10 +78,9 @@ if($_FILES)
 
         $Time = time();
 
-        if(isset($_SERVER['HTTP_X_FORWARDED_FOR']))
-            $userIP = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        else
-            $userIP = $_SERVER['REMOTE_ADDR'];
+        // The visitor's address; nginx takes it from the X-Real-IP header sent by
+        // the wetfish/server proxy, which visitors can't fake
+        $userIP = $_SERVER['REMOTE_ADDR'];
 
         // Make sure the user IP is sanitized
         $userIP = preg_replace('/[^0-9.]/', '', $userIP);
