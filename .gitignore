@@ -10,6 +10,6 @@ mariadb.env
 
 db/data
 
-wwwroot/src/node_modules
+public_html/src/node_modules
 
 log/*

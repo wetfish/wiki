@@ -3,7 +3,7 @@ FROM docker.io/node:24.22.1-alpine AS npm
 # load is installed straight from github
 RUN apk add --no-cache git
 
-COPY ./wwwroot/src/package.json ./wwwroot/src/package-lock.json /src/
+COPY ./public_html/src/package.json ./public_html/src/package-lock.json /src/
 
 RUN set -exu \
   && cd /src \
@@ -11,13 +11,13 @@ RUN set -exu \
 
 FROM docker.io/nginx:1.30.6-alpine
 
-COPY ./wwwroot /var/www
+COPY ./public_html /var/www
 # the images the wiki shows when an upload is missing, and for fishbux;
 # they seed the uploads volume the first time it's created
 COPY ./upload /var/www/upload
 
 # only ship the packages the pages load, not all of node_modules;
-# wwwroot/src/js/{basic,dragondrop,load}.js are symlinks into these
+# public_html/src/js/{basic,dragondrop,load}.js are symlinks into these
 COPY --from=npm /src/node_modules/@ruffle-rs/ruffle /var/www/src/node_modules/@ruffle-rs/ruffle
 COPY --from=npm /src/node_modules/wetfish-basic/dist /var/www/src/node_modules/wetfish-basic/dist
 COPY --from=npm /src/node_modules/dragondrop/dragondrop.js /var/www/src/node_modules/dragondrop/dragondrop.js

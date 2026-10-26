@@ -20,7 +20,7 @@ RUN set -exu \
 RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 COPY ./config/php.ini "$PHP_INI_DIR/conf.d/wiki.ini"
 
-COPY ./wwwroot /var/www
+COPY ./public_html /var/www
 # the images the wiki shows when an upload is missing, and for fishbux;
 # they seed the uploads volume the first time it's created
 COPY ./upload /var/www/upload

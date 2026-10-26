@@ -17,7 +17,7 @@ to change a value, such as to keep an existing wiki's passwords, edit it and run
 A new wiki's database starts empty. Create its tables once, before anyone uses it:
 
 ```bash
-./database.sh import wiki < projects/wiki/wwwroot/src/schema.sql
+./database.sh import wiki < projects/wiki/public_html/src/schema.sql
 ```
 
 Never run this on a database with pages in it: `schema.sql` drops the tables before creating them.
@@ -56,7 +56,7 @@ Heads up, it only deploys committed changes!
 
 ## When do I need to rebuild the container?
 
-Whenever you make an edit in wwwroot, config, or upload, or change a Dockerfile.
+Whenever you make an edit in public_html, config, or upload, or change a Dockerfile.
 
 ## To get search, tags, etc to work
 
