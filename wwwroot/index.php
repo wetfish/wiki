@@ -5,6 +5,9 @@ session_start();
 
 require_once('src/config.php');
 $mysql = new mysqli(MYSQL_HOST, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DATABASE);
+// The wiki's queries rely on MariaDB's old permissive sql mode, such as 'NULL'
+// for auto increment IDs; the shared database runs in strict mode
+$mysql->query("SET SESSION sql_mode = ''");
 require('functions.php');
 include('src/libraries/simple_html_dom.php');
 

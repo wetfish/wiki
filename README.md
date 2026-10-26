@@ -1,30 +1,62 @@
 ## How do I deploy this container stack?
 
-See [https://github.com/wetfish/production-manifests](https://github.com/wetfish/production-manifests)
-for production deployment and full stack dev env info.
+See [https://github.com/wetfish/server](https://github.com/wetfish/server)
+for setting up a server. Then add the wiki to it with
 
-For development, to run just this stack, do 
+```bash
+./add-project.sh --name wiki --repo https://github.com/wetfish/wiki.git --domain <domain>
+```
+
+and it'll redeploy whenever `main` (staging) or `release` (production) is pushed.
+
+Adding the wiki sets up its `php.env` from [setup.conf](setup.conf): it gets its own database
+on the server's shared database, new login, admin, and ban passwords, and asks for the captcha
+bypass regex, which can be left empty. The file is kept in `config/wiki/php.env` on the server;
+to change a value, such as to keep an existing wiki's passwords, edit it and run `./deploy.sh wiki`.
+
+A new wiki's database starts empty. Create its tables once, before anyone uses it:
+
+```bash
+./database.sh import wiki < projects/wiki/wwwroot/src/schema.sql
+```
+
+Never run this on a database with pages in it: `schema.sql` drops the tables before creating them.
+To move an existing wiki instead, import a dump of its database the same way.
+
+User uploads are kept in the `wiki_uploads` Docker volume, which deploys never replace.
+To work with the database on the server:
+
+```bash
+./database.sh shell wiki
+./database.sh dump wiki > wiki.sql
+```
+
+For development, to run just this stack, do
+
 ```bash
 cp mariadb.env.example mariadb.env
 # -> edit, change passwords and other info as needed
 cp php.env.example php.env
 # -> edit, change db info to match mariadb, other passwords as needed
 
-# in dev env, run npm install manually
-cd wwwroot/src && npm install
+docker compose up -d --build
 
-docker compose \
-  -f docker-compose.dev.yml \
-  up -d \
-  --build \
-  --force-recreate
-
-docker compose -f docker-compose.dev.yml logs -f
+docker compose logs -f
 ```
 
-The service will be available at [http://127.0.0.1:2405](http://127.0.0.1:2405)
+The service will be available at [http://127.0.0.1:2405](http://127.0.0.1:2405),
+and the database at `127.0.0.1:3405` for database tools.
+The database's tables are created the first time it starts.
 
-If you'd like, /etc/hosts wiki.wetfish.net.local to 127.0.0.1 and browse to that.
+If you want to test it like it's on a real server, set up a
+[local copy](https://github.com/wetfish/server/blob/main/docs/how-it-works.md#a-local-copy-for-testing)
+of wetfish/server and add your clone by its path, with a domain like `wiki.localhost`,
+then create the tables with `./database.sh` as above. \
+Heads up, it only deploys committed changes!
+
+## When do I need to rebuild the container?
+
+Whenever you make an edit in wwwroot, config, or upload, or change a Dockerfile.
 
 ## To get search, tags, etc to work
 
@@ -51,9 +83,8 @@ load{search.php}
 - Tags
 
 ```js
-load{src/pages/tags.php} 
- 
- 
+load{src/pages/tags.php}
+
+
 See also {{tag cloud}}!
 ```
-

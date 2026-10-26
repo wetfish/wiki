@@ -1,68 +1,47 @@
-version: "2.4"
+# deployed with wetfish/server, see README.md
 services:
-  # httpd (Nginx)
-  wiki-web:
-    image: ghcr.io/wetfish/wiki:${ENV_TAG}-nginx # Use the ENV_TAG variable for dynamic image selection
-    container_name: wiki-web
+  # httpd
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     restart: unless-stopped
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+    # nginx needs php running before it starts
+    depends_on:
+      - php
     volumes:
-      - ./config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - ./upload:/var/www/upload:rw
-    networks:
-      wiki-internal: {}
-      traefik-backend: {}
+      # user uploads, shared with php
+      - uploads:/var/www/upload
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/robots.txt"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   # php-fpm
-  wiki-php:
-    image: ghcr.io/wetfish/wiki:${ENV_TAG}-php # Dynamically set PHP image tag using ENV_TAG
-    container_name: wiki-php
+  php:
+    build:
+      context: .
+      dockerfile: Dockerfile.php
     restart: unless-stopped
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+    # db connection info and passwords; written from setup.conf on a server,
+    # copied from php.env.example for local development
     env_file:
       - ./php.env
     volumes:
-      - ./upload:/var/www/upload:rw
-      - ./config/php-fpm.conf:/etc/php/8.0/fpm/php-fpm.conf:ro
-      - ./config/php-fpm-pool.conf:/etc/php/8.0/fpm/pool.d/www.conf:ro
-      - ./config/php.ini:/etc/php/8.0/fpm/php.ini:ro
-    networks:
-      wiki-internal: {}
+      # user uploads, written by upload.php and image rehosting, plus thumbnails
+      - uploads:/var/www/upload
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@fsockopen('127.0.0.1', 9000) ? 0 : 1);"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
-  # database
-  wiki-db:
-    image: docker.io/mariadb:10.10
-    container_name: wiki-db
-    restart: unless-stopped
-    env_file:
-      - ./mariadb.env
-    command: --sql-mode=""
-    volumes:
-      - ./config/schema.sql:/docker-entrypoint-initdb.d/setup.sql:ro
-      - ./db/data:/var/lib/mysql:rw
-    networks:
-      wiki-internal: {}
-    ports:
-      - "127.0.0.1:3309:3306"
+# the database is the shared one from wetfish/server on a server, and the db
+# service in docker-compose.override.yml for local development
 
-  # watchtower - automatically pull new container images
-  wiki-watchtower:
-    image: ghcr.io/containrrr/watchtower:1.5.3
-    container_name: wiki-watchtower
-    environment:
-      - "WATCHTOWER_CLEANUP=true"
-      - "WATCHTOWER_POLL_INTERVAL=30"
-      - "WATCHTOWER_LABEL_ENABLE=true"
-      - "NO_COLOR=true"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock"
-
-networks:
-  # ephemeral, created for us by compose
-  wiki-internal:
-    driver: bridge
-  # persistent, externally created
-  traefik-backend:
-    external: true
+volumes:
+  # named wiki_uploads on a server, after the project
+  uploads:

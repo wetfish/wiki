@@ -1,18 +1,17 @@
+# keep git history, secrets, and local installs out of the images
 .git
+**/.env
+**/*.env
 
+**/node_modules
+
+# uploads live in a docker volume; only the built-in images are copied in
 upload/*
 !upload/apple.gif
 !upload/fishbux/
-qpalz
-glitchcity
-_*
 
-php.env
-mariadb.env
-*.env
-
+# left over from the old setup, which kept these in the repository folder
 db/data
-
-wwwroot/src/node_modules
-
 log/*
+qpalz
+_*
