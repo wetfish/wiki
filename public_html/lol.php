@@ -37,8 +37,8 @@ $black = imagecolorallocate($img, 0x00, 0x00, 0x00);
 // Make the background red
 imagefilledrectangle($img, 0, 0, 399, 15, $white);
 
-// Path to our ttf font file
-$fontbold = './fontbold.ttf';
+// Path to our ttf font file; gd only finds fonts by absolute path
+$fontbold = __DIR__ . '/fontbold.ttf';
 
 $background = LoadJpeg('./rainbowsmoke.jpg');
 imagecopy($img, $background, 0, 0, rand(1, 600), rand(1, 300), 400, 25);

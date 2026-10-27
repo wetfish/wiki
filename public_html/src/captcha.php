@@ -5,7 +5,7 @@ $captcha = new captcha();
 class captcha
 {
     function __construct()
-    {   
+    {
         if(isset($_GET['new'])){
             unset($_SESSION['captchaSuccess']);
             unset($_SESSION['randomID']);
@@ -23,13 +23,13 @@ class captcha
         else //generates new challenge
         {
             $_SESSION['randomID']=$this->generateID();
-            for($i = 1; $i <= 5; $i++) 
+            for($i = 1; $i <= 5; $i++)
             {
                 array_push($_SESSION['randomID']['fish'], $this->generateFish());
             }
             $this->generateCaptcha();
         }
-        
+
     }
 
     //generates a new and 'unique' random fish
@@ -37,7 +37,7 @@ class captcha
     {
         $traits = array('striped', 'dead', 'normal');
         $fishData = array('trait' => $traits[array_rand($traits)], 'x' => rand(0,324), 'y' => rand(2,120), 'left' => (bool)rand(0,1));
-        
+
         while($fishData['trait'] === $_SESSION['randomID']['challenge'])
         {
             $fishData['trait'] = $traits[array_rand($traits)];
@@ -86,21 +86,21 @@ class captcha
                 ['trait' => $challenge, 'x' => rand(0,324), 'y' => rand(2,120), 'left' => (bool)rand(0,1)]
             )
         ];
-        
+
         return $generatedID;
     }
 
     //generates captcha data and sends it to client as a JSON
     private function generateCaptcha()
     {
-        $fishImages = 
+        $fishImages =
         [
             0 => imagecreatefrompng('./captcha-assets/normal.png'),
             1 => imagecreatefrompng('./captcha-assets/stripe.png'),
             2 => imagecreatefrompng('./captcha-assets/dark.png'),
             3 => imagecreatefrompng('./captcha-assets/cool.png')
         ];
-        $layers = 
+        $layers =
         [
             0 => imagecreatefrompng('./captcha-assets/bglayer.png'),
             1 => imagecreatetruecolor(420, 240),
@@ -108,23 +108,24 @@ class captcha
         ];
 
         $textColor = imagecolorallocate($layers[0], 160, 15, 150);
-        $font = imagettftext($layers[0], 30, 0, 15, 220, $textColor, './captcha-assets/dpcomic.ttf', "Catch the " . $_SESSION['randomID']['challenge'] . " fish!");
+        // gd only finds fonts by absolute path, not relative to this file
+        $font = imagettftext($layers[0], 30, 0, 15, 220, $textColor, __DIR__ . '/captcha-assets/dpcomic.ttf', "Catch the " . $_SESSION['randomID']['challenge'] . " fish!");
 
-        for($i=1; $i <= 2; $i++) 
-        {   
+        for($i=1; $i <= 2; $i++)
+        {
             imagealphablending($layers[$i], false);
             $transparency = imagecolorallocatealpha($layers[$i], 0, 0, 0, 127);
             imagefilledrectangle($layers[$i], 0, 0, 420, 240, $transparency);
             imagealphablending($layers[$i], true);
             imagesavealpha($layers[$i], true);
-            
+
             if($i>1)
             {
                 for($j=0; $j<count($fishImages); $j++)
                 {
                     imageflip($fishImages[$j], IMG_FLIP_HORIZONTAL);
                 }
-            } 
+            }
             foreach($_SESSION['randomID']['fish'] as $fishy)
             {
                 if($i==1 && !$fishy['left'])
@@ -176,14 +177,14 @@ class captcha
 
     //converts a php gd image object to a base64 png
     private static function getLayerBase64($img){
-        ob_start(); 
+        ob_start();
         imagepng($img);
         $data = base64_encode(ob_get_contents());
         ob_end_clean();
         imagedestroy($img);
         return 'data:image/png;base64,' . $data;
     }
-    
+
     //returns true if user has dragged net and held over success fish for at least 3 seconds
     private function checkSuccess()
     {
@@ -230,7 +231,7 @@ class captcha
             return false; //no success
         }
 
-        
+
     }
 }
 
