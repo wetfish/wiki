@@ -152,8 +152,8 @@ function edit_replacements($tag, $content)
                 // the wetfish/server proxy, which visitors can't fake
                 $userIP = $_SERVER['REMOTE_ADDR'];
 
-                // Make sure the user IP is sanitized
-                $userIP = preg_replace('/[^0-9.]/', '', $userIP);
+                // Make sure the user IP is sanitized, keeping IPv6 addresses whole
+                $userIP = preg_replace('/[^0-9a-fA-F.:]/', '', $userIP);
 
                 mysqli_query($mysql,"Insert into `Images` values ('NULL', '$Time', '', '$userIP', '$Link', 'upload/$Filename.$Extension')");
 
@@ -233,8 +233,8 @@ function edit_replacements($tag, $content)
                 // the wetfish/server proxy, which visitors can't fake
                 $userIP = $_SERVER['REMOTE_ADDR'];
 
-                // Make sure the user IP is sanitized
-                $userIP = preg_replace('/[^0-9.]/', '', $userIP);
+                // Make sure the user IP is sanitized, keeping IPv6 addresses whole
+                $userIP = preg_replace('/[^0-9a-fA-F.:]/', '', $userIP);
 
                 mysqli_query($mysql,"Insert into `Images` values ('NULL', '$time', '', '$userIP', '$link', 'upload/$Filename.$Extension')");
                 $text = trim("upload/$Filename.$Extension|$autoplay|$loop", '|');

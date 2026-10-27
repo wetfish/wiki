@@ -14,14 +14,8 @@ on the server's shared database, new login, admin, and ban passwords, and asks f
 bypass regex, which can be left empty. The file is kept in `config/wiki/php.env` on the server;
 to change a value, such as to keep an existing wiki's passwords, edit it and run `./deploy.sh wiki`.
 
-A new wiki's database starts empty. Create its tables once, before anyone uses it:
-
-```bash
-./database.sh import wiki < projects/wiki/public_html/src/schema.sql
-```
-
-Never run this on a database with pages in it: `schema.sql` drops the tables before creating them.
-To move an existing wiki instead, import a dump of its database the same way.
+The first deploy creates the wiki's database with its tables from `database/schema.sql`,
+which never runs again once the database exists, so a new wiki is ready to use right away.
 
 User uploads are kept in the `wiki_uploads` Docker volume, which deploys never replace.
 To work with the database on the server:
@@ -29,6 +23,13 @@ To work with the database on the server:
 ```bash
 ./database.sh shell wiki
 ./database.sh dump wiki > wiki.sql
+```
+
+To move an existing wiki onto the server, import only the rows of its database, dumped with `--no-create-info`,
+into the new wiki's empty tables, so the tables stay as `database/schema.sql` creates them:
+
+```bash
+./database.sh import wiki < wiki-data.sql
 ```
 
 For development, to run just this stack, do
@@ -50,8 +51,7 @@ The database's tables are created the first time it starts.
 
 If you want to test it like it's on a real server, set up a
 [local copy](https://github.com/wetfish/server/blob/main/docs/how-it-works.md#a-local-copy-for-testing)
-of wetfish/server and add your clone by its path, with a domain like `wiki.localhost`,
-then create the tables with `./database.sh` as above. \
+of wetfish/server and add your clone by its path, with a domain like `wiki.localhost`. \
 Heads up, it only deploys committed changes!
 
 ## When do I need to rebuild the container?

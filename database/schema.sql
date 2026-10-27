@@ -26,7 +26,7 @@ CREATE TABLE `Images` (
   `ID` int(10) NOT NULL AUTO_INCREMENT,
   `Time` int(10) NOT NULL,
   `Score` int(10) NOT NULL,
-  `Account` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `Account` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `Original URL` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `File` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`ID`)
@@ -45,7 +45,7 @@ CREATE TABLE `Wiki Searches` (
   `Time` int(10) NOT NULL,
   `Results` int(10) NOT NULL,
   `Search` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `IP` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `IP` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `IP` (`IP`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

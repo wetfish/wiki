@@ -1,5 +1,0 @@
-FROM docker.io/mariadb:10.10.7
-
-# creates the wiki's tables the first time the database volume is created;
-# an existing database is never touched
-COPY ./wwwroot/src/schema.sql /docker-entrypoint-initdb.d/schema.sql

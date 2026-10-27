@@ -46,8 +46,8 @@ function PageTitler($Page)
 // the wetfish/server proxy, which visitors can't fake
 $userIP = $_SERVER['REMOTE_ADDR'];
 
-// Make sure the user IP is sanitized
-$userIP = preg_replace('/[^0-9.:]/', '', $userIP);
+// Make sure the user IP is sanitized, keeping IPv6 addresses whole
+$userIP = preg_replace('/[^0-9a-fA-F.:]/', '', $userIP);
 
 // Original apache rewrite
 if(isset($_GET['SUPERdickPAGE']))
