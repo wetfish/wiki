@@ -55,6 +55,10 @@ $Path = $_SERVER['DOCUMENT_ROOT'];
 if(the($Directory) == 'Empty')
     $Directory = str_replace($Path, '', getcwd());
 
+// Generate a thumbnails folder if it doesn't exist
+if($Generate == 'Thumbnails' && !is_dir("$Path/{$Thumbnail['Directory']}"))
+    mkdir("$Path/{$Thumbnail['Directory']}", 0755);
+
 $Files = scandirByDate("$Path/$Directory");
 
 echo "<center>";
