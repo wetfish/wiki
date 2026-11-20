@@ -1,4 +1,4 @@
-FROM docker.io/php:8.5.12-fpm-alpine
+FROM docker.io/php:8.5.13-fpm-alpine
 
 # gd for thumbnails and the captcha, exif for image info, mysqli for the database
 RUN set -exu \
